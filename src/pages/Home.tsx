@@ -35,17 +35,6 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Membros Totais</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {companyParties?.reduce((acc, cp) => acc + cp.currentMembers, 0) || 0}
-                    </div>
-                    <p className="text-xs text-muted-foreground">Jogadores ativos</p>
-                  </CardContent>
-                </Card>
 
                 <Card>
                   <CardHeader className="pb-2">
@@ -59,19 +48,6 @@ export default function Home() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Ocupação Média</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {companyParties && companyParties.length > 0
-                        ? Math.round((companyParties.reduce((acc, cp) => acc + (cp.currentMembers / cp.maxMembers), 0) / companyParties.length) * 100)
-                        : 0}%
-                    </div>
-                    <p className="text-xs text-muted-foreground">Capacidade utilizada</p>
-                  </CardContent>
-                </Card>
               </div>
             </div>
 

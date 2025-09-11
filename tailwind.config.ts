@@ -9,6 +9,10 @@ export default {
 		"./src/**/*.{js,ts,jsx,tsx}",
 	],
 	theme: {
+		container: {
+			center: false,
+			padding: '0',
+		},
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',

@@ -125,6 +125,15 @@
   }
 }
 
+/* Custom container utilities */
+@layer components {
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+}
+
 /* Custom font utilities */
 @layer utilities {
   .font-roboto-light {

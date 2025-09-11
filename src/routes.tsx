@@ -8,7 +8,9 @@ import Admin from './pages/Admin';
 import Reports from './pages/Reports';
 import CompanyPartiesList from './pages/admin/CompanyPartiesList';
 import CompanyPartyForm from './pages/admin/CompanyPartyForm';
+import CompanyPartyDetail from './pages/CompanyPartyDetail';
 import Profile from './pages/player/Profile';
+import { EditProfile } from './pages/player/EditProfile';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -32,11 +34,19 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: '/profile/edit',
+    element: (
+      <ProtectedRoute>
+        <EditProfile />
+      </ProtectedRoute>
+    ),
+  },
   // Members routes
   {
     path: '/members',
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="ADMIN">
         <Members />
       </ProtectedRoute>
     ),
@@ -52,7 +62,7 @@ export const router = createBrowserRouter([
   {
     path: '/members/:id',
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="ADMIN">
         <MemberDetail />
       </ProtectedRoute>
     ),
@@ -61,7 +71,7 @@ export const router = createBrowserRouter([
   {
     path: '/company-parties',
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="ADMIN">
         <CompanyPartiesList />
       </ProtectedRoute>
     ),
@@ -79,6 +89,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requiredRole="ADMIN">
         <CompanyPartyForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/company-parties/:id',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <CompanyPartyDetail />
       </ProtectedRoute>
     ),
   },

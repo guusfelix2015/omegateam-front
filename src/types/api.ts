@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+// Classe schemas (defined first to be used in UserSchema)
+export const ClasseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  createdAt: z.string(),
+});
+
+export const ClassesListSchema = z.object({
+  data: z.array(ClasseSchema),
+});
+
 // User schemas
 export const UserSchema = z.object({
   id: z.string(),
@@ -11,6 +22,9 @@ export const UserSchema = z.object({
   isActive: z.boolean(),
   lvl: z.number(),
   nickname: z.string(),
+  avatar: z.string().nullable().optional(),
+  classeId: z.string().nullable().optional(),
+  classe: ClasseSchema.nullable().optional(),
 });
 
 export const LoginRequestSchema = z.object({
@@ -23,19 +37,37 @@ export const LoginResponseSchema = z.object({
   message: z.string(),
 });
 
+// User Company Party relation schema
+export const UserCompanyPartySchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  joinedAt: z.string(),
+  user: z.object({
+    id: z.string(),
+    email: z.string(),
+    name: z.string(),
+    nickname: z.string(),
+    avatar: z.string().nullable().optional(),
+    lvl: z.number(),
+    role: z.enum(['ADMIN', 'PLAYER']),
+  }),
+});
+
 // Company Party schemas
 export const CompanyPartySchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().optional(),
-  leaderId: z.string(),
-  maxMembers: z.number(),
-  currentMembers: z.number(),
-  isActive: z.boolean(),
+  leaderId: z.string().optional(),
+  maxMembers: z.number().optional(),
+  playerCount: z.number().optional(),
+  currentMembers: z.number().optional(), // Keep for backward compatibility
+  isActive: z.boolean().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   leader: UserSchema.optional(),
   members: z.array(UserSchema).optional(),
+  users: z.array(UserCompanyPartySchema).optional(), // For detailed view
 });
 
 export const CreateCompanyPartySchema = z.object({
@@ -47,7 +79,18 @@ export const CreateCompanyPartySchema = z.object({
 export const UpdateCompanyPartySchema = CreateCompanyPartySchema.partial();
 
 export const AddPlayerToPartySchema = z.object({
-  playerId: z.string(),
+  userId: z.string(),
+});
+
+// User creation schema
+export const CreateUserSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+  name: z.string().min(1, 'Nome é obrigatório'),
+  nickname: z.string().min(1, 'Nickname é obrigatório'),
+  role: z.enum(['ADMIN', 'PLAYER']).default('PLAYER'),
+  companyPartyId: z.string().optional(),
+  classeId: z.string().optional(), // Optional - user can set later
 });
 
 // API Response wrapper
@@ -73,6 +116,9 @@ export type CreateCompanyParty = z.infer<typeof CreateCompanyPartySchema>;
 export type UpdateCompanyParty = z.infer<typeof UpdateCompanyPartySchema>;
 export type AddPlayerToParty = z.infer<typeof AddPlayerToPartySchema>;
 export type ApiError = z.infer<typeof ApiErrorSchema>;
+export type Classe = z.infer<typeof ClasseSchema>;
+export type ClassesList = z.infer<typeof ClassesListSchema>;
+export type CreateUser = z.infer<typeof CreateUserSchema>;
 
 export type ApiResponse<T> = {
   success: boolean;

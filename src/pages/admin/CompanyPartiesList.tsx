@@ -105,33 +105,22 @@ export default function CompanyPartiesList() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Membros:</span>
-                      <span className="font-medium">
-                        {party.currentMembers}/{party.maxMembers}
+                      <span className="font-medium text-lg">
+                        {party.playerCount || party.currentMembers || 0}
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Status:</span>
-                      <span className={`font-medium ${party.isActive ? 'text-green-600' : 'text-red-600'}`}>
-                        {party.isActive ? 'Ativa' : 'Inativa'}
-                      </span>
+
+                    <div className="flex space-x-2">
+                      <Button variant="outline" size="sm" asChild className="flex-1">
+                        <Link to={`/company-parties/${party.id}`}>
+                          <Users className="mr-2 h-4 w-4" />
+                          Ver Detalhes
+                        </Link>
+                      </Button>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Líder:</span>
-                      <span className="font-medium">
-                        {party.leader?.name || 'N/A'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex space-x-2">
-                    <Button variant="outline" size="sm" asChild className="flex-1">
-                      <Link to={`/company-parties/${party.id}`}>
-                        <Users className="mr-2 h-4 w-4" />
-                        Ver Detalhes
-                      </Link>
-                    </Button>
                   </div>
                 </CardContent>
               </Card>

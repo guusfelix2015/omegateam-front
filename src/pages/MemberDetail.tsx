@@ -8,15 +8,23 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { useUser } from '../hooks/users.hooks';
+import { useUser, useUpdateUser } from '../hooks/users.hooks';
+import { useCompanyParties, useAddPlayerToParty, useRemovePlayerFromParty } from '../hooks/company-parties.hooks';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/use-toast';
 import { Layout } from '../components/Layout';
 
 export default function MemberDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
+  const { toast } = useToast();
   const { data: user, isLoading, error } = useUser(id!);
+  const { data: companyParties } = useCompanyParties();
+  const updateUserMutation = useUpdateUser();
+  const addPlayerToPartyMutation = useAddPlayerToParty();
+  const removePlayerFromPartyMutation = useRemovePlayerFromParty();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     name: '',
@@ -25,10 +33,14 @@ export default function MemberDetail() {
     lvl: 1,
     role: 'PLAYER' as 'ADMIN' | 'PLAYER',
     isActive: true,
+    companyPartyId: '',
   });
 
   React.useEffect(() => {
     if (user) {
+      // Get current company party ID
+      const currentCP = user.companyParties?.[0]?.companyPartyId || '';
+
       setEditData({
         name: user.name,
         nickname: user.nickname,
@@ -36,18 +48,70 @@ export default function MemberDetail() {
         lvl: user.lvl,
         role: user.role,
         isActive: user.isActive,
+        companyPartyId: currentCP,
       });
     }
   }, [user]);
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('Saving user data:', editData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!user) return;
+
+    try {
+      // Update basic user data
+      await updateUserMutation.mutateAsync({
+        id: user.id,
+        data: {
+          name: editData.name,
+          nickname: editData.nickname,
+          email: editData.email,
+          lvl: editData.lvl,
+          role: editData.role,
+          isActive: editData.isActive,
+        }
+      });
+
+      // Handle Company Party changes
+      const currentCP = user.companyParties?.[0]?.companyPartyId || '';
+      const newCP = editData.companyPartyId;
+
+      if (currentCP !== newCP) {
+        // Remove from current CP if exists
+        if (currentCP) {
+          await removePlayerFromPartyMutation.mutateAsync({
+            partyId: currentCP,
+            playerId: user.id
+          });
+        }
+
+        // Add to new CP if selected
+        if (newCP && newCP !== 'none') {
+          await addPlayerToPartyMutation.mutateAsync({
+            partyId: newCP,
+            data: { userId: user.id }
+          });
+        }
+      }
+
+      toast({
+        title: "Usuário atualizado!",
+        description: "As alterações foram salvas com sucesso.",
+      });
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast({
+        title: "Erro ao atualizar usuário",
+        description: "Ocorreu um erro ao salvar as alterações.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCancel = () => {
     if (user) {
+      const currentCP = user.companyParties?.[0]?.companyPartyId || '';
+
       setEditData({
         name: user.name,
         nickname: user.nickname,
@@ -55,6 +119,7 @@ export default function MemberDetail() {
         lvl: user.lvl,
         role: user.role,
         isActive: user.isActive,
+        companyPartyId: currentCP,
       });
     }
     setIsEditing(false);
@@ -105,7 +170,7 @@ export default function MemberDetail() {
               <p className="text-muted-foreground">Detalhes do membro</p>
             </div>
           </div>
-          
+
           {isAdmin && (
             <div className="flex space-x-2">
               {isEditing ? (
@@ -154,7 +219,7 @@ export default function MemberDetail() {
                   <p className="text-sm">{user.name}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="nickname">Nickname</Label>
                 {isEditing ? (
@@ -167,7 +232,7 @@ export default function MemberDetail() {
                   <p className="text-sm">{user.nickname}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 {isEditing ? (
@@ -181,7 +246,7 @@ export default function MemberDetail() {
                   <p className="text-sm">{user.email}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="level">Level</Label>
                 {isEditing ? (
@@ -217,7 +282,7 @@ export default function MemberDetail() {
                 {isEditing ? (
                   <Select
                     value={editData.role}
-                    onValueChange={(value: 'ADMIN' | 'PLAYER') => 
+                    onValueChange={(value: 'ADMIN' | 'PLAYER') =>
                       setEditData({ ...editData, role: value })
                     }
                   >
@@ -235,14 +300,14 @@ export default function MemberDetail() {
                   </Badge>
                 )}
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label htmlFor="active">Status Ativo</Label>
                 {isEditing ? (
                   <Switch
                     id="active"
                     checked={editData.isActive}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setEditData({ ...editData, isActive: checked })
                     }
                   />
@@ -252,14 +317,57 @@ export default function MemberDetail() {
                   </Badge>
                 )}
               </div>
-              
+
+              {/* Company Party Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="companyParty">Company Party</Label>
+                {isEditing ? (
+                  <Select
+                    value={editData.companyPartyId || 'none'}
+                    onValueChange={(value) =>
+                      setEditData({ ...editData, companyPartyId: value === 'none' ? '' : value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma Company Party" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Nenhuma Company Party
+                        </div>
+                      </SelectItem>
+                      {companyParties?.map((cp) => (
+                        <SelectItem key={cp.id} value={cp.id}>
+                          <div className="flex items-center gap-2">
+                            <Building2 className="h-4 w-4" />
+                            {cp.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="text-sm">
+                    {user.companyParties && user.companyParties.length > 0 ? (
+                      <Badge variant="outline">
+                        {user.companyParties[0].companyParty?.name || 'N/A'}
+                      </Badge>
+                    ) : (
+                      <span className="text-muted-foreground">Nenhuma Company Party</span>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label>Criado em</Label>
                 <p className="text-sm text-muted-foreground">
                   {new Date(user.createdAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Última atualização</Label>
                 <p className="text-sm text-muted-foreground">

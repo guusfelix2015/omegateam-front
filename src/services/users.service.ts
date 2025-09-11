@@ -31,6 +31,28 @@ export interface UserStats {
   players: number;
 }
 
+export interface CreateUserData {
+  email: string;
+  name: string;
+  nickname: string;
+  password: string;
+  avatar?: string;
+  isActive?: boolean;
+  lvl?: number;
+  role: 'ADMIN' | 'PLAYER';
+}
+
+export interface UpdateUserData {
+  email?: string;
+  name?: string;
+  nickname?: string;
+  password?: string;
+  avatar?: string;
+  isActive?: boolean;
+  lvl?: number;
+  role?: 'ADMIN' | 'PLAYER';
+}
+
 export const usersService = {
   async getAll(query: UsersQuery = {}): Promise<UsersResponse> {
     const params = new URLSearchParams();
@@ -55,18 +77,33 @@ export const usersService = {
     };
   },
 
-  async getStats(): Promise<UserStats> {
-    const response = await api.get('/users/stats');
-    return response.data;
-  },
-
   async getById(id: string): Promise<User> {
     const response = await api.get(`/users/${id}`);
     return UserSchema.parse(response.data);
   },
 
+  async create(data: CreateUserData): Promise<User> {
+    const response = await api.post('/users', data);
+    return UserSchema.parse(response.data);
+  },
+
+  async update(id: string, data: UpdateUserData): Promise<User> {
+    const response = await api.put(`/users/${id}`, data);
+    return UserSchema.parse(response.data);
+  },
+
+  async getStats(): Promise<UserStats> {
+    const response = await api.get('/users/stats');
+    return response.data;
+  },
+
   async getMe(): Promise<User> {
-    const response = await api.get('/users/me');
+    const response = await api.get('/auth/me');
+    return UserSchema.parse(response.data);
+  },
+
+  async updateProfile(data: Partial<User>): Promise<User> {
+    const response = await api.put('/users/profile', data);
     return UserSchema.parse(response.data);
   },
 };

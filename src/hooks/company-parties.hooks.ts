@@ -9,6 +9,9 @@ export const useCompanyParties = () => {
   return useQuery({
     queryKey: ['company-parties'],
     queryFn: () => companyPartiesService.getAll(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
   });
 };
 
@@ -17,16 +20,13 @@ export const useCompanyParty = (id: string) => {
     queryKey: ['company-parties', id],
     queryFn: () => companyPartiesService.getById(id),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
   });
 };
 
-export const useCompanyPartyMembers = (partyId: string) => {
-  return useQuery({
-    queryKey: ['company-parties', partyId, 'members'],
-    queryFn: () => companyPartiesService.getMembers(partyId),
-    enabled: !!partyId,
-  });
-};
+
 
 // Mutation hooks
 export const useCreateCompanyParty = () => {

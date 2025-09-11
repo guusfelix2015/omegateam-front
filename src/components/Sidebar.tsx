@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  Users, 
-  Shield, 
-  BarChart3, 
-  User, 
-  LogOut, 
+import {
+  Users,
+  Shield,
+  BarChart3,
+  User,
+  LogOut,
   Menu,
   X,
   Home,
@@ -37,11 +37,13 @@ const navItems: NavItem[] = [
     name: 'Membros',
     href: '/members',
     icon: Users,
+    adminOnly: true,
   },
   {
     name: 'Company Parties',
     href: '/company-parties',
     icon: Building2,
+    adminOnly: true,
   },
   {
     name: 'Controle Administrativo',
@@ -70,16 +72,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const { user, isAdmin } = useAuth();
   const logoutMutation = useLogout();
 
-  const handleLogout = async () => {
-    try {
-      await logoutMutation.mutateAsync();
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+  const handleLogout = () => {
+    // Execute logout mutation (fire and forget)
+    logoutMutation.mutate();
+
+    // Immediately redirect to login page
+    window.location.href = '/login';
   };
 
-  const filteredNavItems = navItems.filter(item => 
+  const filteredNavItems = navItems.filter(item =>
     !item.adminOnly || (item.adminOnly && isAdmin)
   );
 
@@ -98,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </div>
           )}
         </div>
-        
+
         {/* Desktop collapse button */}
         <Button
           variant="ghost"
@@ -108,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         >
           <Menu className="h-4 w-4" />
         </Button>
-        
+
         {/* Mobile close button */}
         <Button
           variant="ghost"
@@ -140,9 +141,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
         {filteredNavItems.map((item) => {
-          const isActive = location.pathname === item.href || 
+          const isActive = location.pathname === item.href ||
             (item.href !== '/' && location.pathname.startsWith(item.href));
-          
+
           return (
             <Link
               key={item.name}
@@ -150,8 +151,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               onClick={() => setIsMobileOpen(false)}
               className={cn(
                 "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                isActive 
-                  ? "bg-primary text-primary-foreground" 
+                isActive
+                  ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent",
                 isCollapsed && "justify-center px-2"
               )}
@@ -195,7 +196,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       {/* Mobile Overlay */}
       {isMobileOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsMobileOpen(false)}
         />

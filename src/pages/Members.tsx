@@ -1,61 +1,70 @@
 import { Link } from 'react-router-dom';
-import { useState, useMemo } from 'react';
-import { Plus, User, Mail, Shield, Calendar, Search, X } from 'lucide-react';
+import { useState, useCallback, useRef } from 'react';
+import { Plus, User, Mail, Shield, Calendar, X, Search } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/pagination';
-import { useUsers, useUserStats } from '../hooks/users.hooks';
+import { SearchInput } from '../components/SearchInput';
+import { useUsersWithFilters } from '../hooks/useDebouncedUsers';
+import { useUserStats } from '../hooks/users.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
-import type { UsersQuery } from '../services/users.service';
 
 export default function Members() {
   const { isAdmin } = useAuth();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Filter states
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // Input value (not applied yet)
+  const [appliedSearch, setAppliedSearch] = useState(''); // Applied search term
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9; // 3x3 grid
 
-  // Build query object
-  const query = useMemo((): UsersQuery => {
-    const baseQuery: UsersQuery = {
-      page: currentPage,
-      limit: pageSize,
-      sortBy: 'createdAt',
-      sortOrder: 'desc',
-    };
+  // Use users hook with applied filters
+  const { data: usersResponse, isLoading, error } = useUsersWithFilters({
+    search: appliedSearch,
+    activeFilter,
+    currentPage,
+    pageSize,
+  });
 
-    if (search.trim()) {
-      baseQuery.search = search.trim();
-    }
-
-    if (activeFilter === 'active') {
-      baseQuery.isActive = true;
-    } else if (activeFilter === 'inactive') {
-      baseQuery.isActive = false;
-    }
-
-    return baseQuery;
-  }, [search, activeFilter, currentPage]);
-
-  const { data: usersResponse, isLoading, error } = useUsers(query);
   const { data: stats } = useUserStats();
 
   const users = usersResponse?.data || [];
   const pagination = usersResponse?.pagination;
 
-  // Clear filters function
-  const clearFilters = () => {
-    setSearch('');
+  // Handle search execution
+  const handleSearch = useCallback(() => {
+    setAppliedSearch(searchInput);
+    setCurrentPage(1); // Reset page when search changes
+  }, [searchInput]);
+
+  // Handle search input change
+  const handleSearchInputChange = useCallback((value: string) => {
+    setSearchInput(value);
+  }, []);
+
+  // Handle filter change
+  const handleFilterChange = useCallback((filter: 'all' | 'active' | 'inactive') => {
+    setActiveFilter(filter);
+    setCurrentPage(1); // Reset page when filter changes
+  }, []);
+
+  // Clear all filters
+  const clearFilters = useCallback(() => {
+    setSearchInput('');
+    setAppliedSearch('');
     setActiveFilter('all');
     setCurrentPage(1);
-  };
+    // Focus back to search input
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+  }, []);
 
-  const hasActiveFilters = search.trim() || activeFilter !== 'all';
+  const hasActiveFilters = appliedSearch.trim() || activeFilter !== 'all';
 
   if (isLoading) {
     return (
@@ -109,34 +118,44 @@ export default function Members() {
 
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
+          <div className="flex gap-2 flex-1">
+            <SearchInput
+              ref={searchInputRef}
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              onSearch={handleSearch}
               placeholder="Buscar por nome, email ou nickname..."
-              className="pl-10"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1"
             />
+            <Button
+              onClick={handleSearch}
+              variant="outline"
+              size="default"
+              className="px-4"
+            >
+              Buscar
+              <Search className="h-4 w-4" />
+            </Button>
           </div>
           <div className="flex gap-2">
             <Button
               variant={activeFilter === 'all' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setActiveFilter('all')}
+              onClick={() => handleFilterChange('all')}
             >
               Todos
             </Button>
             <Button
               variant={activeFilter === 'active' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setActiveFilter('active')}
+              onClick={() => handleFilterChange('active')}
             >
               Ativos
             </Button>
             <Button
               variant={activeFilter === 'inactive' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setActiveFilter('inactive')}
+              onClick={() => handleFilterChange('inactive')}
             >
               Inativos
             </Button>

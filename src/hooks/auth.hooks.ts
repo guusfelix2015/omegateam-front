@@ -56,23 +56,36 @@ export const useLogout = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: () => authService.logout(),
-    onSuccess: () => {
-      // Remove token
+    mutationFn: async () => {
+      // Clear local data immediately
       authService.removeToken();
 
-      // Clear all cached data
+      // Clear all cached data immediately
       queryClient.clear();
 
+      // Try to call server logout (but don't wait for it)
+      try {
+        await authService.logout();
+      } catch (error) {
+        // Ignore server logout errors since we already cleared local data
+        console.warn('Server logout failed, but local data cleared:', error);
+      }
+    },
+    onSuccess: () => {
       toast({
         title: "Logout realizado com sucesso!",
         description: "Até logo!",
       });
     },
     onError: () => {
-      // Even if logout fails on server, clear local data
+      // Ensure local data is cleared even if mutation fails
       authService.removeToken();
       queryClient.clear();
+
+      toast({
+        title: "Logout realizado",
+        description: "Sessão encerrada",
+      });
     },
   });
 };
