@@ -1,0 +1,320 @@
+import React, { useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft, Edit, Save, X, User, Mail, Shield, Calendar, Building2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Badge } from '../components/ui/badge';
+import { Switch } from '../components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { useUser } from '../hooks/users.hooks';
+import { useAuth } from '../hooks/useAuth';
+import { Layout } from '../components/Layout';
+
+export default function MemberDetail() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+  const { data: user, isLoading, error } = useUser(id!);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    name: '',
+    nickname: '',
+    email: '',
+    lvl: 1,
+    role: 'PLAYER' as 'ADMIN' | 'PLAYER',
+    isActive: true,
+  });
+
+  React.useEffect(() => {
+    if (user) {
+      setEditData({
+        name: user.name,
+        nickname: user.nickname,
+        email: user.email,
+        lvl: user.lvl,
+        role: user.role,
+        isActive: user.isActive,
+      });
+    }
+  }, [user]);
+
+  const handleSave = () => {
+    // TODO: Implement save functionality
+    console.log('Saving user data:', editData);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setEditData({
+        name: user.name,
+        nickname: user.nickname,
+        email: user.email,
+        lvl: user.lvl,
+        role: user.role,
+        isActive: user.isActive,
+      });
+    }
+    setIsEditing(false);
+  };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Carregando membro...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !user) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-destructive mb-4">Membro não encontrado</p>
+            <Button variant="outline" onClick={() => navigate('/members')}>
+              Voltar para Membros
+            </Button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/members">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar
+              </Link>
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold">{user.name}</h1>
+              <p className="text-muted-foreground">Detalhes do membro</p>
+            </div>
+          </div>
+          
+          {isAdmin && (
+            <div className="flex space-x-2">
+              {isEditing ? (
+                <>
+                  <Button variant="outline" onClick={handleCancel}>
+                    <X className="mr-2 h-4 w-4" />
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleSave}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Salvar
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={() => setIsEditing(true)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Basic Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <User className="mr-2 h-5 w-5" />
+                Informações Básicas
+              </CardTitle>
+              <CardDescription>
+                Dados pessoais e de identificação
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Nome</Label>
+                {isEditing ? (
+                  <Input
+                    id="name"
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                  />
+                ) : (
+                  <p className="text-sm">{user.name}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="nickname">Nickname</Label>
+                {isEditing ? (
+                  <Input
+                    id="nickname"
+                    value={editData.nickname}
+                    onChange={(e) => setEditData({ ...editData, nickname: e.target.value })}
+                  />
+                ) : (
+                  <p className="text-sm">{user.nickname}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                {isEditing ? (
+                  <Input
+                    id="email"
+                    type="email"
+                    value={editData.email}
+                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                  />
+                ) : (
+                  <p className="text-sm">{user.email}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="level">Level</Label>
+                {isEditing ? (
+                  <Input
+                    id="level"
+                    type="number"
+                    min="1"
+                    max="85"
+                    value={editData.lvl}
+                    onChange={(e) => setEditData({ ...editData, lvl: parseInt(e.target.value) || 1 })}
+                  />
+                ) : (
+                  <p className="text-sm">Level {user.lvl}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* System Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Shield className="mr-2 h-5 w-5" />
+                Informações do Sistema
+              </CardTitle>
+              <CardDescription>
+                Configurações de acesso e status
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="role">Função</Label>
+                {isEditing ? (
+                  <Select
+                    value={editData.role}
+                    onValueChange={(value: 'ADMIN' | 'PLAYER') => 
+                      setEditData({ ...editData, role: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PLAYER">Jogador</SelectItem>
+                      <SelectItem value="ADMIN">Administrador</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Badge variant={user.role === 'ADMIN' ? 'default' : 'secondary'}>
+                    {user.role === 'ADMIN' ? 'Administrador' : 'Jogador'}
+                  </Badge>
+                )}
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <Label htmlFor="active">Status Ativo</Label>
+                {isEditing ? (
+                  <Switch
+                    id="active"
+                    checked={editData.isActive}
+                    onCheckedChange={(checked) => 
+                      setEditData({ ...editData, isActive: checked })
+                    }
+                  />
+                ) : (
+                  <Badge variant={user.isActive ? 'default' : 'secondary'}>
+                    {user.isActive ? 'Ativo' : 'Inativo'}
+                  </Badge>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Criado em</Label>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(user.createdAt).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Última atualização</Label>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(user.updatedAt).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Company Parties */}
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Building2 className="mr-2 h-5 w-5" />
+                Company Parties
+              </CardTitle>
+              <CardDescription>
+                Company Parties que este membro participa
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {user.companyParties && user.companyParties.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {user.companyParties.map((userCP) => (
+                    <Card key={userCP.id} className="border-dashed">
+                      <CardContent className="pt-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-medium">{userCP.companyParty?.name}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Entrou em {new Date(userCP.joinedAt).toLocaleDateString('pt-BR')}
+                            </p>
+                          </div>
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to={`/company-parties/${userCP.companyPartyId}`}>
+                              Ver CP
+                            </Link>
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Building2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">
+                    Este membro não participa de nenhuma Company Party
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </Layout>
+  );
+}
