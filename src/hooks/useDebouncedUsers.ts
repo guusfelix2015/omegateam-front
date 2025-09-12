@@ -14,7 +14,6 @@ export function useUsersWithFilters({
   currentPage,
   pageSize,
 }: UseUsersWithFiltersProps) {
-  // Build query object
   const query: UsersQuery = {
     page: currentPage,
     limit: pageSize,
@@ -32,7 +31,6 @@ export function useUsersWithFilters({
     query.isActive = false;
   }
 
-  // Use React Query
   const queryResult = useQuery({
     queryKey: ['users', query],
     queryFn: () => usersService.getAll(query),

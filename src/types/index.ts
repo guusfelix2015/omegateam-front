@@ -7,7 +7,7 @@ export interface User {
   avatar?: string;
   isActive: boolean;
   lvl: number;
-  role: 'ADMIN' | 'PLAYER';
+  role: 'ADMIN' | 'PLAYER' | 'CP_LEADER';
   createdAt: string;
   updatedAt: string;
   companyParties?: UserCompanyParty[];

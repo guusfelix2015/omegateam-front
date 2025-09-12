@@ -18,10 +18,10 @@ import { useClasses } from '../hooks/classes.hooks';
 const createMemberSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
   nickname: z.string().min(1, 'Nickname é obrigatório').max(50, 'Nickname muito longo'),
-  email: z.string().email('Email inválido'),
+  email: z.email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   lvl: z.number().min(1, 'Level mínimo é 1').max(85, 'Level máximo é 85'),
-  role: z.enum(['ADMIN', 'PLAYER']),
+  role: z.enum(['ADMIN', 'PLAYER', 'CP_LEADER']),
   isActive: z.boolean(),
   companyPartyId: z.string().optional(),
   classeId: z.string().optional(),
@@ -35,7 +35,7 @@ export default function CreateMember() {
   const createUserMutation = useCreateUser();
   const addPlayerToPartyMutation = useAddPlayerToParty();
   const { data: companyParties, isLoading: loadingCPs, error: cpError } = useCompanyParties();
-  const { data: classes, isLoading: loadingClasses, error: classesError } = useClasses();
+  const { data: classes, isLoading: loadingClasses } = useClasses();
 
   const {
     register,
@@ -63,10 +63,8 @@ export default function CreateMember() {
 
   const onSubmit = async (data: CreateMemberForm) => {
     try {
-      // Create the user first
       const newUser = await createUserMutation.mutateAsync(data);
 
-      // If a Company Party was selected, add the user to it
       if (data.companyPartyId && data.companyPartyId !== '') {
         try {
           await addPlayerToPartyMutation.mutateAsync({
@@ -75,7 +73,6 @@ export default function CreateMember() {
           });
         } catch (cpError) {
           console.warn('Failed to add user to Company Party:', cpError);
-          // Don't fail the entire operation if CP addition fails
         }
       }
 
@@ -100,7 +97,6 @@ export default function CreateMember() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="sm" asChild>
             <Link to="/members">
@@ -116,7 +112,6 @@ export default function CreateMember() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Basic Information */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -195,7 +190,6 @@ export default function CreateMember() {
               </CardContent>
             </Card>
 
-            {/* System Configuration */}
             <Card>
               <CardHeader>
                 <CardTitle>Configurações do Sistema</CardTitle>
@@ -208,13 +202,14 @@ export default function CreateMember() {
                   <Label htmlFor="role">Função</Label>
                   <Select
                     value={watchedRole}
-                    onValueChange={(value: 'ADMIN' | 'PLAYER') => setValue('role', value)}
+                    onValueChange={(value: 'ADMIN' | 'PLAYER' | 'CP_LEADER') => setValue('role', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma função" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="PLAYER">Jogador</SelectItem>
+                      <SelectItem value="CP_LEADER">Líder de CP</SelectItem>
                       <SelectItem value="ADMIN">Administrador</SelectItem>
                     </SelectContent>
                   </Select>
@@ -223,7 +218,6 @@ export default function CreateMember() {
                   )}
                 </div>
 
-                {/* Company Party Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="companyPartyId">Company Party (opcional)</Label>
                   <Select
@@ -268,7 +262,6 @@ export default function CreateMember() {
                   </p>
                 </div>
 
-                {/* Classe Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="classe">Classe (Opcional)</Label>
                   <Select
@@ -330,15 +323,21 @@ export default function CreateMember() {
                   />
                 </div>
 
-                {/* Role Description */}
                 <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">
-                    {watchedRole === 'ADMIN' ? 'Administrador' : 'Jogador'}
+                    {watchedRole === 'ADMIN'
+                      ? 'Administrador'
+                      : watchedRole === 'CP_LEADER'
+                        ? 'Líder de CP'
+                        : 'Jogador'
+                    }
                   </h4>
                   <p className="text-sm text-muted-foreground">
                     {watchedRole === 'ADMIN'
                       ? 'Acesso completo ao sistema, pode gerenciar membros, Company Parties e configurações.'
-                      : 'Acesso limitado ao sistema, pode visualizar informações e participar de Company Parties.'
+                      : watchedRole === 'CP_LEADER'
+                        ? 'Pode liderar Company Parties, gerenciar membros da sua CP e visualizar informações do sistema.'
+                        : 'Acesso limitado ao sistema, pode visualizar informações e participar de Company Parties.'
                     }
                   </p>
                 </div>
@@ -346,7 +345,6 @@ export default function CreateMember() {
             </Card>
           </div>
 
-          {/* Actions */}
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" asChild>
               <Link to="/members">Cancelar</Link>

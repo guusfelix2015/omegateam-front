@@ -13,28 +13,19 @@ export const useLogin = () => {
     onSuccess: async (data) => {
       console.log('Login successful, token received:', data.token);
 
-      // Store token
       authService.setToken(data.token);
 
-      // Fetch user data immediately and cache it
       try {
-        console.log('Fetching user data...');
         const user = await authService.getCurrentUser();
-        console.log('User data fetched:', user);
 
-        // Set the data directly and invalidate to trigger refetch
         queryClient.setQueryData(['auth', 'user'], user);
         await queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
 
-        console.log('User data cached and queries invalidated');
       } catch (error) {
-        console.error('Failed to fetch user data:', error);
-        // If user fetch fails, remove the token
         authService.removeToken();
         throw error;
       }
 
-      // Show success message
       toast({
         title: "Login realizado com sucesso!",
         description: data.message || "Login realizado com sucesso!",
@@ -57,18 +48,14 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      // Clear local data immediately
       authService.removeToken();
 
-      // Clear all cached data immediately
       queryClient.clear();
 
-      // Try to call server logout (but don't wait for it)
       try {
         await authService.logout();
       } catch (error) {
-        // Ignore server logout errors since we already cleared local data
-        console.warn('Server logout failed, but local data cleared:', error);
+        console.error('Error logging out:', error);
       }
     },
     onSuccess: () => {
@@ -78,7 +65,6 @@ export const useLogout = () => {
       });
     },
     onError: () => {
-      // Ensure local data is cleared even if mutation fails
       authService.removeToken();
       queryClient.clear();
 
@@ -94,32 +80,43 @@ export const useCurrentUser = () => {
   const token = authService.getToken();
 
   return useQuery({
-    queryKey: ['auth', 'user', token], // Include token in query key for reactivity
+    queryKey: ['auth', 'user'],
     queryFn: () => authService.getCurrentUser(),
     enabled: !!token,
     retry: (failureCount, error: any) => {
-      // Don't retry if it's an auth error
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 401 || error?.response?.status === 404) {
         return false;
       }
       return failureCount < 2;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh
+    gcTime: 10 * 60 * 1000, // 10 minutes cache time
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists and is fresh
+    refetchOnReconnect: false,
+    networkMode: 'online', // Only fetch when online
   });
 };
 
 export const useAuthState = () => {
   const { data: user, isLoading, error } = useCurrentUser();
   const hasToken = !!authService.getToken();
-  const isAuthenticated = !!user && hasToken && !error;
+
+  const isAuthError = error?.response?.status === 401 || error?.response?.status === 404;
+  const isAuthenticated = !!user && hasToken && !error && !isAuthError;
+
+  if (isAuthError && hasToken) {
+    console.log('Invalid token detected, clearing...');
+    authService.removeToken();
+  }
 
   return {
-    user,
+    user: isAuthError ? undefined : user,
     isAuthenticated,
-    isLoading,
-    error,
+    isLoading: isAuthError ? false : isLoading,
+    error: isAuthError ? null : error,
     isAdmin: user?.role === 'ADMIN',
-    isPlayer: user?.role === 'PLAYER',
+    isPlayer: user?.role === 'PLAYER' || user?.role === 'CP_LEADER',
+    isCPLeader: user?.role === 'CP_LEADER',
   };
 };

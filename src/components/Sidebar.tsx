@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Users,
   Shield,
@@ -37,13 +37,11 @@ const navItems: NavItem[] = [
     name: 'Membros',
     href: '/members',
     icon: Users,
-    adminOnly: true,
   },
   {
     name: 'Company Parties',
     href: '/company-parties',
     icon: Building2,
-    adminOnly: true,
   },
   {
     name: 'Controle Administrativo',
@@ -68,15 +66,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
   const logoutMutation = useLogout();
 
   const handleLogout = () => {
-    // Execute logout mutation (fire and forget)
     logoutMutation.mutate();
 
-    // Immediately redirect to login page
     window.location.href = '/login';
   };
 
@@ -86,7 +81,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
         <div className={cn("flex items-center space-x-2", isCollapsed && "justify-center")}>
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -100,7 +94,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           )}
         </div>
 
-        {/* Desktop collapse button */}
         <Button
           variant="ghost"
           size="sm"
@@ -110,7 +103,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           <Menu className="h-4 w-4" />
         </Button>
 
-        {/* Mobile close button */}
         <Button
           variant="ghost"
           size="sm"
@@ -121,7 +113,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         </Button>
       </div>
 
-      {/* User Info */}
       {!isCollapsed && user && (
         <div className="p-4 border-b">
           <div className="flex items-center space-x-3">
@@ -138,7 +129,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         </div>
       )}
 
-      {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
         {filteredNavItems.map((item) => {
           const isActive = location.pathname === item.href ||
@@ -164,7 +154,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         })}
       </nav>
 
-      {/* Logout Button */}
       <div className="p-4 border-t">
         <Button
           variant="ghost"
@@ -184,7 +173,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
   return (
     <>
-      {/* Mobile Menu Button */}
       <Button
         variant="ghost"
         size="sm"
@@ -194,7 +182,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         <Menu className="h-6 w-6" />
       </Button>
 
-      {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/50 z-40"
@@ -202,7 +189,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         />
       )}
 
-      {/* Desktop Sidebar */}
       <aside className={cn(
         "hidden lg:flex flex-col bg-card border-r transition-all duration-300",
         isCollapsed ? "w-16" : "w-64",
@@ -211,7 +197,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         <SidebarContent />
       </aside>
 
-      {/* Mobile Sidebar */}
       <aside className={cn(
         "lg:hidden fixed left-0 top-0 z-50 h-full w-64 bg-card border-r transition-transform duration-300",
         isMobileOpen ? "translate-x-0" : "-translate-x-full"

@@ -11,12 +11,25 @@ export const ClassesListSchema = z.object({
   data: z.array(ClasseSchema),
 });
 
+// Company Party relation schema (for user's perspective)
+export const UserCompanyPartyRelationSchema = z.object({
+  id: z.string(),
+  companyPartyId: z.string(),
+  joinedAt: z.string(),
+  companyParty: z.object({
+    id: z.string(),
+    name: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+  }),
+});
+
 // User schemas
 export const UserSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   name: z.string(),
-  role: z.enum(['ADMIN', 'PLAYER']),
+  role: z.enum(['ADMIN', 'PLAYER', 'CP_LEADER']),
   createdAt: z.string(),
   updatedAt: z.string(),
   isActive: z.boolean(),
@@ -25,6 +38,7 @@ export const UserSchema = z.object({
   avatar: z.string().nullable().optional(),
   classeId: z.string().nullable().optional(),
   classe: ClasseSchema.nullable().optional(),
+  companyParties: z.array(UserCompanyPartyRelationSchema).optional(),
 });
 
 export const LoginRequestSchema = z.object({
@@ -67,7 +81,7 @@ export const CompanyPartySchema = z.object({
   updatedAt: z.string(),
   leader: UserSchema.optional(),
   members: z.array(UserSchema).optional(),
-  users: z.array(UserCompanyPartySchema).optional(), // For detailed view
+  users: z.array(UserSchema).optional(), // Flattened user objects for detailed view
 });
 
 export const CreateCompanyPartySchema = z.object({
@@ -82,18 +96,16 @@ export const AddPlayerToPartySchema = z.object({
   userId: z.string(),
 });
 
-// User creation schema
 export const CreateUserSchema = z.object({
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   name: z.string().min(1, 'Nome é obrigatório'),
   nickname: z.string().min(1, 'Nickname é obrigatório'),
-  role: z.enum(['ADMIN', 'PLAYER']).default('PLAYER'),
+  role: z.enum(['ADMIN', 'PLAYER', 'CP_LEADER']).default('PLAYER'),
   companyPartyId: z.string().optional(),
-  classeId: z.string().optional(), // Optional - user can set later
+  classeId: z.string().optional(),
 });
 
-// API Response wrapper
 export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
   z.object({
     success: z.boolean(),
@@ -107,7 +119,6 @@ export const ApiErrorSchema = z.object({
   message: z.string().optional(),
 });
 
-// Type exports
 export type User = z.infer<typeof UserSchema>;
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;

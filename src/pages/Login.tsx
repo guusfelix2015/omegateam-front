@@ -25,7 +25,6 @@ export default function Login() {
     resolver: zodResolver(LoginRequestSchema),
   });
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
       const from = location.state?.from?.pathname || '/';
@@ -33,10 +32,8 @@ export default function Login() {
     }
   }, [isAuthenticated, isLoading, navigate, location]);
 
-  // Monitor authentication state after login attempt
   useEffect(() => {
     if (loginSuccessRef.current && isAuthenticated && !isLoading) {
-      console.log('Login successful, redirecting...');
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
       loginSuccessRef.current = false;
@@ -45,19 +42,13 @@ export default function Login() {
 
   const onSubmit = async (data: LoginRequest) => {
     try {
-      console.log('Submitting login form...');
       loginSuccessRef.current = true;
       await loginMutation.mutateAsync(data);
-      console.log('Login mutation completed, waiting for auth state update...');
-
-      // Force a page reload to ensure clean state
       setTimeout(() => {
-        console.log('Forcing page reload to ensure clean auth state');
         window.location.href = '/';
       }, 1000);
-    } catch (error) {
+    } catch {
       loginSuccessRef.current = false;
-      console.error('Login error:', error);
     }
   };
 

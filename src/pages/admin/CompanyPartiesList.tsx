@@ -3,11 +3,13 @@ import { Plus, Users, Edit, Trash2, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { useCompanyParties, useDeleteCompanyParty } from '../../hooks/company-parties.hooks';
+import { useAuth } from '../../hooks/useAuth';
 import { Layout } from '../../components/Layout';
 
 export default function CompanyPartiesList() {
   const { data: companyParties, isLoading, error } = useCompanyParties();
   const deletePartyMutation = useDeleteCompanyParty();
+  const { isAdmin } = useAuth();
 
   const handleDelete = async (id: string, name: string) => {
     if (window.confirm(`Tem certeza que deseja excluir a Company Party "${name}"?`)) {
@@ -51,12 +53,14 @@ export default function CompanyPartiesList() {
               Gerencie todas as Company Parties do servidor
             </p>
           </div>
-          <Button asChild>
-            <Link to="/company-parties/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Company Party
-            </Link>
-          </Button>
+          {isAdmin && (
+            <Button asChild>
+              <Link to="/company-parties/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Nova Company Party
+              </Link>
+            </Button>
+          )}
         </div>
 
         {!companyParties || companyParties.length === 0 ? (
@@ -67,12 +71,14 @@ export default function CompanyPartiesList() {
               <p className="text-muted-foreground mb-4">
                 Comece criando sua primeira Company Party
               </p>
-              <Button asChild>
-                <Link to="/company-parties/new">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Criar Company Party
-                </Link>
-              </Button>
+              {isAdmin && (
+                <Button asChild>
+                  <Link to="/company-parties/new">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Criar Company Party
+                  </Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         ) : (
@@ -87,21 +93,23 @@ export default function CompanyPartiesList() {
                         {party.description || 'Sem descrição'}
                       </CardDescription>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link to={`/company-parties/${party.id}/edit`}>
-                          <Edit className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(party.id, party.name)}
-                        disabled={deletePartyMutation.isPending}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    {isAdmin && (
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" asChild>
+                          <Link to={`/company-parties/${party.id}/edit`}>
+                            <Edit className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(party.id, party.name)}
+                          disabled={deletePartyMutation.isPending}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent>

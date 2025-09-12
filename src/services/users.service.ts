@@ -6,7 +6,7 @@ export interface UsersQuery {
   limit?: number;
   search?: string;
   isActive?: boolean;
-  role?: 'ADMIN' | 'PLAYER';
+  role?: 'ADMIN' | 'PLAYER' | 'CP_LEADER';
   sortBy?: 'name' | 'email' | 'nickname' | 'lvl' | 'createdAt';
   sortOrder?: 'asc' | 'desc';
 }
@@ -39,7 +39,7 @@ export interface CreateUserData {
   avatar?: string;
   isActive?: boolean;
   lvl?: number;
-  role: 'ADMIN' | 'PLAYER';
+  role: 'ADMIN' | 'PLAYER' | 'CP_LEADER';
 }
 
 export interface UpdateUserData {
@@ -50,14 +50,13 @@ export interface UpdateUserData {
   avatar?: string;
   isActive?: boolean;
   lvl?: number;
-  role?: 'ADMIN' | 'PLAYER';
+  role?: 'ADMIN' | 'PLAYER' | 'CP_LEADER';
 }
 
 export const usersService = {
   async getAll(query: UsersQuery = {}): Promise<UsersResponse> {
     const params = new URLSearchParams();
 
-    // Add query parameters
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
     if (query.search) params.append('search', query.search);
@@ -68,7 +67,6 @@ export const usersService = {
 
     const response = await api.get(`/users?${params.toString()}`);
 
-    // Parse users data
     const users = response.data.data.map((user: User) => UserSchema.parse(user));
 
     return {

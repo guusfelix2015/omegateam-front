@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Save, X, User, Mail, Shield, Calendar, Building2 } from 'lucide-react';
+import { ArrowLeft, Edit, Save, X, User, Shield, Building2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -31,14 +31,13 @@ export default function MemberDetail() {
     nickname: '',
     email: '',
     lvl: 1,
-    role: 'PLAYER' as 'ADMIN' | 'PLAYER',
+    role: 'PLAYER' as 'ADMIN' | 'PLAYER' | 'CP_LEADER',
     isActive: true,
     companyPartyId: '',
   });
 
   React.useEffect(() => {
     if (user) {
-      // Get current company party ID
       const currentCP = user.companyParties?.[0]?.companyPartyId || '';
 
       setEditData({
@@ -57,7 +56,6 @@ export default function MemberDetail() {
     if (!user) return;
 
     try {
-      // Update basic user data
       await updateUserMutation.mutateAsync({
         id: user.id,
         data: {
@@ -70,12 +68,10 @@ export default function MemberDetail() {
         }
       });
 
-      // Handle Company Party changes
       const currentCP = user.companyParties?.[0]?.companyPartyId || '';
       const newCP = editData.companyPartyId;
 
       if (currentCP !== newCP) {
-        // Remove from current CP if exists
         if (currentCP) {
           await removePlayerFromPartyMutation.mutateAsync({
             partyId: currentCP,
@@ -83,7 +79,6 @@ export default function MemberDetail() {
           });
         }
 
-        // Add to new CP if selected
         if (newCP && newCP !== 'none') {
           await addPlayerToPartyMutation.mutateAsync({
             partyId: newCP,
@@ -98,8 +93,7 @@ export default function MemberDetail() {
       });
 
       setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating user:', error);
+    } catch {
       toast({
         title: "Erro ao atualizar usuário",
         description: "Ocorreu um erro ao salvar as alterações.",
@@ -156,7 +150,6 @@ export default function MemberDetail() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm" asChild>
@@ -195,7 +188,6 @@ export default function MemberDetail() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Basic Information */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -265,7 +257,6 @@ export default function MemberDetail() {
             </CardContent>
           </Card>
 
-          {/* System Information */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -282,7 +273,7 @@ export default function MemberDetail() {
                 {isEditing ? (
                   <Select
                     value={editData.role}
-                    onValueChange={(value: 'ADMIN' | 'PLAYER') =>
+                    onValueChange={(value: 'ADMIN' | 'PLAYER' | 'CP_LEADER') =>
                       setEditData({ ...editData, role: value })
                     }
                   >
@@ -291,12 +282,13 @@ export default function MemberDetail() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="PLAYER">Jogador</SelectItem>
+                      <SelectItem value="CP_LEADER">Líder de CP</SelectItem>
                       <SelectItem value="ADMIN">Administrador</SelectItem>
                     </SelectContent>
                   </Select>
                 ) : (
                   <Badge variant={user.role === 'ADMIN' ? 'default' : 'secondary'}>
-                    {user.role === 'ADMIN' ? 'Administrador' : 'Jogador'}
+                    {user.role === 'ADMIN' ? 'Administrador' : user.role === 'CP_LEADER' ? 'Líder de CP' : 'Jogador'}
                   </Badge>
                 )}
               </div>
@@ -318,7 +310,6 @@ export default function MemberDetail() {
                 )}
               </div>
 
-              {/* Company Party Selection */}
               <div className="space-y-2">
                 <Label htmlFor="companyParty">Company Party</Label>
                 {isEditing ? (
@@ -377,7 +368,6 @@ export default function MemberDetail() {
             </CardContent>
           </Card>
 
-          {/* Company Parties */}
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center">

@@ -21,8 +21,8 @@ export default function CompanyPartyDetail() {
   const deletePartyMutation = useDeleteCompanyParty();
   const removePlayerMutation = useRemovePlayerFromParty();
 
-  // Extract members from company party data
-  const members = companyParty?.users?.map(userCP => userCP.user) || [];
+  // Extract members from company party data (now flattened)
+  const members = companyParty?.users || [];
 
   const handleDeleteParty = async () => {
     if (!companyParty) return;

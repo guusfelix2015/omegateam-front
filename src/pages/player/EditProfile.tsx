@@ -24,7 +24,6 @@ import { useMe, useUpdateProfile } from '../../hooks/users.hooks';
 import { useClasses } from '../../hooks/classes.hooks';
 import { Layout } from '../../components/Layout';
 
-// Schema for profile update
 const updateProfileSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
   nickname: z.string().min(1, 'Nickname é obrigatório').max(50, 'Nickname muito longo'),
@@ -43,7 +42,7 @@ export const EditProfile: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'general' | 'security'>('general');
 
-  const profileUser = user; // Use only data from useMe hook
+  const profileUser = user;
 
   const {
     register,
@@ -105,7 +104,6 @@ export const EditProfile: React.FC = () => {
   return (
     <Layout>
       <div className="space-y-6 w-full">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
@@ -126,7 +124,6 @@ export const EditProfile: React.FC = () => {
           </div>
         </div>
 
-        {/* Profile Header Card */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-4">
@@ -157,7 +154,6 @@ export const EditProfile: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Tabs */}
         <div className="flex space-x-1 bg-muted p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('general')}
@@ -181,7 +177,6 @@ export const EditProfile: React.FC = () => {
           </button>
         </div>
 
-        {/* Tab Content */}
         {activeTab === 'general' && (
           <Card>
             <CardHeader>
@@ -239,7 +234,6 @@ export const EditProfile: React.FC = () => {
                     <Label htmlFor="classe">Classe</Label>
 
 
-                    {/* Only render Select when data is ready */}
                     {profileUser && classes ? (
                       <Controller
                         name="classeId"

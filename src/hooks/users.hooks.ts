@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersService, type UsersQuery, type CreateUserData, type UpdateUserData } from '../services/users.service';
 import { useToast } from './use-toast';
 import { type User } from '../types/api';
+import { useCurrentUser } from './auth.hooks';
 
 export const useUsers = (query: UsersQuery = {}) => {
   return useQuery({
@@ -40,7 +42,6 @@ export const useCreateUser = () => {
   return useMutation({
     mutationFn: (data: CreateUserData) => usersService.create(data),
     onSuccess: () => {
-      // Invalidate users list and stats
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
@@ -52,7 +53,6 @@ export const useUpdateUser = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateUserData }) => usersService.update(id, data),
     onSuccess: (_, { id }) => {
-      // Invalidate specific user and users list
       queryClient.invalidateQueries({ queryKey: ['users', id] });
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },
@@ -60,13 +60,7 @@ export const useUpdateUser = () => {
 };
 
 export const useMe = () => {
-  return useQuery({
-    queryKey: ['users', 'me'],
-    queryFn: () => usersService.getMe(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
-    retry: 2,
-  });
+  return useCurrentUser();
 };
 
 export const useUpdateProfile = () => {
@@ -76,11 +70,9 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: (data: Partial<User>) => usersService.updateProfile(data),
     onSuccess: (updatedUser) => {
-      // Update the cached user data
       queryClient.setQueryData(['users', 'me'], updatedUser);
       queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
 
-      // Also invalidate auth cache to ensure consistency
       queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
 
       toast({

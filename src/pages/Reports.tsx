@@ -1,4 +1,3 @@
-import React from 'react';
 import { BarChart3, TrendingUp, Users, Building2, Calendar, Download } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,7 +7,6 @@ export default function Reports() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold">Relatórios & Estatísticas</h1>
@@ -16,14 +14,13 @@ export default function Reports() {
               Análises detalhadas e insights do sistema
             </p>
           </div>
-          
+
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Exportar Dados
           </Button>
         </div>
 
-        {/* Key Metrics */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -38,7 +35,7 @@ export default function Reports() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Company Parties Ativas</CardTitle>
@@ -52,7 +49,7 @@ export default function Reports() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Taxa de Atividade</CardTitle>
@@ -66,7 +63,7 @@ export default function Reports() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Novos Membros</CardTitle>
@@ -81,7 +78,6 @@ export default function Reports() {
           </Card>
         </div>
 
-        {/* Report Categories */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
@@ -204,7 +200,6 @@ export default function Reports() {
           </Card>
         </div>
 
-        {/* Coming Soon Notice */}
         <Card className="border-dashed">
           <CardContent className="pt-6">
             <div className="text-center">

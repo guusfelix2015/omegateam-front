@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from '../lib/axios';
 import {
   LoginResponseSchema,
@@ -22,7 +23,6 @@ export const authService = {
     await api.post('/auth/logout');
   },
 
-  // Token management
   setToken(token: string): void {
     localStorage.setItem('token', token);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -37,11 +37,23 @@ export const authService = {
     delete api.defaults.headers.common['Authorization'];
   },
 
-  // Initialize auth state on app start
   initializeAuth(): void {
     const token = this.getToken();
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  },
+
+  async validateToken(): Promise<boolean> {
+    try {
+      await this.getCurrentUser();
+      return true;
+    } catch (error: any) {
+      if (error?.response?.status === 401 || error?.response?.status === 404) {
+        this.removeToken();
+        return false;
+      }
+      return false;
     }
   },
 };

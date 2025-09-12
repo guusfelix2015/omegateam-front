@@ -15,14 +15,12 @@ export default function Members() {
   const { isAdmin } = useAuth();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Filter states
   const [searchInput, setSearchInput] = useState(''); // Input value (not applied yet)
   const [appliedSearch, setAppliedSearch] = useState(''); // Applied search term
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9; // 3x3 grid
 
-  // Use users hook with applied filters
   const { data: usersResponse, isLoading, error } = useUsersWithFilters({
     search: appliedSearch,
     activeFilter,
@@ -35,30 +33,25 @@ export default function Members() {
   const users = usersResponse?.data || [];
   const pagination = usersResponse?.pagination;
 
-  // Handle search execution
   const handleSearch = useCallback(() => {
     setAppliedSearch(searchInput);
-    setCurrentPage(1); // Reset page when search changes
+    setCurrentPage(1);
   }, [searchInput]);
 
-  // Handle search input change
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchInput(value);
   }, []);
 
-  // Handle filter change
   const handleFilterChange = useCallback((filter: 'all' | 'active' | 'inactive') => {
     setActiveFilter(filter);
-    setCurrentPage(1); // Reset page when filter changes
+    setCurrentPage(1);
   }, []);
 
-  // Clear all filters
   const clearFilters = useCallback(() => {
     setSearchInput('');
     setAppliedSearch('');
     setActiveFilter('all');
     setCurrentPage(1);
-    // Focus back to search input
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 0);
@@ -97,7 +90,6 @@ export default function Members() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold">Membros</h1>
@@ -116,7 +108,6 @@ export default function Members() {
           )}
         </div>
 
-        {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex gap-2 flex-1">
             <SearchInput
@@ -173,7 +164,6 @@ export default function Members() {
           </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -228,7 +218,6 @@ export default function Members() {
           </Card>
         </div>
 
-        {/* Members List */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {users.map((user) => (
             <Link key={user.id} to={`/members/${user.id}`}>
@@ -272,7 +261,6 @@ export default function Members() {
           ))}
         </div>
 
-        {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
           <div className="flex justify-center">
             <Pagination>
@@ -307,7 +295,6 @@ export default function Members() {
           </div>
         )}
 
-        {/* Empty State */}
         {users.length === 0 && !isLoading && (
           <div className="text-center py-12">
             <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />

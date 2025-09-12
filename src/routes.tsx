@@ -42,11 +42,10 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  // Members routes
   {
     path: '/members',
     element: (
-      <ProtectedRoute requiredRole="ADMIN">
+      <ProtectedRoute>
         <Members />
       </ProtectedRoute>
     ),
@@ -62,16 +61,15 @@ export const router = createBrowserRouter([
   {
     path: '/members/:id',
     element: (
-      <ProtectedRoute requiredRole="ADMIN">
+      <ProtectedRoute>
         <MemberDetail />
       </ProtectedRoute>
     ),
   },
-  // Company Parties routes
   {
     path: '/company-parties',
     element: (
-      <ProtectedRoute requiredRole="ADMIN">
+      <ProtectedRoute>
         <CompanyPartiesList />
       </ProtectedRoute>
     ),
@@ -95,12 +93,11 @@ export const router = createBrowserRouter([
   {
     path: '/company-parties/:id',
     element: (
-      <ProtectedRoute requiredRole="ADMIN">
+      <ProtectedRoute>
         <CompanyPartyDetail />
       </ProtectedRoute>
     ),
   },
-  // Admin routes
   {
     path: '/admin',
     element: (
@@ -133,7 +130,6 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  // Reports routes
   {
     path: '/reports',
     element: (
@@ -142,7 +138,6 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  // Unauthorized page
   {
     path: '/unauthorized',
     element: (
