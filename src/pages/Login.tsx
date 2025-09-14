@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -16,6 +16,7 @@ export default function Login() {
   const { isAuthenticated, isLoading } = useAuth();
   const loginMutation = useLogin();
   const loginSuccessRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -41,14 +42,21 @@ export default function Login() {
   }, [isAuthenticated, isLoading, navigate, location]);
 
   const onSubmit = async (data: LoginRequest) => {
+    if (isSubmitting || loginMutation.isPending) {
+      return; // Evita múltiplas submissões
+    }
+
     try {
+      setIsSubmitting(true);
       loginSuccessRef.current = true;
       await loginMutation.mutateAsync(data);
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1000);
-    } catch {
+      // Remove o window.location.href que causa refresh da página
+      // A navegação já é tratada pelos useEffect acima
+    } catch (error) {
+      console.error('Login submission error:', error);
       loginSuccessRef.current = false;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -96,9 +104,9 @@ export default function Login() {
             <Button
               type="submit"
               className="w-full"
-              disabled={loginMutation.isPending}
+              disabled={loginMutation.isPending || isSubmitting}
             >
-              {loginMutation.isPending ? (
+              {(loginMutation.isPending || isSubmitting) ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Entrando...

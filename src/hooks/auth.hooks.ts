@@ -33,10 +33,17 @@ export const useLogin = () => {
     },
     onError: (error: any) => {
       console.error('Login error:', error);
+
+      // Garantir que o toast seja exibido mesmo em caso de erro
+      const errorMessage = error.response?.data?.message ||
+        error.message ||
+        "Credenciais inválidas";
+
       toast({
         title: "Erro no login",
-        description: error.response?.data?.message || "Credenciais inválidas",
+        description: errorMessage,
         variant: "destructive",
+        duration: 5000, // Garantir que o toast fique visível por 5 segundos
       });
     },
   });
