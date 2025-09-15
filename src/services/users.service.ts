@@ -104,4 +104,8 @@ export const usersService = {
     const response = await api.put('/users/profile', data);
     return UserSchema.parse(response.data);
   },
+
+  async delete(id: string): Promise<void> {
+    await api.delete(`/users/${id}`);
+  },
 };

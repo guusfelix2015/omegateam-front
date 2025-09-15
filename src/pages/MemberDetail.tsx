@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Save, X, User, Shield, Building2 } from 'lucide-react';
+import { ArrowLeft, Edit, Save, X, User, Shield, Building2, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -8,7 +8,7 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { useUser, useUpdateUser } from '../hooks/users.hooks';
+import { useUser, useUpdateUser, useDeleteUser } from '../hooks/users.hooks';
 import { useCompanyParties, useAddPlayerToParty, useRemovePlayerFromParty } from '../hooks/company-parties.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
@@ -17,11 +17,12 @@ import { Layout } from '../components/Layout';
 export default function MemberDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user: currentUser } = useAuth();
   const { toast } = useToast();
   const { data: user, isLoading, error } = useUser(id!);
   const { data: companyParties } = useCompanyParties();
   const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
   const addPlayerToPartyMutation = useAddPlayerToParty();
   const removePlayerFromPartyMutation = useRemovePlayerFromParty();
 
@@ -119,6 +120,31 @@ export default function MemberDetail() {
     setIsEditing(false);
   };
 
+  const handleDelete = async () => {
+    if (!user) return;
+
+    // Prevent user from deleting themselves
+    if (currentUser && currentUser.id === user.id) {
+      toast({
+        title: "Ação não permitida",
+        description: "Você não pode deletar sua própria conta.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const confirmMessage = `Tem certeza que deseja deletar o usuário "${user.name}"?\n\nEsta ação não pode ser desfeita.`;
+
+    if (window.confirm(confirmMessage)) {
+      try {
+        await deleteUserMutation.mutateAsync(user.id);
+        navigate('/members');
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -178,10 +204,19 @@ export default function MemberDetail() {
                   </Button>
                 </>
               ) : (
-                <Button onClick={() => setIsEditing(true)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Editar
-                </Button>
+                <>
+                  {/* Only show delete button if user is not viewing their own profile */}
+                  {currentUser && currentUser.id !== user.id && (
+                    <Button variant="destructive" onClick={handleDelete}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Deletar
+                    </Button>
+                  )}
+                  <Button onClick={() => setIsEditing(true)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Editar
+                  </Button>
+                </>
               )}
             </div>
           )}

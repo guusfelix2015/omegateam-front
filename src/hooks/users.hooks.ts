@@ -59,6 +59,31 @@ export const useUpdateUser = () => {
   });
 };
 
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: (id: string) => usersService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['users', 'stats'] });
+      toast({
+        title: "Usuário deletado!",
+        description: "O usuário foi removido com sucesso.",
+      });
+    },
+    onError: (error: any) => {
+      console.error('Error deleting user:', error);
+      toast({
+        title: "Erro ao deletar usuário",
+        description: error.response?.data?.error?.message || "Ocorreu um erro ao deletar o usuário.",
+        variant: "destructive",
+      });
+    },
+  });
+};
+
 export const useMe = () => {
   return useCurrentUser();
 };
