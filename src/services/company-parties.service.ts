@@ -15,7 +15,7 @@ export const companyPartiesService = {
       const parties = response.data?.data || response.data;
 
       if (!Array.isArray(parties)) {
-        console.warn('Company parties response is not an array:', parties);
+        console.warn('Cp response is not an array:', parties);
         return [];
       }
 
@@ -28,7 +28,7 @@ export const companyPartiesService = {
         }
       });
     } catch (error) {
-      console.error('Failed to fetch company parties:', error);
+      console.error('Failed to fetch cp:', error);
       return [];
     }
   },

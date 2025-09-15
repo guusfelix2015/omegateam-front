@@ -74,7 +74,7 @@ export default function CompanyPartyDetail() {
               Erro ao carregar Company Party: {partyError.message || 'Erro desconhecido'}
             </p>
             <Button variant="outline" onClick={() => navigate('/company-parties')}>
-              Voltar para Company Parties
+              Voltar para Cps
             </Button>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function CompanyPartyDetail() {
           <div className="text-center">
             <p className="text-destructive mb-4">Company Party não encontrada</p>
             <Button variant="outline" onClick={() => navigate('/company-parties')}>
-              Voltar para Company Parties
+              Voltar para Cps
             </Button>
           </div>
         </div>

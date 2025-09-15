@@ -23,7 +23,7 @@ export default function CompanyPartiesList() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex items-center space-x-2">
             <Loader2 className="h-6 w-6 animate-spin" />
-            <span>Carregando Company Parties...</span>
+            <span>Carregando clãs...</span>
           </div>
         </div>
       </Layout>
@@ -34,7 +34,7 @@ export default function CompanyPartiesList() {
     return (
       <Layout>
         <div className="text-center py-8">
-          <p className="text-red-500">Erro ao carregar Company Parties</p>
+          <p className="text-red-500">Erro ao carregar cps</p>
           <p className="text-sm text-muted-foreground mt-2">
             {error instanceof Error ? error.message : 'Erro desconhecido'}
           </p>
@@ -48,10 +48,7 @@ export default function CompanyPartiesList() {
       <div className="space-y-6">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Company Parties</h1>
-            <p className="text-muted-foreground">
-              Gerencie todas as Company Parties do servidor
-            </p>
+            <h1 className="text-3xl font-bold">Constant partys</h1>
           </div>
           {isAdmin && (
             <Button asChild>
@@ -67,7 +64,7 @@ export default function CompanyPartiesList() {
           <Card>
             <CardContent className="py-8 text-center">
               <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Nenhuma Company Party encontrada</h3>
+              <h3 className="text-lg font-semibold mb-2">Nenhum Cp encontrado</h3>
               <p className="text-muted-foreground mb-4">
                 Comece criando sua primeira Company Party
               </p>
@@ -75,7 +72,7 @@ export default function CompanyPartiesList() {
                 <Button asChild>
                   <Link to="/company-parties/new">
                     <Plus className="mr-2 h-4 w-4" />
-                    Criar Company Party
+                    Criar CP
                   </Link>
                 </Button>
               )}

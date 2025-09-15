@@ -334,10 +334,10 @@ export default function CreateMember() {
                   </h4>
                   <p className="text-sm text-muted-foreground">
                     {watchedRole === 'ADMIN'
-                      ? 'Acesso completo ao sistema, pode gerenciar membros, Company Parties e configurações.'
+                      ? 'Acesso completo ao sistema, pode gerenciar membro CP e configurações.'
                       : watchedRole === 'CP_LEADER'
-                        ? 'Pode liderar Company Parties, gerenciar membros da sua CP e visualizar informações do sistema.'
-                        : 'Acesso limitado ao sistema, pode visualizar informações e participar de Company Parties.'
+                        ? 'Pode liderar Cps, gerenciar membros da sua CP e visualizar informações do sistema.'
+                        : 'Acesso limitado ao sistema, pode visualizar informações e participar de Cps.'
                     }
                   </p>
                 </div>

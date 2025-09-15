@@ -42,15 +42,15 @@ export default function Admin() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Building2 className="mr-2 h-5 w-5" />
-                Company Parties
+                Cps
               </CardTitle>
               <CardDescription>
-                Gerencie Company Parties
+                Gerencie Cps
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Crie e administre todas as Company Parties do servidor.
+                Crie e administre todas as Cps do servidor.
               </p>
               <Button className="w-full" asChild>
                 <Link to="/company-parties">
@@ -159,7 +159,7 @@ export default function Admin() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Company Parties</CardTitle>
+              <CardTitle className="text-sm font-medium">Cps</CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>

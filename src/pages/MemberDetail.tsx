@@ -407,10 +407,10 @@ export default function MemberDetail() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Building2 className="mr-2 h-5 w-5" />
-                Company Parties
+                Cps
               </CardTitle>
               <CardDescription>
-                Company Parties que este membro participa
+                Cps que este membro participa
               </CardDescription>
             </CardHeader>
             <CardContent>

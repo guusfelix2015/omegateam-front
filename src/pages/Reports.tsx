@@ -38,11 +38,11 @@ export default function Reports() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Company Parties Ativas</CardTitle>
+              <CardTitle className="text-sm font-medium">CP Ativas</CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">-</div>
+              <div className="text-2xl font-bold">-</div>s
               <p className="text-xs text-muted-foreground">
                 <TrendingUp className="inline h-3 w-3 mr-1" />
                 +5% desde o último mês
@@ -103,10 +103,10 @@ export default function Reports() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Building2 className="mr-2 h-5 w-5" />
-                Relatório de Company Parties
+                Relatório de Cps
               </CardTitle>
               <CardDescription>
-                Performance das Company Parties
+                Performance das Cps
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -214,7 +214,7 @@ export default function Reports() {
                   <a href="/members">Ver Membros</a>
                 </Button>
                 <Button variant="outline" asChild>
-                  <a href="/company-parties">Ver Company Parties</a>
+                  <a href="/company-parties">Ver Cps</a>
                 </Button>
               </div>
             </div>

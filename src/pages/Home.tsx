@@ -30,7 +30,7 @@ export default function Home() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{companyParties?.length || 0}</div>
-                    <p className="text-xs text-muted-foreground">Company Parties ativas</p>
+                    <p className="text-xs text-muted-foreground">Cps ativas</p>
                   </CardContent>
                 </Card>
 

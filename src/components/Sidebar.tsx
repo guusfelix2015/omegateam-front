@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
     icon: Users,
   },
   {
-    name: 'Company Parties',
+    name: 'Cps',
     href: '/company-parties',
     icon: Building2,
   },
