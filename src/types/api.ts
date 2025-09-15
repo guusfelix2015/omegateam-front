@@ -86,7 +86,7 @@ export const CompanyPartySchema = z.object({
 
 export const CreateCompanyPartySchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  description: z.string().optional(),
+  description: z.string().min(1, 'Descrição é obrigatória'),
   maxMembers: z.number().min(1, 'Máximo de membros deve ser pelo menos 1').max(100, 'Máximo de 100 membros'),
 });
 
