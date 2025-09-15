@@ -79,7 +79,7 @@ export default function CreateMember() {
       toast({
         title: "Membro criado com sucesso!",
         description: data.companyPartyId
-          ? `${data.name} foi adicionado ao sistema e à Company Party.`
+          ? `${data.name} foi adicionado ao sistema e à Cp.`
           : `${data.name} foi adicionado ao sistema.`,
       });
 
