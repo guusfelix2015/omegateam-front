@@ -1,4 +1,4 @@
-import { useRef, memo, forwardRef } from 'react';
+import { memo, forwardRef } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from './ui/input';
 

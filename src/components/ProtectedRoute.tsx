@@ -32,6 +32,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   if (requiredRole && user?.role !== requiredRole) {
     if (requiredRole === 'PLAYER' && user?.role === 'CP_LEADER') {
+      // Allow CP_LEADER to access PLAYER routes
     } else {
       return <Navigate to="/unauthorized" replace />;
     }
