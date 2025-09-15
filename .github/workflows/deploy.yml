@@ -99,14 +99,6 @@ jobs:
           echo "Uploading docker-compose.production.yml to server..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" scp docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
 
-      - name: Upload Nginx Configuration
-        run: |
-          echo "Creating nginx directories on server..."
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_PATH }}/nginx/conf.d ${{ env.DEPLOY_PATH }}/nginx/ssl"
-          
-          echo "Uploading nginx configuration files..."
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -r nginx/ ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
-
       - name: Deploy with Docker
         env:
           DEPLOY_IMAGE: ${{ needs.build.outputs.image }}
@@ -129,16 +121,6 @@ jobs:
             echo "Pulling Docker image: $DEPLOY_IMAGE"
             docker pull "$DEPLOY_IMAGE"
 
-            echo "Setting up SSL certificates..."
-            if [ ! -f "nginx/ssl/fullchain.pem" ] || [ ! -f "nginx/ssl/privkey.pem" ]; then
-              echo "Generating self-signed SSL certificate for frontend..."
-              mkdir -p nginx/ssl
-              openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-                -keyout "nginx/ssl/privkey.pem" \
-                -out "nginx/ssl/fullchain.pem" \
-                -subj "/C=BR/ST=SP/L=SaoPaulo/O=OmegaTeam/CN=omegateam.com.br"
-            fi
-
             echo "Stopping existing containers..."
             docker-compose -f docker-compose.production.yml down || echo "No containers to stop"
 
@@ -146,22 +128,14 @@ jobs:
             docker-compose -f docker-compose.production.yml up -d frontend
 
             echo "Waiting for frontend to be ready..."
-            sleep 10
+            sleep 15
 
-            echo "Starting nginx proxy..."
-            docker-compose -f docker-compose.production.yml up -d nginx
+            echo "Restarting backend nginx to include frontend routes..."
+            cd /var/www/lineage-cp-backend
+            docker-compose -f docker-compose.production.yml restart nginx
 
             echo "Waiting for nginx to be ready..."
             sleep 10
-
-            echo "Testing nginx configuration..."
-            if docker exec lineage-frontend-nginx-prod nginx -t; then
-              echo "✅ Nginx configuration is valid"
-            else
-              echo "❌ Nginx configuration has errors"
-              docker logs lineage-frontend-nginx-prod --tail 20
-              exit 1
-            fi
 
             echo "Frontend deployment completed successfully"
           EOF
@@ -181,42 +155,40 @@ jobs:
             while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
               echo "Health check attempt $ATTEMPT/$MAX_ATTEMPTS..."
 
-              # Test HTTPS through nginx
-              if curl -k -f -s https://localhost/health >/dev/null 2>&1; then
-                echo "✅ Frontend HTTPS is working!"
-                curl -k -s https://localhost/health
-                echo "✅ Frontend is accessible through nginx proxy"
-                break
-              else
-                # If HTTPS fails, let's check what's happening
-                echo "HTTPS test failed, checking components..."
-                
-                # Check if nginx is responding at all
-                if curl -f -s http://localhost/ >/dev/null 2>&1; then
-                  echo "✅ Nginx is responding on HTTP"
-                else
-                  echo "❌ Nginx is not responding on HTTP"
-                fi
-                
-                # Check frontend container health
-                FRONTEND_HEALTH=$(docker inspect lineage-frontend-prod --format='{{.State.Health.Status}}' 2>/dev/null || echo "unknown")
-                echo "Frontend health status: $FRONTEND_HEALTH"
-                
-                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-                  echo "❌ Health check failed after $MAX_ATTEMPTS attempts"
-                  echo "Frontend logs:"
-                  docker logs lineage-frontend-prod --tail 20
-                  echo "Nginx logs:"
-                  docker logs lineage-frontend-nginx-prod --tail 20
-                  echo "Container status:"
-                  docker ps
-                  exit 1
-                fi
+              # Test frontend container health
+              FRONTEND_HEALTH=$(docker inspect lineage-frontend-prod --format='{{.State.Health.Status}}' 2>/dev/null || echo "unknown")
+              echo "Frontend health status: $FRONTEND_HEALTH"
 
-                echo "Waiting 5 seconds before next attempt..."
-                sleep 5
-                ATTEMPT=$((ATTEMPT + 1))
+              # Test frontend directly
+              if docker exec lineage-frontend-prod wget --no-verbose --tries=1 --spider http://localhost/health >/dev/null 2>&1; then
+                echo "✅ Frontend container is healthy!"
+
+                # Test through nginx proxy (API domain for now)
+                if curl -k -f -s https://localhost/ >/dev/null 2>&1; then
+                  echo "✅ Frontend is accessible through nginx proxy"
+                  echo "✅ Frontend deployment successful!"
+                  break
+                else
+                  echo "⚠️  Frontend container healthy but nginx proxy may need time"
+                fi
+              else
+                echo "Frontend container not ready yet..."
               fi
+
+              if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                echo "❌ Health check failed after $MAX_ATTEMPTS attempts"
+                echo "Frontend logs:"
+                docker logs lineage-frontend-prod --tail 20
+                echo "Backend nginx logs:"
+                docker logs lineage-nginx-prod --tail 20 || echo "Could not get nginx logs"
+                echo "Container status:"
+                docker ps
+                exit 1
+              fi
+
+              echo "Waiting 5 seconds before next attempt..."
+              sleep 5
+              ATTEMPT=$((ATTEMPT + 1))
             done
 
             echo "Frontend deployment completed successfully!"
