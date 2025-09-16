@@ -26,7 +26,7 @@ export const itemsService = {
   async getAll(params: GetItemsParams = {}): Promise<ItemsList> {
     try {
       const searchParams = new URLSearchParams();
-      
+
       if (params.page) searchParams.append('page', params.page.toString());
       if (params.limit) searchParams.append('limit', params.limit.toString());
       if (params.search) searchParams.append('search', params.search);
@@ -68,7 +68,8 @@ export const itemsService = {
   async create(data: CreateItem): Promise<Item> {
     try {
       const response = await api.post('/items', data);
-      return ItemSchema.parse(response.data);
+      // Backend returns { data: Item, message: string }
+      return ItemSchema.parse(response.data.data);
     } catch (error) {
       console.error('Failed to create item:', error);
       throw error;
@@ -78,7 +79,8 @@ export const itemsService = {
   async update(id: string, data: UpdateItem): Promise<Item> {
     try {
       const response = await api.put(`/items/${id}`, data);
-      return ItemSchema.parse(response.data);
+      // Backend returns { data: Item, message: string }
+      return ItemSchema.parse(response.data.data);
     } catch (error) {
       console.error('Failed to update item:', error);
       throw error;
