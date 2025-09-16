@@ -131,6 +131,75 @@ export type Classe = z.infer<typeof ClasseSchema>;
 export type ClassesList = z.infer<typeof ClassesListSchema>;
 export type CreateUser = z.infer<typeof CreateUserSchema>;
 
+// Item schemas
+export const ItemCategorySchema = z.enum([
+  'HELMET',
+  'ARMOR',
+  'PANTS',
+  'BOOTS',
+  'GLOVES',
+  'NECKLACE',
+  'EARRING',
+  'RING',
+  'SHIELD',
+  'WEAPON'
+]);
+
+export const ItemGradeSchema = z.enum(['D', 'C', 'B', 'A', 'S']);
+
+export const ItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: ItemCategorySchema,
+  grade: ItemGradeSchema,
+  valorGsInt: z.number(),
+  valorDkp: z.number(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const CreateItemSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+  category: ItemCategorySchema,
+  grade: ItemGradeSchema,
+  valorGsInt: z.number().min(0, 'Valor GS INT deve ser positivo'),
+  valorDkp: z.number().min(0, 'Valor DKP deve ser positivo'),
+});
+
+export const UpdateItemSchema = CreateItemSchema.partial();
+
+export const ItemsListSchema = z.object({
+  data: z.array(ItemSchema),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
+    totalPages: z.number(),
+    hasNext: z.boolean(),
+    hasPrev: z.boolean(),
+  }),
+});
+
+export const ItemStatsSchema = z.object({
+  total: z.number(),
+  byCategory: z.record(z.string(), z.number()),
+  byGrade: z.record(z.string(), z.number()),
+});
+
+export const LookupsSchema = z.object({
+  categories: z.array(z.string()),
+  grades: z.array(z.string()),
+});
+
+export type Item = z.infer<typeof ItemSchema>;
+export type ItemCategory = z.infer<typeof ItemCategorySchema>;
+export type ItemGrade = z.infer<typeof ItemGradeSchema>;
+export type CreateItem = z.infer<typeof CreateItemSchema>;
+export type UpdateItem = z.infer<typeof UpdateItemSchema>;
+export type ItemsList = z.infer<typeof ItemsListSchema>;
+export type ItemStats = z.infer<typeof ItemStatsSchema>;
+export type Lookups = z.infer<typeof LookupsSchema>;
+
 export type ApiResponse<T> = {
   success: boolean;
   data: T;

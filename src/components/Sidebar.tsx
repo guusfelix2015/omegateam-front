@@ -9,7 +9,8 @@ import {
   Menu,
   X,
   Home,
-  Building2
+  Building2,
+  Package
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -42,6 +43,12 @@ const navItems: NavItem[] = [
     name: 'Cps',
     href: '/company-parties',
     icon: Building2,
+  },
+  {
+    name: 'Itens',
+    href: '/admin/items',
+    icon: Package,
+    adminOnly: true,
   },
   {
     name: 'Controle Administrativo',

@@ -11,6 +11,8 @@ import CompanyPartyForm from './pages/admin/CompanyPartyForm';
 import CompanyPartyDetail from './pages/CompanyPartyDetail';
 import Profile from './pages/player/Profile';
 import { EditProfile } from './pages/player/EditProfile';
+import ItemsList from './pages/admin/ItemsList';
+import ItemForm from './pages/admin/ItemForm';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -135,6 +137,30 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requiredRole="ADMIN">
         <Reports />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/items',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <ItemsList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/items/new',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <ItemForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/items/:id/edit',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <ItemForm />
       </ProtectedRoute>
     ),
   },
