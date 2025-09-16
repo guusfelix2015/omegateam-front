@@ -46,9 +46,8 @@ const navItems: NavItem[] = [
   },
   {
     name: 'Itens',
-    href: '/admin/items',
+    href: '/items',
     icon: Package,
-    adminOnly: true,
   },
   {
     name: 'Controle Administrativo',

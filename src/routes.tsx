@@ -13,6 +13,7 @@ import Profile from './pages/player/Profile';
 import { EditProfile } from './pages/player/EditProfile';
 import ItemsList from './pages/admin/ItemsList';
 import ItemForm from './pages/admin/ItemForm';
+import ItemsView from './pages/ItemsView';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -97,6 +98,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <CompanyPartyDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/items',
+    element: (
+      <ProtectedRoute>
+        <ItemsView />
       </ProtectedRoute>
     ),
   },
