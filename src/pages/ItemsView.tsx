@@ -35,8 +35,8 @@ const GRADE_COLORS: Record<ItemGrade, string> = {
 
 export default function ItemsView() {
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<string>('');
-  const [grade, setGrade] = useState<string>('');
+  const [category, setCategory] = useState<string>('all');
+  const [grade, setGrade] = useState<string>('all');
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 500);
 
@@ -44,8 +44,8 @@ export default function ItemsView() {
     page,
     limit: 12,
     search: debouncedSearch,
-    category: category || undefined,
-    grade: grade || undefined,
+    category: category === 'all' ? undefined : category,
+    grade: grade === 'all' ? undefined : grade,
   });
 
   const { data: lookups } = useLookups();
@@ -53,8 +53,8 @@ export default function ItemsView() {
 
   const handleClearFilters = () => {
     setSearch('');
-    setCategory('');
-    setGrade('');
+    setCategory('all');
+    setGrade('all');
     setPage(1);
   };
 
@@ -132,7 +132,7 @@ export default function ItemsView() {
                   <SelectValue placeholder="Categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as categorias</SelectItem>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
                   {lookups?.categories.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {CATEGORY_LABELS[cat as ItemCategory]}
@@ -146,7 +146,7 @@ export default function ItemsView() {
                   <SelectValue placeholder="Grade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as grades</SelectItem>
+                  <SelectItem value="all">Todas as grades</SelectItem>
                   {lookups?.grades.map((gr) => (
                     <SelectItem key={gr} value={gr}>
                       Grade {gr}

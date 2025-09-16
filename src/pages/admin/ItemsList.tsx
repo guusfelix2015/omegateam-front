@@ -35,8 +35,8 @@ const GRADE_COLORS: Record<ItemGrade, string> = {
 
 export default function ItemsList() {
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<string>('');
-  const [grade, setGrade] = useState<string>('');
+  const [category, setCategory] = useState<string>('all');
+  const [grade, setGrade] = useState<string>('all');
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 500);
 
@@ -44,8 +44,8 @@ export default function ItemsList() {
     page,
     limit: 12,
     search: debouncedSearch,
-    category: category || undefined,
-    grade: grade || undefined,
+    category: category === 'all' ? undefined : category,
+    grade: grade === 'all' ? undefined : grade,
   });
 
   const { data: lookups } = useLookups();
@@ -60,8 +60,8 @@ export default function ItemsList() {
 
   const handleClearFilters = () => {
     setSearch('');
-    setCategory('');
-    setGrade('');
+    setCategory('all');
+    setGrade('all');
     setPage(1);
   };
 
@@ -133,13 +133,13 @@ export default function ItemsList() {
                   className="pl-10"
                 />
               </div>
-              
+
               <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger>
                   <SelectValue placeholder="Categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as categorias</SelectItem>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
                   {lookups?.categories.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {CATEGORY_LABELS[cat as ItemCategory]}
@@ -153,7 +153,7 @@ export default function ItemsList() {
                   <SelectValue placeholder="Grade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as grades</SelectItem>
+                  <SelectItem value="all">Todas as grades</SelectItem>
                   {lookups?.grades.map((gr) => (
                     <SelectItem key={gr} value={gr}>
                       Grade {gr}
@@ -188,7 +188,7 @@ export default function ItemsList() {
                         {CATEGORY_LABELS[item.category]}
                       </CardDescription>
                     </div>
-                    <Badge 
+                    <Badge
                       className={`${GRADE_COLORS[item.grade]} text-white`}
                     >
                       {item.grade}
@@ -206,7 +206,7 @@ export default function ItemsList() {
                       <span className="font-medium">{item.valorDkp.toLocaleString()}</span>
                     </div>
                   </div>
-                  
+
                   {isAdmin && (
                     <div className="flex gap-2 mt-4">
                       <Button asChild variant="outline" size="sm" className="flex-1">
