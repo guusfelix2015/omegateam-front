@@ -41,6 +41,7 @@ export default function ItemForm() {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<CreateItem>({
     resolver: zodResolver(CreateItemSchema),
@@ -70,10 +71,12 @@ export default function ItemForm() {
     try {
       if (isEditing && id) {
         await updateItemMutation.mutateAsync({ id, data });
+        navigate('/admin/items');
       } else {
         await createItemMutation.mutateAsync(data);
+        // Limpar o formulário após criação bem-sucedida
+        reset();
       }
-      navigate('/admin/items');
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -219,12 +222,22 @@ export default function ItemForm() {
                   <Save className="mr-2 h-4 w-4" />
                   {isEditing ? 'Atualizar Item' : 'Criar Item'}
                 </Button>
+                {!isEditing && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => reset()}
+                    disabled={isSubmitting || createItemMutation.isPending}
+                  >
+                    Limpar
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/admin/items')}
                 >
-                  Cancelar
+                  {isEditing ? 'Cancelar' : 'Voltar'}
                 </Button>
               </div>
             </form>

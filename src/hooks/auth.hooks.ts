@@ -35,7 +35,8 @@ export const useLogin = () => {
       console.error('Login error:', error);
 
       // Garantir que o toast seja exibido mesmo em caso de erro
-      const errorMessage = error.response?.data?.message ||
+      const errorMessage = error.response?.data?.error?.message ||
+        error.response?.data?.message ||
         error.message ||
         "Credenciais inválidas";
 

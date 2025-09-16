@@ -63,7 +63,7 @@ export const useCreateItem = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao criar item",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },
@@ -75,7 +75,7 @@ export const useUpdateItem = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateItem }) => 
+    mutationFn: ({ id, data }: { id: string; data: UpdateItem }) =>
       itemsService.update(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
@@ -88,7 +88,7 @@ export const useUpdateItem = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao atualizar item",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },
@@ -111,7 +111,7 @@ export const useDeleteItem = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao excluir item",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },

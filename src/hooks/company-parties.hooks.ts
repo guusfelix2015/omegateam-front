@@ -45,7 +45,7 @@ export const useCreateCompanyParty = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao criar Company Party",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },
@@ -70,7 +70,7 @@ export const useUpdateCompanyParty = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao atualizar Company Party",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },
@@ -93,7 +93,7 @@ export const useDeleteCompanyParty = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao excluir Company Party",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },
@@ -119,7 +119,7 @@ export const useAddPlayerToParty = () => {
     onError: (error: any) => {
       toast({
         title: "Erro ao adicionar jogador",
-        description: error.response?.data?.message || "Erro interno do servidor",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
         variant: "destructive",
       });
     },

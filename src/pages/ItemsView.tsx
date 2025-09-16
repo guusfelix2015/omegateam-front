@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Loader2, Settings } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/pagination';
 import { useItems, useLookups } from '../hooks/items.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
@@ -26,11 +27,11 @@ const CATEGORY_LABELS: Record<ItemCategory, string> = {
 };
 
 const GRADE_COLORS: Record<ItemGrade, string> = {
-  D: 'bg-gray-500',
+  D: 'bg-blue-500',
   C: 'bg-green-500',
-  B: 'bg-blue-500',
-  A: 'bg-purple-500',
-  S: 'bg-red-500',
+  B: 'bg-red-500',
+  A: 'bg-gray-700',
+  S: 'bg-orange-500',
 };
 
 export default function ItemsView() {
@@ -50,6 +51,11 @@ export default function ItemsView() {
 
   const { data: lookups } = useLookups();
   const { isAdmin } = useAuth();
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, category, grade]);
 
   const handleClearFilters = () => {
     setSearch('');
@@ -175,26 +181,28 @@ export default function ItemsView() {
               <Card key={item.id} className="hover:shadow-md transition-shadow">
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       <CardTitle className="text-lg">{item.name}</CardTitle>
-                      <CardDescription>
-                        {CATEGORY_LABELS[item.category]}
-                      </CardDescription>
+                      <div className="flex gap-2">
+                        <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200">
+                          {CATEGORY_LABELS[item.category]}
+                        </Badge>
+                        <Badge
+                          className={`${GRADE_COLORS[item.grade]} text-white hover:opacity-90`}
+                        >
+                          Grade {item.grade}
+                        </Badge>
+                      </div>
                     </div>
-                    <Badge
-                      className={`${GRADE_COLORS[item.grade]} text-white`}
-                    >
-                      {item.grade}
-                    </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
+                    <div className="flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">GS INT:</span>
                       <span className="font-medium">{item.valorGsInt.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">DKP:</span>
                       <span className="font-medium">{item.valorDkp.toLocaleString()}</span>
                     </div>
@@ -207,24 +215,49 @@ export default function ItemsView() {
 
         {/* Paginação */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="flex justify-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setPage(page - 1)}
-              disabled={!pagination.hasPrev}
-            >
-              Anterior
-            </Button>
-            <span className="flex items-center px-4">
-              Página {pagination.page} de {pagination.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              onClick={() => setPage(page + 1)}
-              disabled={!pagination.hasNext}
-            >
-              Próxima
-            </Button>
+          <div className="flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setPage(Math.max(1, page - 1))}
+                    className={!pagination.hasPrev ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => {
+                  let pageNumber;
+                  if (pagination.totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else if (page <= 3) {
+                    pageNumber = i + 1;
+                  } else if (page >= pagination.totalPages - 2) {
+                    pageNumber = pagination.totalPages - 4 + i;
+                  } else {
+                    pageNumber = page - 2 + i;
+                  }
+
+                  return (
+                    <PaginationItem key={pageNumber}>
+                      <PaginationLink
+                        onClick={() => setPage(pageNumber)}
+                        isActive={page === pageNumber}
+                        className="cursor-pointer"
+                      >
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setPage(Math.min(pagination.totalPages, page + 1))}
+                    className={!pagination.hasNext ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         )}
       </div>

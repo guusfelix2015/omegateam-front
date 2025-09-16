@@ -109,7 +109,7 @@ export const useUpdateProfile = () => {
       console.error('Error updating profile:', error);
       toast({
         title: "Erro ao atualizar perfil",
-        description: error.response?.data?.message || "Ocorreu um erro ao atualizar suas informações.",
+        description: error.response?.data?.error?.message || error.response?.data?.message || "Ocorreu um erro ao atualizar suas informações.",
         variant: "destructive",
       });
     },
