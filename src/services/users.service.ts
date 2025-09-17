@@ -1,5 +1,5 @@
 import { api } from '../lib/axios';
-import { UserSchema, type User } from '../types/api';
+import { UserSchema, UpdateProfileSchema, type User, type UpdateProfile } from '../types/api';
 
 export interface UsersQuery {
   page?: number;
@@ -100,8 +100,9 @@ export const usersService = {
     return UserSchema.parse(response.data);
   },
 
-  async updateProfile(data: Partial<User>): Promise<User> {
-    const response = await api.put('/users/profile', data);
+  async updateProfile(data: UpdateProfile): Promise<User> {
+    const validatedData = UpdateProfileSchema.parse(data);
+    const response = await api.put('/users/profile', validatedData);
     return UserSchema.parse(response.data);
   },
 

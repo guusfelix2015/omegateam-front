@@ -37,6 +37,9 @@ export const UserSchema = z.object({
   nickname: z.string(),
   avatar: z.string().nullable().optional(),
   classeId: z.string().nullable().optional(),
+  ownedItemIds: z.array(z.string()).default([]),
+  gearScore: z.number().default(0),
+  bagUrl: z.string().nullable().optional(),
   classe: ClasseSchema.nullable().optional(),
   companyParties: z.array(UserCompanyPartyRelationSchema).optional(),
 });
@@ -106,6 +109,15 @@ export const CreateUserSchema = z.object({
   classeId: z.string().optional(),
 });
 
+export const UpdateProfileSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório').optional(),
+  nickname: z.string().min(1, 'Nickname é obrigatório').optional(),
+  avatar: z.string().url('URL inválida').nullable().optional(),
+  lvl: z.number().min(1).max(85).optional(),
+  classeId: z.string().nullable().optional(),
+  bagUrl: z.string().url('URL inválida').nullable().optional(),
+});
+
 export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
   z.object({
     success: z.boolean(),
@@ -130,6 +142,7 @@ export type ApiError = z.infer<typeof ApiErrorSchema>;
 export type Classe = z.infer<typeof ClasseSchema>;
 export type ClassesList = z.infer<typeof ClassesListSchema>;
 export type CreateUser = z.infer<typeof CreateUserSchema>;
+export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
 
 // Item schemas
 export const ItemCategorySchema = z.enum([
@@ -199,6 +212,20 @@ export type UpdateItem = z.infer<typeof UpdateItemSchema>;
 export type ItemsList = z.infer<typeof ItemsListSchema>;
 export type ItemStats = z.infer<typeof ItemStatsSchema>;
 export type Lookups = z.infer<typeof LookupsSchema>;
+
+// Gear Score schemas
+export const UpdateUserGearSchema = z.object({
+  ownedItemIds: z.array(z.string()),
+});
+
+export const UserGearResponseSchema = z.object({
+  ownedItemIds: z.array(z.string()),
+  gearScore: z.number(),
+  ownedItems: z.array(ItemSchema),
+});
+
+export type UpdateUserGear = z.infer<typeof UpdateUserGearSchema>;
+export type UserGearResponse = z.infer<typeof UserGearResponseSchema>;
 
 export type ApiResponse<T> = {
   success: boolean;

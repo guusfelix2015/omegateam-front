@@ -13,6 +13,7 @@ import { Button } from '../../components/ui/button';
 import { Label } from '../../components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { ClassBadge } from '../../components/ClassBadge';
+import { GearManager } from '../../components/GearManager';
 import { useMe } from '../../hooks/users.hooks';
 import { Layout } from '../../components/Layout';
 
@@ -182,23 +183,8 @@ export default function Profile() {
 
         {activeTab === 'items' && (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Items
-              </CardTitle>
-              <CardDescription>
-                Seus itens e equipamentos
-              </CardDescription>
-            </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">Em desenvolvimento</h3>
-                <p className="text-muted-foreground">
-                  A funcionalidade de items estará disponível em breve.
-                </p>
-              </div>
+              <GearManager />
             </CardContent>
           </Card>
         )}

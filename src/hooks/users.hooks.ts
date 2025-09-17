@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersService, type UsersQuery, type CreateUserData, type UpdateUserData } from '../services/users.service';
 import { useToast } from './use-toast';
-import { type User } from '../types/api';
+import { type UpdateProfile } from '../types/api';
 import { useCurrentUser } from './auth.hooks';
 
 export const useUsers = (query: UsersQuery = {}) => {
@@ -93,7 +93,7 @@ export const useUpdateProfile = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (data: Partial<User>) => usersService.updateProfile(data),
+    mutationFn: (data: UpdateProfile) => usersService.updateProfile(data),
     onSuccess: (updatedUser) => {
       queryClient.setQueryData(['users', 'me'], updatedUser);
       queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
