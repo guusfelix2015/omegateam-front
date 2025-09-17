@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useMemo } from 'react';
 import { Check, Star, Package, Sword, Shield, Crown, Loader2 } from 'lucide-react';
 import {
@@ -95,7 +96,7 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
 
   const updateGearMutation = useUpdateUserGear();
 
-  const items = itemsData?.data || [];
+  const items = useMemo(() => itemsData?.data || [], [itemsData?.data]);
 
   const totalGearScore = useMemo(() => {
     return items

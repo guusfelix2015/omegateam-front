@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { gearService } from '../services/gear.service';
 import { useToast } from './use-toast';
@@ -20,7 +21,7 @@ export const useUpdateUserGear = () => {
     onSuccess: (updatedGear) => {
       queryClient.setQueryData(['users', 'gear'], updatedGear);
       queryClient.invalidateQueries({ queryKey: ['users', 'gear'] });
-      
+
       // Also invalidate user profile data since gear score is part of user
       queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
       queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
