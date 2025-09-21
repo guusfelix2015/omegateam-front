@@ -39,6 +39,7 @@ export const UserSchema = z.object({
   classeId: z.string().nullable().optional(),
   ownedItemIds: z.array(z.string()).default([]),
   gearScore: z.number().default(0),
+  dkpPoints: z.number().default(0),
   bagUrl: z.string().nullable().optional(),
   classe: ClasseSchema.nullable().optional(),
   companyParties: z.array(UserCompanyPartyRelationSchema).optional(),
@@ -226,6 +227,158 @@ export const UserGearResponseSchema = z.object({
 
 export type UpdateUserGear = z.infer<typeof UpdateUserGearSchema>;
 export type UserGearResponse = z.infer<typeof UserGearResponseSchema>;
+
+// DKP schemas
+export const DkpTransactionTypeSchema = z.enum([
+  'RAID_REWARD',
+  'MANUAL_ADJUSTMENT',
+  'ITEM_PURCHASE',
+]);
+
+export const RaidSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  bossLevel: z.number(),
+  baseScore: z.number(),
+  isActive: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const CreateRaidSchema = z.object({
+  name: z.string(),
+  bossLevel: z.number(),
+  baseScore: z.number(),
+});
+
+export const UpdateRaidSchema = z.object({
+  name: z.string().optional(),
+  bossLevel: z.number().optional(),
+  baseScore: z.number().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export const RaidParticipantSchema = z.object({
+  id: z.string(),
+  raidInstanceId: z.string(),
+  userId: z.string(),
+  gearScoreAtTime: z.number(),
+  dkpAwarded: z.number(),
+  createdAt: z.string(),
+  user: z.object({
+    id: z.string(),
+    name: z.string(),
+    nickname: z.string(),
+    avatar: z.string().nullable(),
+  }).optional(),
+});
+
+export const RaidInstanceSchema = z.object({
+  id: z.string(),
+  raidId: z.string(),
+  completedAt: z.string(),
+  createdBy: z.string(),
+  notes: z.string().nullable(),
+  createdAt: z.string(),
+  raid: RaidSchema,
+  participants: z.array(RaidParticipantSchema),
+});
+
+export const CreateRaidInstanceSchema = z.object({
+  raidId: z.string(),
+  participantIds: z.array(z.string()),
+  notes: z.string().optional(),
+});
+
+export const DkpTransactionSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  type: DkpTransactionTypeSchema,
+  amount: z.number(),
+  reason: z.string(),
+  createdBy: z.string(),
+  raidInstanceId: z.string().nullable(),
+  createdAt: z.string(),
+  user: z.object({
+    id: z.string(),
+    name: z.string(),
+    nickname: z.string(),
+    avatar: z.string().nullable(),
+  }).optional(),
+  createdByUser: z.object({
+    id: z.string(),
+    name: z.string(),
+    nickname: z.string(),
+  }).optional(),
+  raidInstance: z.object({
+    id: z.string(),
+    completedAt: z.string(),
+    raid: z.object({
+      id: z.string(),
+      name: z.string(),
+      bossLevel: z.number(),
+    }),
+  }).nullable().optional(),
+});
+
+export const DkpAdjustmentSchema = z.object({
+  userId: z.string(),
+  amount: z.number(),
+  reason: z.string(),
+});
+
+export const DkpLeaderboardEntrySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  nickname: z.string(),
+  avatar: z.string().nullable(),
+  dkpPoints: z.number(),
+  gearScore: z.number(),
+  lvl: z.number(),
+  classe: z.object({
+    id: z.string(),
+    name: z.string(),
+  }).nullable(),
+});
+
+export const UserDkpSummarySchema = z.object({
+  userId: z.string(),
+  currentDkpPoints: z.number(),
+  totalEarned: z.number(),
+  totalSpent: z.number(),
+  totalRaidRewards: z.number(),
+  totalManualAdjustments: z.number(),
+  raidParticipations: z.number(),
+  lastActivity: z.string().nullable(),
+});
+
+export const DkpStatsSchema = z.object({
+  totalTransactions: z.number(),
+  totalDkpAwarded: z.number(),
+  totalDkpSpent: z.number(),
+  totalManualAdjustments: z.number(),
+  averageDkpPerUser: z.number(),
+  topDkpHolder: z.object({
+    id: z.string(),
+    name: z.string(),
+    nickname: z.string(),
+    dkpPoints: z.number(),
+  }).nullable(),
+});
+
+// DKP type exports
+export type DkpTransactionType = z.infer<typeof DkpTransactionTypeSchema>;
+export type Raid = z.infer<typeof RaidSchema>;
+export type CreateRaid = z.infer<typeof CreateRaidSchema>;
+export type UpdateRaid = z.infer<typeof UpdateRaidSchema>;
+export type RaidParticipant = z.infer<typeof RaidParticipantSchema>;
+export type RaidInstance = z.infer<typeof RaidInstanceSchema>;
+export type CreateRaidInstance = z.infer<typeof CreateRaidInstanceSchema>;
+export type DkpTransaction = z.infer<typeof DkpTransactionSchema>;
+export type DkpAdjustment = z.infer<typeof DkpAdjustmentSchema>;
+export type DkpLeaderboardEntry = z.infer<typeof DkpLeaderboardEntrySchema>;
+export type UserDkpSummary = z.infer<typeof UserDkpSummarySchema>;
+export type DkpStats = z.infer<typeof DkpStatsSchema>;
 
 export type ApiResponse<T> = {
   success: boolean;

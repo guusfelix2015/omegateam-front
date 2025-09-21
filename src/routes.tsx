@@ -14,6 +14,12 @@ import { EditProfile } from './pages/player/EditProfile';
 import ItemsList from './pages/admin/ItemsList';
 import ItemForm from './pages/admin/ItemForm';
 import ItemsView from './pages/ItemsView';
+import RaidsList from './pages/RaidsList';
+import RaidForm from './pages/RaidForm';
+import RaidDetail from './pages/RaidDetail';
+import RaidInstanceForm from './pages/RaidInstanceForm';
+import RaidInstanceDetail from './pages/RaidInstanceDetail';
+import RaidsDashboard from './pages/RaidsDashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -106,6 +112,62 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <ItemsView />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raids',
+    element: (
+      <ProtectedRoute>
+        <RaidsList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raids/dashboard',
+    element: (
+      <ProtectedRoute>
+        <RaidsDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raids/new',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <RaidForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raids/:id',
+    element: (
+      <ProtectedRoute>
+        <RaidDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raids/:id/edit',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <RaidForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raids/:raidId/instances/new',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <RaidInstanceForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/raid-instances/:id',
+    element: (
+      <ProtectedRoute>
+        <RaidInstanceDetail />
       </ProtectedRoute>
     ),
   },

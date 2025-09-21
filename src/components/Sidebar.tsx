@@ -10,7 +10,8 @@ import {
   X,
   Home,
   Building2,
-  Package
+  Package,
+  Swords
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -43,6 +44,11 @@ const navItems: NavItem[] = [
     name: 'Cps',
     href: '/company-parties',
     icon: Building2,
+  },
+  {
+    name: 'Raids',
+    href: '/raids',
+    icon: Swords,
   },
   {
     name: 'Itens',
