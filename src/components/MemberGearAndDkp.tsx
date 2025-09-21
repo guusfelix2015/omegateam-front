@@ -85,7 +85,7 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
       acc[item.category].push(item);
       return acc;
     }, {} as Record<string, typeof gear.ownedItems>);
-  }, [gear?.ownedItems]);
+  }, [gear]);
 
   if (gearLoading || dkpLoading) {
     return (

@@ -64,6 +64,7 @@ export default function RaidInstanceForm() {
         participantIds: selectedParticipants,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [raidId, selectedParticipants]);
 
   const onSubmit = async (data: RaidInstanceFormData) => {
