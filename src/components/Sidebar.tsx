@@ -11,7 +11,8 @@ import {
   Home,
   Building2,
   Package,
-  Swords
+  Swords,
+  Trophy
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -49,6 +50,11 @@ const navItems: NavItem[] = [
     name: 'Raids',
     href: '/raids',
     icon: Swords,
+  },
+  {
+    name: 'DKP',
+    href: '/dkp',
+    icon: Trophy,
   },
   {
     name: 'Itens',

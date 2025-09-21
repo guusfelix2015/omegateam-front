@@ -13,6 +13,7 @@ import { useCompanyParties, useAddPlayerToParty, useRemovePlayerFromParty } from
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { Layout } from '../components/Layout';
+import { MemberGearAndDkp } from '../components/MemberGearAndDkp';
 
 export default function MemberDetail() {
   const { id } = useParams<{ id: string }>();
@@ -447,6 +448,25 @@ export default function MemberDetail() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Gear and DKP Information */}
+        {isAdmin && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Gear e DKP</CardTitle>
+              <CardDescription>
+                Informações detalhadas sobre equipamentos e pontos DKP de {user.name}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MemberGearAndDkp
+                userId={user.id}
+                userName={user.name}
+                bagUrl={user.bagUrl}
+              />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </Layout>
   );

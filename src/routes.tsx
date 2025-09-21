@@ -20,6 +20,9 @@ import RaidDetail from './pages/RaidDetail';
 import RaidInstanceForm from './pages/RaidInstanceForm';
 import RaidInstanceDetail from './pages/RaidInstanceDetail';
 import RaidsDashboard from './pages/RaidsDashboard';
+import DkpDashboard from './pages/DkpDashboard';
+import DkpProfile from './pages/DkpProfile';
+import DkpAdmin from './pages/DkpAdmin';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -168,6 +171,30 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <RaidInstanceDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/dkp',
+    element: (
+      <ProtectedRoute>
+        <DkpDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/dkp/profile',
+    element: (
+      <ProtectedRoute>
+        <DkpProfile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/dkp/admin',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <DkpAdmin />
       </ProtectedRoute>
     ),
   },

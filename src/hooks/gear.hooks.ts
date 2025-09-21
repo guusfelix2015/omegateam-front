@@ -41,3 +41,13 @@ export const useUpdateUserGear = () => {
     },
   });
 };
+
+// Get specific user's gear (Admin only)
+export const useUserGearById = (userId: string) => {
+  return useQuery({
+    queryKey: ['users', userId, 'gear'],
+    queryFn: () => gearService.getUserGearById(userId),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};

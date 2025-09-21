@@ -12,4 +12,10 @@ export const gearService = {
     const response = await api.put('/users/profile/gear', validatedData);
     return UserGearResponseSchema.parse(response.data);
   },
+
+  // Get specific user's gear (ADMIN only)
+  async getUserGearById(userId: string): Promise<UserGearResponse> {
+    const response = await api.get(`/users/${userId}/gear`);
+    return UserGearResponseSchema.parse(response.data);
+  },
 };
