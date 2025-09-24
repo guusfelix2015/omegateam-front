@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -65,6 +65,17 @@ export default function DkpAdmin() {
 
   const watchedAmount = watch('amount');
 
+  useEffect(() => {
+    const currentAmount = Math.abs(watchedAmount || 0);
+    if (currentAmount > 0) {
+      if (adjustmentType === 'negative' && watchedAmount > 0) {
+        setValue('amount', -currentAmount);
+      } else if (adjustmentType === 'positive' && watchedAmount < 0) {
+        setValue('amount', currentAmount);
+      }
+    }
+  }, [adjustmentType, setValue, watchedAmount]);
+
   const handleUserSelect = (user: any) => {
     setSelectedUser(user);
     setValue('userId', user.id);
@@ -74,7 +85,13 @@ export default function DkpAdmin() {
   const handleAdjustmentTypeChange = (type: 'positive' | 'negative') => {
     setAdjustmentType(type);
     const currentAmount = Math.abs(watchedAmount || 0);
-    setValue('amount', type === 'positive' ? currentAmount : -currentAmount);
+
+    // Se for negativo, definir valor negativo; se for positivo, definir valor positivo
+    if (type === 'negative') {
+      setValue('amount', currentAmount > 0 ? -currentAmount : currentAmount);
+    } else {
+      setValue('amount', currentAmount < 0 ? Math.abs(currentAmount) : currentAmount);
+    }
   };
 
   const onSubmit = async (data: DkpAdjustmentFormData) => {
