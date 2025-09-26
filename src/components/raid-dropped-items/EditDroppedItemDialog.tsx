@@ -109,7 +109,7 @@ export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedI
       });
       onOpenChange(false);
     } catch (error) {
-      // Error is handled by the mutation hook
+      console.error('Error updating dropped item:', error);
     }
   };
 
