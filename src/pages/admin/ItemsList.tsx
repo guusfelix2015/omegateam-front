@@ -24,6 +24,7 @@ const CATEGORY_LABELS: Record<ItemCategory, string> = {
   RING: 'Anel',
   SHIELD: 'Escudo',
   WEAPON: 'Arma',
+  COMUM: 'Comum',
 };
 
 const GRADE_COLORS: Record<ItemGrade, string> = {

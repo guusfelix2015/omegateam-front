@@ -6,19 +6,33 @@ import {
   Trophy,
   Clock,
   Loader2,
-  Star
+  Star,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { useRaidInstance } from '../hooks/raids.hooks';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { useRaidInstance, useAddParticipant, useRemoveParticipant } from '../hooks/raids.hooks';
+import { useUsers } from '../hooks/users.hooks';
+import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
+import { DroppedItemsList } from '../components/raid-dropped-items/DroppedItemsList';
+import { useState } from 'react';
 
 export default function RaidInstanceDetail() {
   const { id } = useParams();
+  const { isAdmin } = useAuth();
+  const [selectedUserId, setSelectedUserId] = useState<string>('');
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const { data: instance, isLoading, error } = useRaidInstance(id || '');
+  const { data: usersData } = useUsers({ isActive: true, limit: 100 });
+  const addParticipantMutation = useAddParticipant();
+  const removeParticipantMutation = useRemoveParticipant();
 
   if (isLoading) {
     return (
@@ -51,6 +65,39 @@ export default function RaidInstanceDetail() {
       </Layout>
     );
   }
+
+  // Filter out users who are already participants
+  const availableUsers = usersData?.data?.filter(user =>
+    !instance.participants.some(participant => participant.userId === user.id)
+  ) || [];
+
+  const handleAddParticipant = async () => {
+    if (!selectedUserId || !id) return;
+
+    try {
+      await addParticipantMutation.mutateAsync({
+        raidInstanceId: id,
+        userId: selectedUserId,
+      });
+      setSelectedUserId('');
+      setIsAddDialogOpen(false);
+    } catch (error) {
+      console.error('Error adding participant:', error);
+    }
+  };
+
+  const handleRemoveParticipant = async (userId: string) => {
+    if (!id) return;
+
+    try {
+      await removeParticipantMutation.mutateAsync({
+        raidInstanceId: id,
+        userId,
+      });
+    } catch (error) {
+      console.error('Error removing participant:', error);
+    }
+  };
 
   const totalDkp = instance.participants.reduce((sum, p) => sum + p.dkpAwarded, 0);
   const averageDkp = instance.participants.length > 0 ? totalDkp / instance.participants.length : 0;
@@ -226,58 +273,128 @@ export default function RaidInstanceDetail() {
           )}
         </div>
 
-        {/* Participants List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Participantes ({instance.participants.length})</CardTitle>
-            <CardDescription>
-              Lista completa de jogadores que participaram desta execução
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {instance.participants
-                .sort((a, b) => b.dkpAwarded - a.dkpAwarded)
-                .map((participant, index) => (
-                  <div
-                    key={participant.id}
-                    className="flex items-center justify-between p-4 bg-muted rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full text-sm font-bold">
-                        {index + 1}
-                      </div>
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={participant.user?.avatar || undefined} />
-                        <AvatarFallback>
-                          {participant.user?.name.charAt(0) || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold">{participant.user?.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {participant.user?.nickname}
-                        </p>
-                      </div>
-                    </div>
+        {/* Dropped Items and Participants */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Dropped Items */}
+          <DroppedItemsList raidInstanceId={instance.id} />
 
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <p className="text-sm text-muted-foreground">Gear Score</p>
-                        <p className="font-semibold">{participant.gearScoreAtTime}</p>
+          {/* Participants List */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Participantes ({instance.participants.length})</CardTitle>
+                  <CardDescription>
+                    Lista completa de jogadores que participaram desta execução
+                  </CardDescription>
+                </div>
+                {isAdmin && availableUsers.length > 0 && (
+                  <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Adicionar
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Adicionar Participante</DialogTitle>
+                        <DialogDescription>
+                          Selecione um jogador para adicionar à esta raid instance.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-medium">Jogador</label>
+                          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione um jogador..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableUsers.map((user) => (
+                                <SelectItem key={user.id} value={user.id}>
+                                  {user.name} ({user.nickname})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsAddDialogOpen(false)}
+                          >
+                            Cancelar
+                          </Button>
+                          <Button
+                            onClick={handleAddParticipant}
+                            disabled={!selectedUserId || addParticipantMutation.isPending}
+                          >
+                            {addParticipantMutation.isPending ? 'Adicionando...' : 'Adicionar'}
+                          </Button>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-muted-foreground">DKP Recebido</p>
-                        <p className="text-lg font-bold text-yellow-600">
-                          {participant.dkpAwarded}
-                        </p>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {instance.participants
+                  .sort((a, b) => b.dkpAwarded - a.dkpAwarded)
+                  .map((participant, index) => (
+                    <div
+                      key={participant.id}
+                      className="flex items-center justify-between p-4 bg-muted rounded-lg"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full text-sm font-bold">
+                          {index + 1}
+                        </div>
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={participant.user?.avatar || undefined} />
+                          <AvatarFallback>
+                            {participant.user?.name.charAt(0) || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold">{participant.user?.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {participant.user?.nickname}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6">
+                        <div className="text-right">
+                          <p className="text-sm text-muted-foreground">Gear Score</p>
+                          <p className="font-semibold">{participant.gearScoreAtTime}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-muted-foreground">DKP Recebido</p>
+                          <p className="text-lg font-bold text-yellow-600">
+                            {participant.dkpAwarded}
+                          </p>
+                        </div>
+                        {isAdmin && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRemoveParticipant(participant.userId)}
+                            disabled={removeParticipantMutation.isPending}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </Layout>
   );

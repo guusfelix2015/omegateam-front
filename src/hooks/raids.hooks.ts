@@ -216,3 +216,51 @@ export const useDkpPreview = () => {
     },
   });
 };
+
+export const useAddParticipant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ raidInstanceId, userId }: { raidInstanceId: string; userId: string }) =>
+      raidService.addParticipant(raidInstanceId, userId),
+    onSuccess: (_, { raidInstanceId }) => {
+      queryClient.invalidateQueries({ queryKey: ['raid-instances', raidInstanceId] });
+      queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
+      toast({
+        title: 'Sucesso',
+        description: 'Participante adicionado com sucesso!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Erro',
+        description: error.response?.data?.error?.message || 'Erro ao adicionar participante',
+        variant: 'destructive',
+      });
+    },
+  });
+};
+
+export const useRemoveParticipant = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ raidInstanceId, userId }: { raidInstanceId: string; userId: string }) =>
+      raidService.removeParticipant(raidInstanceId, userId),
+    onSuccess: (_, { raidInstanceId }) => {
+      queryClient.invalidateQueries({ queryKey: ['raid-instances', raidInstanceId] });
+      queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
+      toast({
+        title: 'Sucesso',
+        description: 'Participante removido com sucesso!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Erro',
+        description: error.response?.data?.error?.message || 'Erro ao remover participante',
+        variant: 'destructive',
+      });
+    },
+  });
+};

@@ -14,6 +14,7 @@ import { EditProfile } from './pages/player/EditProfile';
 import ItemsList from './pages/admin/ItemsList';
 import ItemForm from './pages/admin/ItemForm';
 import ItemsView from './pages/ItemsView';
+import DroppedItemsPage from './pages/DroppedItemsPage';
 import RaidsList from './pages/RaidsList';
 import RaidForm from './pages/RaidForm';
 import RaidDetail from './pages/RaidDetail';
@@ -115,6 +116,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <ItemsView />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/dropped-items',
+    element: (
+      <ProtectedRoute>
+        <DroppedItemsPage />
       </ProtectedRoute>
     ),
   },

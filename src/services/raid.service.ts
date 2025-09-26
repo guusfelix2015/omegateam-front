@@ -193,4 +193,15 @@ export const raidService = {
     });
     return DkpPreviewSchema.parse(response.data);
   },
+
+  async addParticipant(raidInstanceId: string, userId: string): Promise<any> {
+    const response = await api.post(`/raid-instances/${raidInstanceId}/participants`, {
+      userId,
+    });
+    return response.data;
+  },
+
+  async removeParticipant(raidInstanceId: string, userId: string): Promise<void> {
+    await api.delete(`/raid-instances/${raidInstanceId}/participants/${userId}`);
+  },
 };

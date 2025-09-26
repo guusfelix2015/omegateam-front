@@ -156,7 +156,8 @@ export const ItemCategorySchema = z.enum([
   'EARRING',
   'RING',
   'SHIELD',
-  'WEAPON'
+  'WEAPON',
+  'COMUM'
 ]);
 
 export const ItemGradeSchema = z.enum(['D', 'C', 'B', 'A', 'S']);
@@ -290,6 +291,10 @@ export const CreateRaidInstanceSchema = z.object({
   notes: z.string().optional(),
 });
 
+export const AddParticipantSchema = z.object({
+  userId: z.string(),
+});
+
 export const DkpTransactionSchema = z.object({
   id: z.string(),
   userId: z.string(),
@@ -374,11 +379,71 @@ export type UpdateRaid = z.infer<typeof UpdateRaidSchema>;
 export type RaidParticipant = z.infer<typeof RaidParticipantSchema>;
 export type RaidInstance = z.infer<typeof RaidInstanceSchema>;
 export type CreateRaidInstance = z.infer<typeof CreateRaidInstanceSchema>;
+export type AddParticipant = z.infer<typeof AddParticipantSchema>;
 export type DkpTransaction = z.infer<typeof DkpTransactionSchema>;
 export type DkpAdjustment = z.infer<typeof DkpAdjustmentSchema>;
 export type DkpLeaderboardEntry = z.infer<typeof DkpLeaderboardEntrySchema>;
 export type UserDkpSummary = z.infer<typeof UserDkpSummarySchema>;
 export type DkpStats = z.infer<typeof DkpStatsSchema>;
+
+// Raid Dropped Item schemas
+export const RaidDroppedItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: ItemCategorySchema,
+  grade: ItemGradeSchema,
+  minDkpBid: z.number(),
+  raidInstanceId: z.string(),
+  droppedAt: z.string(),
+  createdBy: z.string(),
+  notes: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  raidInstance: z.object({
+    id: z.string(),
+    completedAt: z.string(),
+    raid: z.object({
+      id: z.string(),
+      name: z.string(),
+      bossLevel: z.number(),
+    }),
+  }).optional(),
+});
+
+export const CreateRaidDroppedItemSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+  category: ItemCategorySchema,
+  grade: ItemGradeSchema,
+  minDkpBid: z.number().min(0, 'Lance mínimo deve ser não-negativo'),
+  notes: z.string().optional(),
+});
+
+export const UpdateRaidDroppedItemSchema = CreateRaidDroppedItemSchema.partial();
+
+export const RaidDroppedItemsListSchema = z.object({
+  data: z.array(RaidDroppedItemSchema),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
+    totalPages: z.number(),
+    hasNext: z.boolean(),
+    hasPrev: z.boolean(),
+  }),
+});
+
+export const RaidDroppedItemStatsSchema = z.object({
+  total: z.number(),
+  totalByCategory: z.record(z.string(), z.number()),
+  totalByGrade: z.record(z.string(), z.number()),
+  averageMinDkpBid: z.number(),
+});
+
+export type RaidDroppedItem = z.infer<typeof RaidDroppedItemSchema>;
+export type CreateRaidDroppedItem = z.infer<typeof CreateRaidDroppedItemSchema>;
+export type UpdateRaidDroppedItem = z.infer<typeof UpdateRaidDroppedItemSchema>;
+export type RaidDroppedItemsList = z.infer<typeof RaidDroppedItemsListSchema>;
+export type RaidDroppedItemStats = z.infer<typeof RaidDroppedItemStatsSchema>;
 
 export type ApiResponse<T> = {
   success: boolean;

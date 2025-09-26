@@ -12,7 +12,8 @@ import {
   Building2,
   Package,
   Swords,
-  Trophy
+  Trophy,
+  Coins
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -60,6 +61,11 @@ const navItems: NavItem[] = [
     name: 'Itens',
     href: '/items',
     icon: Package,
+  },
+  {
+    name: 'Itens Dropados',
+    href: '/dropped-items',
+    icon: Coins,
   },
   {
     name: 'Controle Administrativo',
