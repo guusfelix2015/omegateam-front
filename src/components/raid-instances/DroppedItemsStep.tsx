@@ -26,15 +26,20 @@ interface DroppedItemsStepProps {
 }
 
 const CATEGORY_LABELS = {
-  WEAPON: 'Arma',
+  HELMET: 'Capacete',
   ARMOR: 'Armadura',
-  ACCESSORY: 'Acessório',
-  CONSUMABLE: 'Consumível',
-  MISC: 'Diversos',
+  PANTS: 'Calças',
+  BOOTS: 'Botas',
+  GLOVES: 'Luvas',
+  NECKLACE: 'Colar',
+  EARRING: 'Brinco',
+  RING: 'Anel',
+  SHIELD: 'Escudo',
+  WEAPON: 'Arma',
+  COMUM: 'Comum',
 };
 
 const GRADE_LABELS = {
-  NO_GRADE: 'Sem Grade',
   D: 'Grade D',
   C: 'Grade C',
   B: 'Grade B',
@@ -43,7 +48,6 @@ const GRADE_LABELS = {
 };
 
 const GRADE_COLORS = {
-  NO_GRADE: 'bg-gray-100 text-gray-800',
   D: 'bg-amber-100 text-amber-800',
   C: 'bg-green-100 text-green-800',
   B: 'bg-blue-100 text-blue-800',
