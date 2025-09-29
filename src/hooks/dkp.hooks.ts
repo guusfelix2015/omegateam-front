@@ -40,7 +40,7 @@ export function useMyDkpHistory(query: DkpHistoryQuery = {}) {
   });
 }
 
-// User DKP Summary (Admin only)
+// User DKP Summary (authenticated users)
 export function useUserDkpSummary(userId: string) {
   return useQuery({
     queryKey: ['dkp', 'user-summary', userId],
@@ -49,7 +49,7 @@ export function useUserDkpSummary(userId: string) {
   });
 }
 
-// User DKP History (Admin only)
+// User DKP History (authenticated users)
 export function useUserDkpHistory(userId: string, query: DkpHistoryQuery = {}) {
   return useQuery({
     queryKey: ['dkp', 'user-history', userId, query],

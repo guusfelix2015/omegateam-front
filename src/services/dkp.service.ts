@@ -105,7 +105,7 @@ export const dkpService = {
     return DkpTransactionSchema.parse(response.data);
   },
 
-  // Get specific user's DKP history (ADMIN only)
+  // Get specific user's DKP history (authenticated users)
   async getUserDkpHistory(userId: string, query: DkpHistoryQuery = {}): Promise<DkpHistoryResponse> {
     const params = new URLSearchParams();
     if (query.page) params.append('page', query.page.toString());
@@ -120,7 +120,7 @@ export const dkpService = {
     return DkpHistoryResponseSchema.parse(response.data);
   },
 
-  // Get specific user's DKP summary (ADMIN only)
+  // Get specific user's DKP summary (authenticated users)
   async getUserDkpSummary(userId: string): Promise<UserDkpSummary> {
     const response = await api.get(`/dkp/users/${userId}/summary`);
     return UserDkpSummarySchema.parse(response.data);

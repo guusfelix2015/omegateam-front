@@ -450,23 +450,22 @@ export default function MemberDetail() {
         </div>
 
         {/* Gear and DKP Information */}
-        {isAdmin && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Gear e DKP</CardTitle>
-              <CardDescription>
-                Informações detalhadas sobre equipamentos e pontos DKP de {user.name}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <MemberGearAndDkp
-                userId={user.id}
-                userName={user.name}
-                bagUrl={user.bagUrl}
-              />
-            </CardContent>
-          </Card>
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Gear e DKP</CardTitle>
+            <CardDescription>
+              Informações detalhadas sobre equipamentos e pontos DKP de {user.name}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MemberGearAndDkp
+              userId={user.id}
+              userName={user.name}
+              bagUrl={user.bagUrl}
+              isReadOnly={!isAdmin}
+            />
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );

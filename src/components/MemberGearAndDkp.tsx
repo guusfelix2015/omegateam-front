@@ -20,6 +20,7 @@ interface MemberGearAndDkpProps {
   userId: string;
   userName: string;
   bagUrl?: string | null;
+  isReadOnly?: boolean;
 }
 
 const getCategoryIcon = (category: string) => {
@@ -68,7 +69,8 @@ const getGradeColor = (grade: string) => {
 export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
   userId,
   userName,
-  bagUrl
+  bagUrl,
+  isReadOnly = false
 }) => {
   const { data: gear, isLoading: gearLoading, error: gearError } = useUserGearById(userId);
   const { data: dkpSummary, isLoading: dkpLoading, error: dkpError } = useUserDkpSummary(userId);
@@ -116,6 +118,7 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
 
   return (
     <div className="space-y-6">
+
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Resumo</TabsTrigger>

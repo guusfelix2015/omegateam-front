@@ -42,7 +42,7 @@ export const useUpdateUserGear = () => {
   });
 };
 
-// Get specific user's gear (Admin only)
+// Get specific user's gear (authenticated users)
 export const useUserGearById = (userId: string) => {
   return useQuery({
     queryKey: ['users', userId, 'gear'],

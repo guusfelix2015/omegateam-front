@@ -13,7 +13,7 @@ export const gearService = {
     return UserGearResponseSchema.parse(response.data);
   },
 
-  // Get specific user's gear (ADMIN only)
+  // Get specific user's gear (authenticated users)
   async getUserGearById(userId: string): Promise<UserGearResponse> {
     const response = await api.get(`/users/${userId}/gear`);
     return UserGearResponseSchema.parse(response.data);
