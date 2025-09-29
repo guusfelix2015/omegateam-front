@@ -1,0 +1,185 @@
+name: Deploy Frontend to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  NODE_VERSION: '20'
+  APP_NAME: 'lineage-cp-frontend'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: guusfelix2015/omegateam-front
+  DEPLOY_PATH: '/var/www/lineage-cp-frontend'
+
+jobs:
+  build:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Build application
+        run: npm run build
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Output image
+        id: image
+        run: echo "image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_OUTPUT
+
+  deploy:
+    name: Deploy to Production Server
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create Deployment Directory
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_PATH }}"
+
+      - name: Upload Docker Compose File
+        run: |
+          echo "Uploading docker-compose.production.yml to server..."
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_PATH }}/
+
+      - name: Deploy with Docker
+        env:
+          DEPLOY_IMAGE: ${{ needs.build.outputs.image }}
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            set -e
+
+            echo "Starting Frontend deployment..."
+
+            cd ${{ env.DEPLOY_PATH }}
+
+            if [ ! -f "docker-compose.production.yml" ]; then
+              echo "Error: docker-compose.production.yml not found in ${{ env.DEPLOY_PATH }}"
+              exit 1
+            fi
+
+            # Set environment variables for Docker Compose
+            export DEPLOY_IMAGE="${{ env.DEPLOY_IMAGE }}"
+
+            echo "Pulling Docker image: $DEPLOY_IMAGE"
+            docker pull "$DEPLOY_IMAGE"
+
+            echo "Stopping existing containers..."
+            docker-compose -f docker-compose.production.yml down || echo "No containers to stop"
+
+            echo "Starting frontend application..."
+            docker-compose -f docker-compose.production.yml up -d frontend
+
+            echo "Waiting for frontend to be ready..."
+            sleep 15
+
+            echo "Restarting backend nginx to include frontend routes..."
+            cd /var/www/lineage-cp-backend
+
+            # Check if nginx container exists and restart it
+            if docker ps -a | grep -q lineage-nginx-prod; then
+              echo "Restarting nginx container..."
+              docker restart lineage-nginx-prod
+            else
+              echo "Nginx container not found, starting it..."
+              docker-compose -f docker-compose.production.yml up -d nginx
+            fi
+
+            echo "Waiting for nginx to be ready..."
+            sleep 10
+
+            echo "Frontend deployment completed successfully"
+          EOF
+
+      - name: Health Check
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            set -e
+
+            echo "Verifying frontend deployment..."
+            sleep 10
+
+            # Check if container is running
+            if docker ps | grep -q lineage-frontend-prod; then
+              echo "✅ Frontend container is running"
+
+              # Test basic nginx functionality
+              if docker exec lineage-frontend-prod nginx -t >/dev/null 2>&1; then
+                echo "✅ Frontend nginx configuration is valid"
+                echo "✅ Frontend deployment successful!"
+              else
+                echo "⚠️  Frontend nginx configuration has issues, but container is running"
+                docker logs lineage-frontend-prod --tail 10
+              fi
+            else
+              echo "❌ Frontend container is not running"
+              echo "Container status:"
+              docker ps
+              echo "Frontend logs:"
+              docker logs lineage-frontend-prod --tail 20 || echo "Could not get frontend logs"
+              exit 1
+            fi
+          EOF
+
+      - name: Deployment Summary
+        run: |
+          echo "🎉 Frontend deployment completed!"
+          echo "🌐 Frontend URL: https://omegateam.com.br"
+          echo "🏥 Health Check: https://omegateam.com.br/health"
