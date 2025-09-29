@@ -68,7 +68,6 @@ const navItems: NavItem[] = [
     name: 'Itens Dropados',
     href: '/dropped-items',
     icon: Coins,
-    adminOrLeaderOnly: true,
   },
   {
     name: 'Controle Administrativo',

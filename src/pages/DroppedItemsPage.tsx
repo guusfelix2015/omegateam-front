@@ -11,7 +11,8 @@ import {
   Package,
   Loader2,
   ExternalLink,
-  X
+  X,
+  AlertCircle
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -26,6 +27,7 @@ import {
 } from '../components/ui/select';
 import { Layout } from '../components/Layout';
 import { useRaidDroppedItems, useRaidDroppedItemStats } from '../hooks/raid-dropped-items.hooks';
+import { useAuth } from '../hooks/useAuth';
 import type { ItemCategory, ItemGrade } from '../types/api';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -52,6 +54,7 @@ const GRADE_COLORS: Record<string, string> = {
 
 export default function DroppedItemsPage() {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedGrade, setSelectedGrade] = useState<string>('ALL');
@@ -126,6 +129,16 @@ export default function DroppedItemsPage() {
             Todos os itens dropados em raids da CP
           </p>
         </div>
+
+        {/* Read-only indicator for non-admin users */}
+        {!isAdmin && (
+          <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <AlertCircle className="h-4 w-4 text-blue-600" />
+            <span className="text-sm text-blue-700">
+              Visualização somente leitura - Apenas administradores podem gerenciar itens dropados
+            </span>
+          </div>
+        )}
 
         {/* Stats Cards */}
         {stats && !statsLoading && (
