@@ -6,11 +6,13 @@ import {
   CreateRaidSchema,
   UpdateRaidSchema,
   CreateRaidInstanceSchema,
+  CreateRaidInstanceWithItemsSchema,
   type Raid,
   type RaidInstance,
   type CreateRaid,
   type UpdateRaid,
   type CreateRaidInstance,
+  type CreateRaidInstanceWithItems,
 } from '../types/api';
 import { z } from 'zod';
 
@@ -180,6 +182,12 @@ export const raidService = {
   async createRaidInstance(data: CreateRaidInstance): Promise<RaidInstance> {
     const validatedData = CreateRaidInstanceSchema.parse(data);
     const response = await api.post('/raid-instances', validatedData);
+    return RaidInstanceSchema.parse(response.data);
+  },
+
+  async createRaidInstanceWithItems(data: CreateRaidInstanceWithItems): Promise<RaidInstance> {
+    const validatedData = CreateRaidInstanceWithItemsSchema.parse(data);
+    const response = await api.post('/raid-instances/with-items', validatedData);
     return RaidInstanceSchema.parse(response.data);
   },
 

@@ -292,6 +292,21 @@ export const CreateRaidInstanceSchema = z.object({
   notes: z.string().optional(),
 });
 
+export const CreateRaidInstanceDroppedItemSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+  category: ItemCategorySchema,
+  grade: ItemGradeSchema,
+  minDkpBid: z.number().min(0, 'Lance mínimo deve ser não-negativo'),
+  notes: z.string().optional(),
+});
+
+export const CreateRaidInstanceWithItemsSchema = z.object({
+  raidId: z.string(),
+  participantIds: z.array(z.string()),
+  notes: z.string().optional(),
+  droppedItems: z.array(CreateRaidInstanceDroppedItemSchema).optional(),
+});
+
 export const AddParticipantSchema = z.object({
   userId: z.string(),
 });
@@ -380,6 +395,8 @@ export type UpdateRaid = z.infer<typeof UpdateRaidSchema>;
 export type RaidParticipant = z.infer<typeof RaidParticipantSchema>;
 export type RaidInstance = z.infer<typeof RaidInstanceSchema>;
 export type CreateRaidInstance = z.infer<typeof CreateRaidInstanceSchema>;
+export type CreateRaidInstanceDroppedItem = z.infer<typeof CreateRaidInstanceDroppedItemSchema>;
+export type CreateRaidInstanceWithItems = z.infer<typeof CreateRaidInstanceWithItemsSchema>;
 export type AddParticipant = z.infer<typeof AddParticipantSchema>;
 export type DkpTransaction = z.infer<typeof DkpTransactionSchema>;
 export type DkpAdjustment = z.infer<typeof DkpAdjustmentSchema>;

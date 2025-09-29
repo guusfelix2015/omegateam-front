@@ -6,7 +6,7 @@ import {
   type GetRaidsQuery,
   type GetRaidInstancesQuery,
 } from '../services/raid.service';
-import type { CreateRaid, CreateRaidInstance, UpdateRaid } from '@/types/api';
+import type { CreateRaid, CreateRaidInstance, CreateRaidInstanceWithItems, UpdateRaid } from '@/types/api';
 
 // Raid hooks
 export const useRaids = (query: GetRaidsQuery = {}) => {
@@ -169,6 +169,30 @@ export const useCreateRaidInstance = () => {
       toast({
         title: 'Sucesso',
         description: 'Instância de raid criada com sucesso!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Erro',
+        description: error.response?.data?.error?.message || 'Erro ao criar instância de raid',
+        variant: 'destructive',
+      });
+    },
+  });
+};
+
+export const useCreateRaidInstanceWithItems = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateRaidInstanceWithItems) => raidService.createRaidInstanceWithItems(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
+      queryClient.invalidateQueries({ queryKey: ['raids'] });
+      queryClient.invalidateQueries({ queryKey: ['raid-dropped-items'] });
+      toast({
+        title: 'Sucesso',
+        description: 'Instância de raid criada com sucesso com itens dropados!',
       });
     },
     onError: (error: any) => {
