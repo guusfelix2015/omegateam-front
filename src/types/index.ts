@@ -20,6 +20,7 @@ export interface CompanyParty {
   updatedAt: string;
   users?: UserCompanyParty[];
   playerCount?: number;
+  averageLevel?: number;
 }
 
 export interface UserCompanyParty {

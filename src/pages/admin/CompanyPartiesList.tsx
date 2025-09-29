@@ -111,11 +111,19 @@ export default function CompanyPartiesList() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Membros:</span>
-                      <span className="font-medium text-lg">
-                        {party.playerCount || party.currentMembers || 0}
-                      </span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Membros:</span>
+                        <span className="font-medium text-lg">
+                          {party.playerCount || party.currentMembers || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Level Médio:</span>
+                        <span className="font-medium text-lg text-blue-600">
+                          {party.averageLevel || 0}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex space-x-2">

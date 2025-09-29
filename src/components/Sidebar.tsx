@@ -29,6 +29,7 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   adminOnly?: boolean;
+  adminOrLeaderOnly?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -61,11 +62,13 @@ const navItems: NavItem[] = [
     name: 'Itens',
     href: '/items',
     icon: Package,
+    adminOrLeaderOnly: true,
   },
   {
     name: 'Itens Dropados',
     href: '/dropped-items',
     icon: Coins,
+    adminOrLeaderOnly: true,
   },
   {
     name: 'Controle Administrativo',
@@ -91,6 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
   const { user, isAdmin } = useAuth();
+  const isAdminOrLeader = isAdmin || user?.role === 'CP_LEADER';
   const logoutMutation = useLogout();
 
   const handleLogout = () => {
@@ -99,9 +103,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     window.location.href = '/login';
   };
 
-  const filteredNavItems = navItems.filter(item =>
-    !item.adminOnly || (item.adminOnly && isAdmin)
-  );
+  const filteredNavItems = navItems.filter(item => {
+    if (item.adminOnly) {
+      return isAdmin;
+    }
+    if (item.adminOrLeaderOnly) {
+      return isAdminOrLeader;
+    }
+    return true;
+  });
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">

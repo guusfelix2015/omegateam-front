@@ -79,6 +79,7 @@ export const CompanyPartySchema = z.object({
   leaderId: z.string().optional(),
   maxMembers: z.number().optional(),
   playerCount: z.number().optional(),
+  averageLevel: z.number().optional(),
   currentMembers: z.number().optional(), // Keep for backward compatibility
   isActive: z.boolean().optional(),
   createdAt: z.string(),

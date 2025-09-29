@@ -146,10 +146,19 @@ export default function CompanyPartyDetail() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-4">
               <div>
                 <p className="text-sm text-muted-foreground">Total de Membros</p>
                 <p className="text-2xl font-bold">{members?.length || 0}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Level Médio</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {members && members.length > 0
+                    ? Math.round(members.reduce((sum, member) => sum + member.lvl, 0) / members.length)
+                    : 0
+                  }
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Máximo de Membros</p>
