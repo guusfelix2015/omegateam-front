@@ -5,15 +5,18 @@ import { router } from './routes';
 import { Toaster } from './components/ui/toaster';
 import { queryClient } from './lib/query-client';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './components/theme-provider';
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-        <Toaster />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </AuthProvider>
+      <ThemeProvider defaultTheme="system" storageKey="omegateam-ui-theme">
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

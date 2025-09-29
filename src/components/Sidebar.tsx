@@ -19,6 +19,7 @@ import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
 import { useLogout } from '../hooks/auth.hooks';
 import { cn } from '../lib/utils';
+import { ThemeToggle } from './theme-toggle';
 
 interface SidebarProps {
   className?: string;
@@ -187,7 +188,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         })}
       </nav>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t space-y-2">
+        {/* Theme Toggle */}
+        <div className={cn(
+          "flex items-center",
+          isCollapsed ? "justify-center" : "justify-between"
+        )}>
+          {!isCollapsed && <span className="text-sm text-muted-foreground">Tema</span>}
+          <ThemeToggle />
+        </div>
+
+        {/* Logout Button */}
         <Button
           variant="ghost"
           onClick={handleLogout}
