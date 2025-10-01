@@ -13,7 +13,9 @@ import {
   Package,
   Swords,
   Trophy,
-  Coins
+  Coins,
+  Gavel,
+  Award
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -60,6 +62,33 @@ const navItems: NavItem[] = [
     icon: Trophy,
   },
   {
+    name: 'Leilões',
+    href: '/auctions',
+    icon: Gavel,
+  },
+  {
+    name: 'Leilão Ativo',
+    href: '/auctions/active',
+    icon: Gavel,
+  },
+  {
+    name: 'Meus Itens Ganhos',
+    href: '/auctions/my-won-items',
+    icon: Award,
+  },
+  {
+    name: 'Itens Leiloados',
+    href: '/auctions/auctioned-items',
+    icon: Coins,
+    adminOnly: true,
+  },
+  {
+    name: 'Relatórios & Analytics leilões',
+    href: '/auctions/analytics',
+    icon: BarChart3,
+    adminOnly: true,
+  },
+  {
     name: 'Itens',
     href: '/items',
     icon: Package,
@@ -74,12 +103,6 @@ const navItems: NavItem[] = [
     name: 'Controle Administrativo',
     href: '/admin',
     icon: Shield,
-    adminOnly: true,
-  },
-  {
-    name: 'Relatórios & Estatísticas',
-    href: '/reports',
-    icon: BarChart3,
     adminOnly: true,
   },
   {
@@ -165,8 +188,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       <nav className="flex-1 p-4 space-y-2">
         {filteredNavItems.map((item) => {
-          const isActive = location.pathname === item.href ||
-            (item.href !== '/' && location.pathname.startsWith(item.href));
+          // Exact match for most routes, but allow startsWith for parent routes
+          const isActive = location.pathname === item.href;
 
           return (
             <Link

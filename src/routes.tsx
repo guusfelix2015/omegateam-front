@@ -24,6 +24,13 @@ import RaidsDashboard from './pages/RaidsDashboard';
 import DkpDashboard from './pages/DkpDashboard';
 import DkpProfile from './pages/DkpProfile';
 import DkpAdmin from './pages/DkpAdmin';
+import AuctionCreate from './pages/AuctionCreate';
+import AuctionsList from './pages/AuctionsList';
+import AuctionDetail from './pages/AuctionDetail';
+import AuctionActive from './pages/AuctionActive';
+import MyWonItems from './pages/MyWonItems';
+import AuctionedItemsManagement from './pages/AuctionedItemsManagement';
+import AuctionAnalytics from './pages/AuctionAnalytics';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -204,6 +211,62 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requiredRole="ADMIN">
         <DkpAdmin />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions',
+    element: (
+      <ProtectedRoute>
+        <AuctionsList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions/create',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <AuctionCreate />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions/active',
+    element: (
+      <ProtectedRoute>
+        <AuctionActive />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions/my-won-items',
+    element: (
+      <ProtectedRoute>
+        <MyWonItems />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions/auctioned-items',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <AuctionedItemsManagement />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions/analytics',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <AuctionAnalytics />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/auctions/:id',
+    element: (
+      <ProtectedRoute>
+        <AuctionDetail />
       </ProtectedRoute>
     ),
   },

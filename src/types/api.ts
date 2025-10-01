@@ -411,6 +411,7 @@ export const RaidDroppedItemSchema = z.object({
   category: ItemCategorySchema,
   grade: ItemGradeSchema,
   minDkpBid: z.number(),
+  hasBeenAuctioned: z.boolean(),
   raidInstanceId: z.string(),
   droppedAt: z.string(),
   createdBy: z.string(),
@@ -426,6 +427,21 @@ export const RaidDroppedItemSchema = z.object({
       bossLevel: z.number(),
     }),
   }).optional(),
+  auctionItems: z.array(z.object({
+    id: z.string(),
+    status: z.enum(['WAITING', 'IN_AUCTION', 'SOLD', 'NO_BIDS', 'CANCELLED']),
+    currentBid: z.number().nullable(),
+    finishedAt: z.string().nullable(),
+    auction: z.object({
+      id: z.string(),
+      createdAt: z.string(),
+    }),
+    currentWinner: z.object({
+      id: z.string(),
+      name: z.string(),
+      nickname: z.string(),
+    }).nullable(),
+  })).optional(),
 });
 
 export const CreateRaidDroppedItemSchema = z.object({

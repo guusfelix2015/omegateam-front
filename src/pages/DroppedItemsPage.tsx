@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Coins,
   Search,
@@ -12,7 +11,9 @@ import {
   Loader2,
   ExternalLink,
   X,
-  AlertCircle
+  AlertCircle,
+  Gavel,
+  CheckCircle
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -28,7 +29,8 @@ import {
 import { Layout } from '../components/Layout';
 import { useRaidDroppedItems, useRaidDroppedItemStats } from '../hooks/raid-dropped-items.hooks';
 import { useAuth } from '../hooks/useAuth';
-import type { ItemCategory, ItemGrade } from '../types/api';
+import { CreateAuctionModal } from '../components/auction/CreateAuctionModal';
+import type { ItemCategory, ItemGrade, RaidDroppedItem } from '../types/api';
 
 const CATEGORY_LABELS: Record<string, string> = {
   HELMET: 'Capacete',
@@ -53,7 +55,6 @@ const GRADE_COLORS: Record<string, string> = {
 };
 
 export default function DroppedItemsPage() {
-  const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
@@ -61,6 +62,8 @@ export default function DroppedItemsPage() {
   const [sortBy, setSortBy] = useState<'droppedAt' | 'name' | 'minDkpBid'>('droppedAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showCreateAuctionModal, setShowCreateAuctionModal] = useState(false);
+  const [selectedItemForAuction, setSelectedItemForAuction] = useState<RaidDroppedItem | undefined>();
 
   const { data: droppedItemsData, isLoading, error } = useRaidDroppedItems({
     page: currentPage,
@@ -74,7 +77,12 @@ export default function DroppedItemsPage() {
   const { data: stats, isLoading: statsLoading } = useRaidDroppedItemStats();
 
   const handleItemClick = (item: any) => {
-    navigate(`/raid-instances/${item.raidInstanceId}`);
+    window.location.href = `/raid-instances/${item.raidInstanceId}`;
+  };
+
+  const handleCreateAuction = (item: RaidDroppedItem) => {
+    setSelectedItemForAuction(item);
+    setShowCreateAuctionModal(true);
   };
 
   const clearFilters = () => {
@@ -328,11 +336,13 @@ export default function DroppedItemsPage() {
                 {filteredItems.map((item) => (
                   <div
                     key={item.id}
-                    className="border rounded-lg p-4 hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => handleItemClick(item)}
+                    className={`border rounded-lg p-4 transition-colors ${item.hasBeenAuctioned ? 'bg-gray-50' : ''}`}
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
+                      <div
+                        className="flex-1 cursor-pointer hover:opacity-80"
+                        onClick={() => handleItemClick(item)}
+                      >
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-medium">{item.name}</h4>
                           <Badge variant="outline" className={`text-white ${GRADE_COLORS[item.grade]}`}>
@@ -341,6 +351,19 @@ export default function DroppedItemsPage() {
                           <Badge variant="secondary">
                             {CATEGORY_LABELS[item.category] || item.category}
                           </Badge>
+
+                          {/* Auction Status Badge */}
+                          {item.hasBeenAuctioned ? (
+                            <Badge className="bg-green-600 text-white">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              LEILOADO
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="border-blue-500 text-blue-600">
+                              Disponível para Leilão
+                            </Badge>
+                          )}
+
                           <ExternalLink className="h-4 w-4 text-muted-foreground" />
                         </div>
 
@@ -365,6 +388,21 @@ export default function DroppedItemsPage() {
                           </p>
                         )}
                       </div>
+
+                      {/* Create Auction Button */}
+                      {isAdmin && !item.hasBeenAuctioned && (
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCreateAuction(item);
+                          }}
+                          className="ml-4"
+                        >
+                          <Gavel className="h-4 w-4 mr-2" />
+                          Criar Leilão
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -396,6 +434,13 @@ export default function DroppedItemsPage() {
           </div>
         )}
       </div>
+
+      {/* Create Auction Modal */}
+      <CreateAuctionModal
+        open={showCreateAuctionModal}
+        onOpenChange={setShowCreateAuctionModal}
+        preSelectedItem={selectedItemForAuction}
+      />
     </Layout>
   );
 }
