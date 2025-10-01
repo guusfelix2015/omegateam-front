@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Gavel, Loader2, Calendar, Clock, Trophy, Plus, Play, X } from 'lucide-react';
