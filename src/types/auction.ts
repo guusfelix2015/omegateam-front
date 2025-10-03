@@ -102,6 +102,7 @@ export const auctionSchema = z.object({
   updatedAt: z.string(),
   creator: userSchema,
   items: z.array(auctionItemSchema),
+  serverTime: z.string().optional(), // Server timestamp for sync
 });
 
 // Pagination schema

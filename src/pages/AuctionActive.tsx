@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Gavel } from 'lucide-react';
 import { useActiveAuction, usePlaceBid, useStartAuction, useFinalizeAuctionItem } from '../hooks/auction.hooks';
 import { useAuth } from '@/hooks/useAuth';
@@ -7,33 +7,43 @@ import { Card } from '../components/ui/card';
 
 export default function AuctionActive() {
   const { isAdmin } = useAuth();
-  const { data: auction, isLoading, error } = useActiveAuction(3000); // Poll every 3 seconds
+  const { data: auction, isLoading, error } = useActiveAuction(); // Adaptive polling (3s → 1s in last 10s)
   const placeBidMutation = usePlaceBid();
   const startAuctionMutation = useStartAuction();
   const finalizeItemMutation = useFinalizeAuctionItem();
   const [bidAmount, setBidAmount] = useState<number>(0);
-  const [localTimer, setLocalTimer] = useState<number | null>(null);
+  const [localTimer, setLocalTimer] = useState<number>(0);
 
   // Get current item in auction
   const currentItem = auction?.items.find((item) => item.status === 'IN_AUCTION');
 
-  // Update local timer
-  useEffect(() => {
-    if (currentItem?.timeRemaining !== null && currentItem?.timeRemaining !== undefined) {
-      setLocalTimer(currentItem.timeRemaining);
-    }
-  }, [currentItem?.timeRemaining]);
+  // Calculate time remaining based on timestamp
+  const calculateTimeRemaining = useCallback(() => {
+    if (!currentItem?.startedAt || !auction?.defaultTimerSeconds) return 0;
 
-  // Countdown timer
-  useEffect(() => {
-    if (localTimer === null || localTimer <= 0) return;
+    const startTime = new Date(currentItem.startedAt).getTime();
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    const remaining = auction.defaultTimerSeconds - elapsed;
 
+    return Math.max(0, remaining);
+  }, [currentItem?.startedAt, auction?.defaultTimerSeconds]);
+
+  // Update timer local a cada 100ms para suavidade
+  useEffect(() => {
     const interval = setInterval(() => {
-      setLocalTimer((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
-    }, 1000);
+      setLocalTimer(calculateTimeRemaining());
+    }, 100);
 
     return () => clearInterval(interval);
-  }, [localTimer]);
+  }, [calculateTimeRemaining]);
+
+  // Sincronizar com servidor a cada polling
+  useEffect(() => {
+    if (currentItem) {
+      setLocalTimer(calculateTimeRemaining());
+    }
+  }, [currentItem, calculateTimeRemaining]);
 
   // Set initial bid amount when current item changes
   useEffect(() => {
@@ -201,9 +211,9 @@ export default function AuctionActive() {
                 {/* Timer */}
                 <div className="text-center">
                   <div className="text-4xl font-bold text-blue-600">
-                    {localTimer !== null ? localTimer : currentItem.timeRemaining || 0}s
+                    {localTimer}s
                   </div>
-                  <div className="text-sm text-gray-600">Time Remaining</div>
+                  <div className="text-sm text-gray-600">Tempo Restante</div>
                 </div>
               </div>
 

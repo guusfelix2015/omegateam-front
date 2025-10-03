@@ -48,14 +48,49 @@ export function useAuction(auctionId: string) {
   });
 }
 
-// Get active auction with polling
-export function useActiveAuction(pollingInterval: number = 3000) {
-  return useQuery<Auction | null>({
+// Helper function to calculate time remaining
+function calculateTimeRemaining(
+  startedAt: string | null,
+  defaultTimerSeconds: number
+): number {
+  if (!startedAt) return 0;
+
+  const startTime = new Date(startedAt).getTime();
+  const now = Date.now();
+  const elapsed = Math.floor((now - startTime) / 1000);
+  const remaining = defaultTimerSeconds - elapsed;
+
+  return Math.max(0, remaining);
+}
+
+// Get active auction with adaptive polling
+export function useActiveAuction() {
+  const query = useQuery<Auction | null>({
     queryKey: auctionKeys.active(),
     queryFn: () => auctionService.getActiveAuction(),
-    refetchInterval: pollingInterval,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) return 3000; // No active auction - poll every 3s
+
+      // Find current item in auction
+      const currentItem = data.items.find((item: any) => item.status === 'IN_AUCTION');
+      if (!currentItem || !currentItem.startedAt) return 3000;
+
+      // Calculate time remaining
+      const timeRemaining = calculateTimeRemaining(
+        currentItem.startedAt,
+        data.defaultTimerSeconds
+      );
+
+      // Adaptive polling:
+      // - Last 10 seconds: poll every 1 second (fast updates)
+      // - Rest of time: poll every 3 seconds (normal)
+      return timeRemaining <= 10 ? 1000 : 3000;
+    },
     refetchIntervalInBackground: false,
   });
+
+  return query;
 }
 
 // Get my won items
