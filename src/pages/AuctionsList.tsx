@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Gavel, Loader2, Calendar, Clock, Trophy, Plus, Play, X } from 'lucide-react';
+import { Gavel, Loader2, Calendar, Clock, Trophy, Plus, Play, X, RefreshCw } from 'lucide-react';
 import { useAuctions, useStartAuction, useCancelAuction } from '../hooks/auction.hooks';
 import { Layout } from '../components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -27,13 +27,17 @@ export default function AuctionsList() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [currentPage] = useState(1);
-  const { data: auctionsData, isLoading, error } = useAuctions({
+  const { data: auctionsData, isLoading, error, refetch, isRefetching } = useAuctions({
     page: currentPage,
     limit: 20,
   });
 
   const startAuctionMutation = useStartAuction();
   const cancelAuctionMutation = useCancelAuction();
+
+  const handleRefresh = async () => {
+    await refetch();
+  };
 
   const handleStartAuction = async (auctionId: string) => {
     if (window.confirm('Tem certeza que deseja iniciar este leilão?')) {
@@ -97,12 +101,22 @@ export default function AuctionsList() {
               Gerencie todos os leilões da CP
             </p>
           </div>
-          {isAdmin && (
-            <Button onClick={() => navigate('/dropped-items')}>
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Leilão
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={handleRefresh}
+              disabled={isRefetching}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`} />
+              Atualizar
             </Button>
-          )}
+            {isAdmin && (
+              <Button onClick={() => navigate('/dropped-items')}>
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Leilão
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Auctions List */}

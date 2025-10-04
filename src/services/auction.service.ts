@@ -48,19 +48,10 @@ export const auctionService = {
 
   // Get active auction
   async getActiveAuction(): Promise<Auction | null> {
-    try {
-      const response = await api.get('/auctions/active');
-      return auctionSchema.parse(response.data);
-    } catch (error: unknown) {
-      // If no active auction, return null
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { status: number } };
-        if (axiosError.response?.status === 404) {
-          return null;
-        }
-      }
-      throw error;
-    }
+    const response = await api.get('/auctions/active');
+    // Backend now returns null instead of 404
+    if (response.data === null) return null;
+    return auctionSchema.parse(response.data);
   },
 
   // Place bid
