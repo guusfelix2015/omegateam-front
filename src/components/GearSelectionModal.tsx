@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Check, Star, Package, Sword, Shield, Crown, Loader2 } from 'lucide-react';
 import {
   Dialog,
@@ -83,9 +83,8 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [gradeFilter, setGradeFilter] = useState<string>('all');
-  const [selectedItems, setSelectedItems] = useState<string[]>(
-    currentGear?.ownedItemIds || []
-  );
+  // Track quantities per item: Map<itemId, quantity>
+  const [itemQuantities, setItemQuantities] = useState<Map<string, number>>(new Map());
 
   const { data: itemsData, isLoading } = useItems({
     search: search || undefined,
@@ -98,25 +97,72 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
 
   const items = useMemo(() => itemsData?.data || [], [itemsData?.data]);
 
-  const totalGearScore = useMemo(() => {
-    return items
-      .filter(item => selectedItems.includes(item.id))
-      .reduce((total, item) => total + item.valorGsInt, 0);
-  }, [items, selectedItems]);
+  // Initialize quantities from currentGear
+  useEffect(() => {
+    if (currentGear?.ownedItemIds) {
+      const quantities = new Map<string, number>();
+      currentGear.ownedItemIds.forEach(id => {
+        quantities.set(id, (quantities.get(id) || 0) + 1);
+      });
+      setItemQuantities(quantities);
+    }
+  }, [currentGear]);
 
-  const handleItemToggle = (itemId: string) => {
-    setSelectedItems(prev =>
-      prev.includes(itemId)
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
-    );
+  const totalGearScore = useMemo(() => {
+    let total = 0;
+    itemQuantities.forEach((quantity, itemId) => {
+      const item = items.find(i => i.id === itemId);
+      if (item) {
+        total += item.valorGsInt * quantity;
+      }
+    });
+    return total;
+  }, [items, itemQuantities]);
+
+  const totalItemCount = useMemo(() => {
+    let count = 0;
+    itemQuantities.forEach(quantity => {
+      count += quantity;
+    });
+    return count;
+  }, [itemQuantities]);
+
+  const handleQuantityChange = (itemId: string, quantity: number) => {
+    setItemQuantities(prev => {
+      const newMap = new Map(prev);
+      if (quantity === 0) {
+        newMap.delete(itemId);
+      } else {
+        newMap.set(itemId, quantity);
+      }
+      return newMap;
+    });
+  };
+
+  const handleToggle = (itemId: string) => {
+    setItemQuantities(prev => {
+      const newMap = new Map(prev);
+      const current = newMap.get(itemId) || 0;
+      if (current > 0) {
+        newMap.delete(itemId);
+      } else {
+        newMap.set(itemId, 1);
+      }
+      return newMap;
+    });
   };
 
   const handleSave = async () => {
+    // Convert Map<itemId, quantity> to string[] with duplicates
+    const ownedItemIds: string[] = [];
+    itemQuantities.forEach((quantity, itemId) => {
+      for (let i = 0; i < quantity; i++) {
+        ownedItemIds.push(itemId);
+      }
+    });
+
     try {
-      await updateGearMutation.mutateAsync({
-        ownedItemIds: selectedItems,
-      });
+      await updateGearMutation.mutateAsync({ ownedItemIds });
       onClose();
     } catch (error) {
       console.error('Error updating gear:', error);
@@ -124,7 +170,16 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   };
 
   const handleClose = () => {
-    setSelectedItems(currentGear?.ownedItemIds || []);
+    // Reset to current gear
+    if (currentGear?.ownedItemIds) {
+      const quantities = new Map<string, number>();
+      currentGear.ownedItemIds.forEach(id => {
+        quantities.set(id, (quantities.get(id) || 0) + 1);
+      });
+      setItemQuantities(quantities);
+    } else {
+      setItemQuantities(new Map());
+    }
     setSearch('');
     setCategoryFilter('all');
     setGradeFilter('all');
@@ -154,7 +209,7 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 text-blue-600" />
-              <span className="font-medium text-blue-800">{selectedItems.length}</span>
+              <span className="font-medium text-blue-800">{totalItemCount}</span>
               <span className="text-xs text-blue-600">itens</span>
             </div>
           </div>
@@ -237,45 +292,69 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
             </div>
           ) : (
             <div className="space-y-1">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className={`flex items-center gap-3 p-2 border rounded-md cursor-pointer transition-colors ${selectedItems.includes(item.id)
-                    ? 'bg-primary/10 border-primary'
-                    : 'hover:bg-muted/30'
-                    }`}
-                  onClick={() => handleItemToggle(item.id)}
-                >
-                  <Checkbox
-                    checked={selectedItems.includes(item.id)}
-                    onChange={() => handleItemToggle(item.id)}
-                  />
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="text-muted-foreground">
-                      {getCategoryIcon(item.category)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm truncate">{item.name}</h4>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <Badge variant="outline" className="text-xs h-4 px-1">
-                          {getCategoryName(item.category)}
-                        </Badge>
-                        <span className="flex items-center gap-1">
-                          <Star className="h-3 w-3" />
-                          {item.valorGsInt}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Package className="h-3 w-3" />
-                          {item.valorDkp}
-                        </span>
+              {items.map((item) => {
+                const currentQuantity = itemQuantities.get(item.id) || 0;
+                const isJewelry = item.category === 'RING' || item.category === 'EARRING';
+
+                return (
+                  <div
+                    key={item.id}
+                    className={`flex items-center gap-3 p-2 border rounded-md transition-colors ${currentQuantity > 0
+                      ? 'bg-primary/10 border-primary'
+                      : 'hover:bg-muted/30'
+                      }`}
+                  >
+                    {/* Item control - Checkbox or Quantity Selector */}
+                    {isJewelry ? (
+                      <Select
+                        value={currentQuantity.toString()}
+                        onValueChange={(value) => handleQuantityChange(item.id, parseInt(value))}
+                      >
+                        <SelectTrigger className="w-20 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0x</SelectItem>
+                          <SelectItem value="1">1x</SelectItem>
+                          <SelectItem value="2">2x</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div onClick={() => handleToggle(item.id)} className="cursor-pointer">
+                        <Checkbox
+                          checked={currentQuantity > 0}
+                          onChange={() => handleToggle(item.id)}
+                        />
                       </div>
+                    )}
+
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className="text-muted-foreground">
+                        {getCategoryIcon(item.category)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-sm truncate">{item.name}</h4>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <Badge variant="outline" className="text-xs h-4 px-1">
+                            {getCategoryName(item.category)}
+                          </Badge>
+                          <span className="flex items-center gap-1">
+                            <Star className="h-3 w-3" />
+                            {item.valorGsInt}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Package className="h-3 w-3" />
+                            {item.valorDkp}
+                          </span>
+                        </div>
+                      </div>
+                      <Badge className={`${getGradeColor(item.grade)} text-xs h-5 px-2`}>
+                        {item.grade}
+                      </Badge>
                     </div>
-                    <Badge className={`${getGradeColor(item.grade)} text-xs h-5 px-2`}>
-                      {item.grade}
-                    </Badge>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
