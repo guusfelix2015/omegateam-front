@@ -4,7 +4,6 @@ import { useCreateAuction } from '../hooks/auction.hooks';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
 
-
 interface RaidDroppedItemResponse {
   id: string;
   name: string;
@@ -31,18 +30,24 @@ export default function AuctionCreate() {
   const [notes, setNotes] = useState<string>('');
 
   // Fetch available raid dropped items (not yet auctioned)
-  const { data: availableItems, isLoading } = useQuery<RaidDroppedItemResponse[]>({
+  const { data: availableItems, isLoading } = useQuery<
+    RaidDroppedItemResponse[]
+  >({
     queryKey: ['raid-dropped-items', 'available'],
     queryFn: async () => {
       const response = await api.get('/raid-dropped-items');
       // Filter items that haven't been auctioned
-      return response.data.filter((item: RaidDroppedItemResponse) => !item.hasBeenAuctioned);
+      return response.data.filter(
+        (item: RaidDroppedItemResponse) => !item.hasBeenAuctioned
+      );
     },
   });
 
   const handleToggleItem = (itemId: string) => {
     setSelectedItemIds((prev) =>
-      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
+        : [...prev, itemId]
     );
   };
 
@@ -98,7 +103,9 @@ export default function AuctionCreate() {
                   min="10"
                   max="300"
                   value={defaultTimerSeconds}
-                  onChange={(e) => setDefaultTimerSeconds(Number(e.target.value))}
+                  onChange={(e) =>
+                    setDefaultTimerSeconds(Number(e.target.value))
+                  }
                   className="w-full px-3 py-2 border rounded-md"
                 />
               </div>
@@ -118,7 +125,9 @@ export default function AuctionCreate() {
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-medium mb-2">Notes (optional)</label>
+              <label className="block text-sm font-medium mb-2">
+                Notes (optional)
+              </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
@@ -142,8 +151,11 @@ export default function AuctionCreate() {
                 {availableItems.map((item) => (
                   <div
                     key={item.id}
-                    className={`flex items-center justify-between p-4 border rounded-md cursor-pointer hover:bg-gray-50 ${selectedItemIds.includes(item.id) ? 'bg-blue-50 border-blue-500' : ''
-                      }`}
+                    className={`flex items-center justify-between p-4 border rounded-md cursor-pointer hover:bg-gray-50 ${
+                      selectedItemIds.includes(item.id)
+                        ? 'bg-blue-50 border-blue-500'
+                        : ''
+                    }`}
                     onClick={() => handleToggleItem(item.id)}
                   >
                     <div className="flex items-center space-x-4">
@@ -156,11 +168,14 @@ export default function AuctionCreate() {
                       <div>
                         <div className="font-medium">{item.name}</div>
                         <div className="text-sm text-gray-500">
-                          {item.category} • Grade {item.grade} • Min Bid: {item.minDkpBid} DKP
+                          {item.category} • Grade {item.grade} • Min Bid:{' '}
+                          {item.minDkpBid} DKP
                         </div>
                         <div className="text-xs text-gray-400">
                           {item.raidInstance.raid.name} •{' '}
-                          {new Date(item.raidInstance.completedAt).toLocaleDateString()}
+                          {new Date(
+                            item.raidInstance.completedAt
+                          ).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
@@ -181,10 +196,14 @@ export default function AuctionCreate() {
             </button>
             <button
               type="submit"
-              disabled={selectedItemIds.length === 0 || createAuctionMutation.isPending}
+              disabled={
+                selectedItemIds.length === 0 || createAuctionMutation.isPending
+              }
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              {createAuctionMutation.isPending ? 'Creating...' : 'Create Auction'}
+              {createAuctionMutation.isPending
+                ? 'Creating...'
+                : 'Create Auction'}
             </button>
           </div>
         </form>
@@ -192,4 +211,3 @@ export default function AuctionCreate() {
     </div>
   );
 }
-

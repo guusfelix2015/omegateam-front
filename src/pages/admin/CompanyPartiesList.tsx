@@ -1,8 +1,17 @@
 import { Link } from 'react-router-dom';
 import { Plus, Users, Edit, Trash2, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { useCompanyParties, useDeleteCompanyParty } from '../../hooks/company-parties.hooks';
+import {
+  useCompanyParties,
+  useDeleteCompanyParty,
+} from '../../hooks/company-parties.hooks';
 import { useAuth } from '../../hooks/useAuth';
 import { Layout } from '../../components/Layout';
 
@@ -12,7 +21,11 @@ export default function CompanyPartiesList() {
   const { isAdmin } = useAuth();
 
   const handleDelete = async (id: string, name: string) => {
-    if (window.confirm(`Tem certeza que deseja excluir a Company Party "${name}"?`)) {
+    if (
+      window.confirm(
+        `Tem certeza que deseja excluir a Company Party "${name}"?`
+      )
+    ) {
       await deletePartyMutation.mutateAsync(id);
     }
   };
@@ -64,7 +77,9 @@ export default function CompanyPartiesList() {
           <Card>
             <CardContent className="py-8 text-center">
               <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Nenhum Cp encontrado</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Nenhum Cp encontrado
+              </h3>
               <p className="text-muted-foreground mb-4">
                 Comece criando sua primeira Company Party
               </p>
@@ -81,7 +96,10 @@ export default function CompanyPartiesList() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {companyParties.map((party) => (
-              <Card key={party.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={party.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
@@ -119,7 +137,9 @@ export default function CompanyPartiesList() {
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Level Médio:</span>
+                        <span className="text-muted-foreground">
+                          Level Médio:
+                        </span>
                         <span className="font-medium text-lg text-blue-600">
                           {party.averageLevel || 0}
                         </span>
@@ -127,7 +147,12 @@ export default function CompanyPartiesList() {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" asChild className="flex-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="flex-1"
+                      >
                         <Link to={`/company-parties/${party.id}`}>
                           <Users className="mr-2 h-4 w-4" />
                           Ver Detalhes

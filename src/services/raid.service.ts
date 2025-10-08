@@ -60,12 +60,14 @@ const RaidInstanceStatsSchema = z.object({
 const DkpPreviewSchema = z.object({
   totalDkpToAward: z.number(),
   averageDkpPerParticipant: z.number(),
-  participants: z.array(z.object({
-    userId: z.string(),
-    name: z.string(),
-    gearScore: z.number(),
-    dkpAwarded: z.number(),
-  })),
+  participants: z.array(
+    z.object({
+      userId: z.string(),
+      name: z.string(),
+      gearScore: z.number(),
+      dkpAwarded: z.number(),
+    })
+  ),
 });
 
 export type RaidsResponse = z.infer<typeof RaidsResponseSchema>;
@@ -100,7 +102,8 @@ export const raidService = {
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
     if (query.search) params.append('search', query.search);
-    if (query.isActive !== undefined) params.append('isActive', query.isActive.toString());
+    if (query.isActive !== undefined)
+      params.append('isActive', query.isActive.toString());
     if (query.sortBy) params.append('sortBy', query.sortBy);
     if (query.sortOrder) params.append('sortOrder', query.sortOrder);
 
@@ -150,7 +153,9 @@ export const raidService = {
   },
 
   // Raid instance management
-  async getRaidInstances(query: GetRaidInstancesQuery = {}): Promise<RaidInstancesResponse> {
+  async getRaidInstances(
+    query: GetRaidInstancesQuery = {}
+  ): Promise<RaidInstancesResponse> {
     const params = new URLSearchParams();
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
@@ -171,7 +176,8 @@ export const raidService = {
 
   async getRecentRaidInstances(limit: number = 5): Promise<RaidInstance[]> {
     const response = await api.get(`/raid-instances/recent?limit=${limit}`);
-    return z.object({ data: z.array(RaidInstanceSchema) }).parse(response.data).data;
+    return z.object({ data: z.array(RaidInstanceSchema) }).parse(response.data)
+      .data;
   },
 
   async getRaidInstanceStats(): Promise<RaidInstanceStats> {
@@ -185,9 +191,14 @@ export const raidService = {
     return RaidInstanceSchema.parse(response.data);
   },
 
-  async createRaidInstanceWithItems(data: CreateRaidInstanceWithItems): Promise<RaidInstance> {
+  async createRaidInstanceWithItems(
+    data: CreateRaidInstanceWithItems
+  ): Promise<RaidInstance> {
     const validatedData = CreateRaidInstanceWithItemsSchema.parse(data);
-    const response = await api.post('/raid-instances/with-items', validatedData);
+    const response = await api.post(
+      '/raid-instances/with-items',
+      validatedData
+    );
     return RaidInstanceSchema.parse(response.data);
   },
 
@@ -195,7 +206,10 @@ export const raidService = {
     await api.delete(`/raid-instances/${id}`);
   },
 
-  async previewDkpCalculation(raidId: string, participantIds: string[]): Promise<DkpPreview> {
+  async previewDkpCalculation(
+    raidId: string,
+    participantIds: string[]
+  ): Promise<DkpPreview> {
     const response = await api.post('/raid-instances/preview-dkp', {
       raidId,
       participantIds,
@@ -204,13 +218,21 @@ export const raidService = {
   },
 
   async addParticipant(raidInstanceId: string, userId: string): Promise<any> {
-    const response = await api.post(`/raid-instances/${raidInstanceId}/participants`, {
-      userId,
-    });
+    const response = await api.post(
+      `/raid-instances/${raidInstanceId}/participants`,
+      {
+        userId,
+      }
+    );
     return response.data;
   },
 
-  async removeParticipant(raidInstanceId: string, userId: string): Promise<void> {
-    await api.delete(`/raid-instances/${raidInstanceId}/participants/${userId}`);
+  async removeParticipant(
+    raidInstanceId: string,
+    userId: string
+  ): Promise<void> {
+    await api.delete(
+      `/raid-instances/${raidInstanceId}/participants/${userId}`
+    );
   },
 };

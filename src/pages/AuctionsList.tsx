@@ -1,10 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Gavel, Loader2, Calendar, Clock, Trophy, Plus, Play, X, RefreshCw } from 'lucide-react';
-import { useAuctions, useStartAuction, useCancelAuction } from '../hooks/auction.hooks';
+import {
+  Gavel,
+  Loader2,
+  Calendar,
+  Clock,
+  Trophy,
+  Plus,
+  Play,
+  X,
+  RefreshCw,
+} from 'lucide-react';
+import {
+  useAuctions,
+  useStartAuction,
+  useCancelAuction,
+} from '../hooks/auction.hooks';
 import { Layout } from '../components/Layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { useAuth } from '../hooks/useAuth';
@@ -27,7 +47,13 @@ export default function AuctionsList() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [currentPage] = useState(1);
-  const { data: auctionsData, isLoading, error, refetch, isRefetching } = useAuctions({
+  const {
+    data: auctionsData,
+    isLoading,
+    error,
+    refetch,
+    isRefetching,
+  } = useAuctions({
     page: currentPage,
     limit: 20,
   });
@@ -107,7 +133,9 @@ export default function AuctionsList() {
               onClick={handleRefresh}
               disabled={isRefetching}
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`}
+              />
               Atualizar
             </Button>
             {isAdmin && (
@@ -125,7 +153,9 @@ export default function AuctionsList() {
             <CardContent className="pt-6">
               <div className="text-center py-8">
                 <Gavel className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">Nenhum leilão encontrado</h3>
+                <h3 className="text-lg font-medium mb-2">
+                  Nenhum leilão encontrado
+                </h3>
                 <p className="text-muted-foreground mb-4">
                   Ainda não há leilões criados.
                 </p>
@@ -147,14 +177,18 @@ export default function AuctionsList() {
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         Leilão #{auction.id.slice(-8)}
-                        <Badge className={`${STATUS_COLORS[auction.status]} text-white`}>
+                        <Badge
+                          className={`${STATUS_COLORS[auction.status]} text-white`}
+                        >
                           {STATUS_LABELS[auction.status]}
                         </Badge>
                       </CardTitle>
                       <CardDescription className="flex items-center gap-4 mt-2">
                         <span className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {new Date(auction.createdAt).toLocaleDateString('pt-BR')}
+                          {new Date(auction.createdAt).toLocaleDateString(
+                            'pt-BR'
+                          )}
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
@@ -195,25 +229,31 @@ export default function AuctionsList() {
                           Ver Detalhes
                         </Button>
                       )}
-                      {(auction.status === 'PENDING' || auction.status === 'ACTIVE') && isAdmin && (
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleCancelAuction(auction.id)}
-                          disabled={cancelAuctionMutation.isPending}
-                        >
-                          <X className="h-4 w-4 mr-2" />
-                          Cancelar
-                        </Button>
-                      )}
+                      {(auction.status === 'PENDING' ||
+                        auction.status === 'ACTIVE') &&
+                        isAdmin && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleCancelAuction(auction.id)}
+                            disabled={cancelAuctionMutation.isPending}
+                          >
+                            <X className="h-4 w-4 mr-2" />
+                            Cancelar
+                          </Button>
+                        )}
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Total de Itens:</span>
-                      <span className="font-medium">{auction.items?.length || 0}</span>
+                      <span className="text-muted-foreground">
+                        Total de Itens:
+                      </span>
+                      <span className="font-medium">
+                        {auction.items?.length || 0}
+                      </span>
                     </div>
                     {auction.notes && (
                       <p className="text-sm text-muted-foreground italic">
@@ -230,4 +270,3 @@ export default function AuctionsList() {
     </Layout>
   );
 }
-

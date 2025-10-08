@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 
 import { useAuth } from '../hooks/useAuth';
 import { useCompanyParties } from '../hooks/company-parties.hooks';
@@ -7,7 +12,6 @@ import { Layout } from '../components/Layout';
 export default function Home() {
   const { user, isAdmin } = useAuth();
   const { data: companyParties } = useCompanyParties();
-
 
   return (
     <Layout>
@@ -22,35 +26,41 @@ export default function Home() {
         {isAdmin && (
           <>
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold mb-4">Painel Administrativo</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                Painel Administrativo
+              </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Total de CPs</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Total de CPs
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{companyParties?.length || 0}</div>
+                    <div className="text-2xl font-bold">
+                      {companyParties?.length || 0}
+                    </div>
                     <p className="text-xs text-muted-foreground">Cps ativas</p>
                   </CardContent>
                 </Card>
 
-
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">CPs Ativas</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      CPs Ativas
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">
-                      {companyParties?.filter(cp => cp.isActive).length || 0}
+                      {companyParties?.filter((cp) => cp.isActive).length || 0}
                     </div>
-                    <p className="text-xs text-muted-foreground">Em funcionamento</p>
+                    <p className="text-xs text-muted-foreground">
+                      Em funcionamento
+                    </p>
                   </CardContent>
                 </Card>
-
               </div>
             </div>
-
-
           </>
         )}
       </div>

@@ -88,7 +88,9 @@ export const auctionService = {
   // Get auctioned items (ADMIN only)
   async getAuctionedItems(): Promise<AuctionedItem[]> {
     const response = await api.get('/auctions/auctioned-items');
-    return response.data.map((item: unknown) => auctionedItemSchema.parse(item));
+    return response.data.map((item: unknown) =>
+      auctionedItemSchema.parse(item)
+    );
   },
 
   // Reset auctioned flag (ADMIN only)
@@ -110,4 +112,3 @@ export const auctionService = {
     return auctionAnalyticsSchema.parse(response.data);
   },
 };
-

@@ -4,7 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2, Swords, ArrowLeft } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -13,8 +19,14 @@ import { Layout } from '../components/Layout';
 
 const raidFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
-  bossLevel: z.number().min(1, 'Nível deve ser pelo menos 1').max(100, 'Nível máximo é 100'),
-  baseScore: z.number().min(1, 'Score base deve ser pelo menos 1').max(10000, 'Score base muito alto'),
+  bossLevel: z
+    .number()
+    .min(1, 'Nível deve ser pelo menos 1')
+    .max(100, 'Nível máximo é 100'),
+  baseScore: z
+    .number()
+    .min(1, 'Score base deve ser pelo menos 1')
+    .max(10000, 'Score base muito alto'),
 });
 
 type RaidFormData = z.infer<typeof raidFormSchema>;
@@ -112,7 +124,9 @@ export default function RaidForm() {
               {isEditing ? 'Editar Raid' : 'Novo Raid'}
             </h1>
             <p className="text-muted-foreground mt-1">
-              {isEditing ? 'Atualize as informações do raid' : 'Configure um novo raid para o sistema'}
+              {isEditing
+                ? 'Atualize as informações do raid'
+                : 'Configure um novo raid para o sistema'}
             </p>
           </div>
         </div>
@@ -122,7 +136,8 @@ export default function RaidForm() {
           <CardHeader>
             <CardTitle>Informações do Raid</CardTitle>
             <CardDescription>
-              Configure os detalhes do raid. O nível do boss e score base afetam o cálculo de DKP.
+              Configure os detalhes do raid. O nível do boss e score base afetam
+              o cálculo de DKP.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -158,7 +173,9 @@ export default function RaidForm() {
                   }}
                 />
                 {errors.bossLevel && (
-                  <p className="text-sm text-red-500">{errors.bossLevel.message}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.bossLevel.message}
+                  </p>
                 )}
                 <p className="text-sm text-muted-foreground">
                   {getBossLevelDescription(watch('bossLevel') || 1)}
@@ -182,7 +199,9 @@ export default function RaidForm() {
                   }}
                 />
                 {errors.baseScore && (
-                  <p className="text-sm text-red-500">{errors.baseScore.message}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.baseScore.message}
+                  </p>
                 )}
                 <p className="text-sm text-muted-foreground">
                   {getScoreDescription(watch('baseScore') || 100)}
@@ -193,12 +212,25 @@ export default function RaidForm() {
               <Card className="bg-blue-50 border-blue-200">
                 <CardContent className="pt-6">
                   <div className="space-y-2">
-                    <h4 className="font-semibold text-blue-900">💡 Como funciona o DKP?</h4>
+                    <h4 className="font-semibold text-blue-900">
+                      💡 Como funciona o DKP?
+                    </h4>
                     <div className="text-sm text-blue-800 space-y-1">
-                      <p>• O DKP é calculado baseado no <strong>gear score</strong> dos participantes</p>
-                      <p>• Participantes com gear score maior recebem mais DKP</p>
-                      <p>• O score base define a quantidade mínima de DKP distribuída</p>
-                      <p>• Raids de nível mais alto tendem a ter scores base maiores</p>
+                      <p>
+                        • O DKP é calculado baseado no{' '}
+                        <strong>gear score</strong> dos participantes
+                      </p>
+                      <p>
+                        • Participantes com gear score maior recebem mais DKP
+                      </p>
+                      <p>
+                        • O score base define a quantidade mínima de DKP
+                        distribuída
+                      </p>
+                      <p>
+                        • Raids de nível mais alto tendem a ter scores base
+                        maiores
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -216,10 +248,16 @@ export default function RaidForm() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting || createRaidMutation.isPending || updateRaidMutation.isPending}
+                  disabled={
+                    isSubmitting ||
+                    createRaidMutation.isPending ||
+                    updateRaidMutation.isPending
+                  }
                   className="flex-1"
                 >
-                  {(isSubmitting || createRaidMutation.isPending || updateRaidMutation.isPending) && (
+                  {(isSubmitting ||
+                    createRaidMutation.isPending ||
+                    updateRaidMutation.isPending) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   {isEditing ? 'Atualizar Raid' : 'Criar Raid'}

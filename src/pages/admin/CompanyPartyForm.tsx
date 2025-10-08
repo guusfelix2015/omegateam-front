@@ -3,15 +3,24 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import {
   useCreateCompanyParty,
   useUpdateCompanyParty,
-  useCompanyParty
+  useCompanyParty,
 } from '../../hooks/company-parties.hooks';
-import { CreateCompanyPartySchema, type CreateCompanyParty } from '../../types/api';
+import {
+  CreateCompanyPartySchema,
+  type CreateCompanyParty,
+} from '../../types/api';
 import { Layout } from '../../components/Layout';
 
 export default function CompanyPartyForm() {
@@ -19,7 +28,9 @@ export default function CompanyPartyForm() {
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
 
-  const { data: existingParty, isLoading: isLoadingParty } = useCompanyParty(id || '');
+  const { data: existingParty, isLoading: isLoadingParty } = useCompanyParty(
+    id || ''
+  );
   const createMutation = useCreateCompanyParty();
   const updateMutation = useUpdateCompanyParty();
 
@@ -43,7 +54,7 @@ export default function CompanyPartyForm() {
       reset({
         name: existingParty.name,
         description: existingParty.description || '',
-        maxMembers: existingParty.maxMembers,
+        maxMembers: existingParty.maxMembers || 50,
       });
     }
   }, [existingParty, reset]);
@@ -61,7 +72,8 @@ export default function CompanyPartyForm() {
     }
   };
 
-  const isLoading = isLoadingParty || createMutation.isPending || updateMutation.isPending;
+  const isLoading =
+    isLoadingParty || createMutation.isPending || updateMutation.isPending;
 
   if (isEditing && isLoadingParty) {
     return (
@@ -80,7 +92,11 @@ export default function CompanyPartyForm() {
     <Layout>
       <div className="container mx-auto py-8 max-w-2xl">
         <div className="mb-8">
-          <Button variant="outline" onClick={() => navigate('/admin/company-parties')} className="mb-4">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/admin/company-parties')}
+            className="mb-4"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </Button>
@@ -90,8 +106,7 @@ export default function CompanyPartyForm() {
           <p className="text-muted-foreground">
             {isEditing
               ? 'Atualize as informações da Company Party'
-              : 'Preencha os dados para criar uma nova Company Party'
-            }
+              : 'Preencha os dados para criar uma nova Company Party'}
           </p>
         </div>
 
@@ -130,7 +145,9 @@ export default function CompanyPartyForm() {
                   className={errors.description ? 'border-red-500' : ''}
                 />
                 {errors.description && (
-                  <p className="text-sm text-red-500">{errors.description.message}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.description.message}
+                  </p>
                 )}
               </div>
 
@@ -148,7 +165,9 @@ export default function CompanyPartyForm() {
                   className={errors.maxMembers ? 'border-red-500' : ''}
                 />
                 {errors.maxMembers && (
-                  <p className="text-sm text-red-500">{errors.maxMembers.message}</p>
+                  <p className="text-sm text-red-500">
+                    {errors.maxMembers.message}
+                  </p>
                 )}
               </div>
 
@@ -161,18 +180,16 @@ export default function CompanyPartyForm() {
                 >
                   Cancelar
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex-1"
-                >
+                <Button type="submit" disabled={isLoading} className="flex-1">
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       {isEditing ? 'Atualizando...' : 'Criando...'}
                     </>
+                  ) : isEditing ? (
+                    'Atualizar'
                   ) : (
-                    isEditing ? 'Atualizar' : 'Criar'
+                    'Criar'
                   )}
                 </Button>
               </div>

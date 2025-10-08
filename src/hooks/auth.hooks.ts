@@ -20,30 +20,30 @@ export const useLogin = () => {
 
         queryClient.setQueryData(['auth', 'user'], user);
         await queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
-
       } catch (error) {
         authService.removeToken();
         throw error;
       }
 
       toast({
-        title: "Login realizado com sucesso!",
-        description: data.message || "Login realizado com sucesso!",
+        title: 'Login realizado com sucesso!',
+        description: data.message || 'Login realizado com sucesso!',
       });
     },
     onError: (error: any) => {
       console.error('Login error:', error);
 
       // Garantir que o toast seja exibido mesmo em caso de erro
-      const errorMessage = error.response?.data?.error?.message ||
+      const errorMessage =
+        error.response?.data?.error?.message ||
         error.response?.data?.message ||
         error.message ||
-        "Credenciais inválidas";
+        'Credenciais inválidas';
 
       toast({
-        title: "Erro no login",
+        title: 'Erro no login',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
         duration: 5000, // Garantir que o toast fique visível por 5 segundos
       });
     },
@@ -68,8 +68,8 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       toast({
-        title: "Logout realizado com sucesso!",
-        description: "Até logo!",
+        title: 'Logout realizado com sucesso!',
+        description: 'Até logo!',
       });
     },
     onError: () => {
@@ -77,8 +77,8 @@ export const useLogout = () => {
       queryClient.clear();
 
       toast({
-        title: "Logout realizado",
-        description: "Sessão encerrada",
+        title: 'Logout realizado',
+        description: 'Sessão encerrada',
       });
     },
   });
@@ -110,7 +110,8 @@ export const useAuthState = () => {
   const { data: user, isLoading, error } = useCurrentUser();
   const hasToken = !!authService.getToken();
 
-  const isAuthError = error?.response?.status === 401 || error?.response?.status === 404;
+  const isAuthError =
+    error?.response?.status === 401 || error?.response?.status === 404;
   const isAuthenticated = !!user && hasToken && !error && !isAuthError;
 
   if (isAuthError && hasToken) {

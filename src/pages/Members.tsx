@@ -1,10 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useState, useCallback, useRef } from 'react';
 import { Plus, User, Mail, Shield, Calendar, X, Search } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/pagination';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../components/ui/pagination';
 import { SearchInput } from '../components/SearchInput';
 import { useUsersWithFilters } from '../hooks/useDebouncedUsers';
 import { useUserStats } from '../hooks/users.hooks';
@@ -17,11 +30,17 @@ export default function Members() {
 
   const [searchInput, setSearchInput] = useState(''); // Input value (not applied yet)
   const [appliedSearch, setAppliedSearch] = useState(''); // Applied search term
-  const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [activeFilter, setActiveFilter] = useState<
+    'all' | 'active' | 'inactive'
+  >('all');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9; // 3x3 grid
 
-  const { data: usersResponse, isLoading, error } = useUsersWithFilters({
+  const {
+    data: usersResponse,
+    isLoading,
+    error,
+  } = useUsersWithFilters({
     search: appliedSearch,
     activeFilter,
     currentPage,
@@ -42,10 +61,13 @@ export default function Members() {
     setSearchInput(value);
   }, []);
 
-  const handleFilterChange = useCallback((filter: 'all' | 'active' | 'inactive') => {
-    setActiveFilter(filter);
-    setCurrentPage(1);
-  }, []);
+  const handleFilterChange = useCallback(
+    (filter: 'all' | 'active' | 'inactive') => {
+      setActiveFilter(filter);
+      setCurrentPage(1);
+    },
+    []
+  );
 
   const clearFilters = useCallback(() => {
     setSearchInput('');
@@ -167,7 +189,9 @@ export default function Members() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total de Membros</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total de Membros
+              </CardTitle>
               <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -180,27 +204,32 @@ export default function Members() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Membros Ativos</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Membros Ativos
+              </CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.active || 0}</div>
               <p className="text-xs text-muted-foreground">
-                {stats?.total ? Math.round((stats.active / stats.total) * 100) : 0}% do total
+                {stats?.total
+                  ? Math.round((stats.active / stats.total) * 100)
+                  : 0}
+                % do total
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Administradores</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Administradores
+              </CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.admins || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                Controle total
-              </p>
+              <p className="text-xs text-muted-foreground">Controle total</p>
             </CardContent>
           </Card>
 
@@ -211,9 +240,7 @@ export default function Members() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats?.players || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                Membros ativos
-              </p>
+              <p className="text-xs text-muted-foreground">Membros ativos</p>
             </CardContent>
           </Card>
         </div>
@@ -235,8 +262,8 @@ export default function Members() {
                         </CardDescription>
                       </div>
                     </div>
-                    <Badge variant={user.isActive ? "default" : "secondary"}>
-                      {user.isActive ? "Ativo" : "Inativo"}
+                    <Badge variant={user.isActive ? 'default' : 'secondary'}>
+                      {user.isActive ? 'Ativo' : 'Inativo'}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -268,11 +295,18 @@ export default function Members() {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    className={!pagination.hasPrev ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    className={
+                      !pagination.hasPrev
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
 
-                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                {Array.from(
+                  { length: pagination.totalPages },
+                  (_, i) => i + 1
+                ).map((page) => (
                   <PaginationItem key={page}>
                     <PaginationLink
                       onClick={() => setCurrentPage(page)}
@@ -286,8 +320,16 @@ export default function Members() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => setCurrentPage(Math.min(pagination.totalPages, currentPage + 1))}
-                    className={!pagination.hasNext ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    onClick={() =>
+                      setCurrentPage(
+                        Math.min(pagination.totalPages, currentPage + 1)
+                      )
+                    }
+                    className={
+                      !pagination.hasNext
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -299,13 +341,14 @@ export default function Members() {
           <div className="text-center py-12">
             <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium mb-2">
-              {hasActiveFilters ? 'Nenhum membro encontrado' : 'Nenhum membro cadastrado'}
+              {hasActiveFilters
+                ? 'Nenhum membro encontrado'
+                : 'Nenhum membro cadastrado'}
             </h3>
             <p className="text-muted-foreground mb-4">
               {hasActiveFilters
                 ? 'Tente ajustar os filtros para encontrar membros.'
-                : 'Comece adicionando o primeiro membro ao sistema.'
-              }
+                : 'Comece adicionando o primeiro membro ao sistema.'}
             </p>
             {hasActiveFilters ? (
               <Button variant="outline" onClick={clearFilters}>

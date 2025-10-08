@@ -64,13 +64,21 @@ export const companyPartiesService = {
     await api.delete(`/company-parties/${id}`);
   },
 
-  async addPlayer(partyId: string, data: AddPlayerToParty): Promise<CompanyParty> {
-    const response = await api.post(`/company-parties/${partyId}/players`, data);
+  async addPlayer(
+    partyId: string,
+    data: AddPlayerToParty
+  ): Promise<CompanyParty> {
+    const response = await api.post(
+      `/company-parties/${partyId}/players`,
+      data
+    );
     return CompanyPartySchema.parse(response.data);
   },
 
   async removePlayer(partyId: string, playerId: string): Promise<CompanyParty> {
-    const response = await api.delete(`/company-parties/${partyId}/players/${playerId}`);
+    const response = await api.delete(
+      `/company-parties/${partyId}/players/${playerId}`
+    );
     return CompanyPartySchema.parse(response.data);
   },
 };

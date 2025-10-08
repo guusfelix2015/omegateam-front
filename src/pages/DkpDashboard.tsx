@@ -11,14 +11,25 @@ import {
   Loader2,
   RefreshCw,
   Plus,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { useDkpLeaderboard, useDkpStats, useMyDkpSummary, useRefreshDkpData } from '../hooks/dkp.hooks';
+import {
+  useDkpLeaderboard,
+  useDkpStats,
+  useMyDkpSummary,
+  useRefreshDkpData,
+} from '../hooks/dkp.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
 import { useDebounce } from '../hooks/useDebounce';
@@ -28,29 +39,33 @@ export default function DkpDashboard() {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [leaderboardQuery, setLeaderboardQuery] = useState<DkpLeaderboardQuery>({
-    page: 1,
-    limit: 10,
-    sortOrder: 'desc',
-  });
+  const [leaderboardQuery, setLeaderboardQuery] = useState<DkpLeaderboardQuery>(
+    {
+      page: 1,
+      limit: 10,
+      sortOrder: 'desc',
+    }
+  );
 
   const debouncedSearch = useDebounce(searchTerm, 300);
   const refreshData = useRefreshDkpData();
 
   const { data: stats } = useDkpStats();
-  const { data: myDkpSummary, isLoading: isLoadingMySummary } = useMyDkpSummary();
-  const { data: leaderboard, isLoading: isLoadingLeaderboard } = useDkpLeaderboard({
-    ...leaderboardQuery,
-    search: debouncedSearch || undefined,
-  });
+  const { data: myDkpSummary, isLoading: isLoadingMySummary } =
+    useMyDkpSummary();
+  const { data: leaderboard, isLoading: isLoadingLeaderboard } =
+    useDkpLeaderboard({
+      ...leaderboardQuery,
+      search: debouncedSearch || undefined,
+    });
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    setLeaderboardQuery(prev => ({ ...prev, page: 1 }));
+    setLeaderboardQuery((prev) => ({ ...prev, page: 1 }));
   };
 
   const handlePageChange = (newPage: number) => {
-    setLeaderboardQuery(prev => ({ ...prev, page: newPage }));
+    setLeaderboardQuery((prev) => ({ ...prev, page: newPage }));
   };
 
   const handlePlayerClick = (playerId: string) => {
@@ -61,7 +76,9 @@ export default function DkpDashboard() {
 
   const getUserRank = () => {
     if (!leaderboard?.data || !user) return null;
-    const userIndex = leaderboard.data.findIndex(entry => entry.id === user.id);
+    const userIndex = leaderboard.data.findIndex(
+      (entry) => entry.id === user.id
+    );
     return userIndex >= 0 ? userIndex + 1 : null;
   };
 
@@ -108,7 +125,9 @@ export default function DkpDashboard() {
               <div className="flex items-center gap-3">
                 <Trophy className="h-4 w-4 text-yellow-600" />
                 <div>
-                  <p className="text-sm text-muted-foreground">DKP Total Distribuído</p>
+                  <p className="text-sm text-muted-foreground">
+                    DKP Total Distribuído
+                  </p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {stats?.totalDkpAwarded || 0}
                   </p>
@@ -122,7 +141,9 @@ export default function DkpDashboard() {
               <div className="flex items-center gap-3">
                 <Users className="h-4 w-4 text-blue-600" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Transações Totais</p>
+                  <p className="text-sm text-muted-foreground">
+                    Transações Totais
+                  </p>
                   <p className="text-2xl font-bold text-blue-600">
                     {stats?.totalTransactions || 0}
                   </p>
@@ -136,7 +157,9 @@ export default function DkpDashboard() {
               <div className="flex items-center gap-3">
                 <TrendingUp className="h-4 w-4 text-green-600" />
                 <div>
-                  <p className="text-sm text-muted-foreground">DKP Médio por Usuário</p>
+                  <p className="text-sm text-muted-foreground">
+                    DKP Médio por Usuário
+                  </p>
                   <p className="text-2xl font-bold text-green-600">
                     {Math.round(stats?.averageDkpPerUser || 0)}
                   </p>
@@ -188,19 +211,25 @@ export default function DkpDashboard() {
 
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Total Ganho:</span>
+                      <span className="text-muted-foreground">
+                        Total Ganho:
+                      </span>
                       <span className="font-semibold text-green-600">
                         +{myDkpSummary?.totalEarned || 0}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Raids Participados:</span>
+                      <span className="text-muted-foreground">
+                        Raids Participados:
+                      </span>
                       <span className="font-semibold">
                         {myDkpSummary?.raidParticipations || 0}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Minha Posição:</span>
+                      <span className="text-muted-foreground">
+                        Minha Posição:
+                      </span>
                       <span className="font-semibold">
                         {getUserRank() ? `#${getUserRank()}` : 'N/A'}
                       </span>
@@ -208,9 +237,7 @@ export default function DkpDashboard() {
                   </div>
 
                   <Button asChild className="w-full" variant="outline">
-                    <Link to="/dkp/profile">
-                      Ver Perfil Completo
-                    </Link>
+                    <Link to="/dkp/profile">Ver Perfil Completo</Link>
                   </Button>
                 </>
               )}
@@ -256,34 +283,51 @@ export default function DkpDashboard() {
                 <div className="text-center py-8">
                   <Trophy className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">
-                    {searchTerm ? 'Nenhum jogador encontrado' : 'Nenhum dado disponível'}
+                    {searchTerm
+                      ? 'Nenhum jogador encontrado'
+                      : 'Nenhum dado disponível'}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {leaderboard.data.map((entry, index) => {
-                    const position = (leaderboard.pagination.page - 1) * leaderboard.pagination.limit + index + 1;
+                    const position =
+                      (leaderboard.pagination.page - 1) *
+                        leaderboard.pagination.limit +
+                      index +
+                      1;
                     const isCurrentUser = entry.id === user?.id;
 
                     return (
                       <div
                         key={entry.id}
                         onClick={() => handlePlayerClick(entry.id)}
-                        className={`flex items-center justify-between p-4 rounded-lg transition-colors ${isCurrentUser ? 'bg-primary/10 border border-primary/20' : 'bg-muted'
-                          } ${isAdmin ? 'cursor-pointer hover:bg-muted/80' : ''}`}
+                        className={`flex items-center justify-between p-4 rounded-lg transition-colors ${
+                          isCurrentUser
+                            ? 'bg-primary/10 border border-primary/20'
+                            : 'bg-muted'
+                        } ${isAdmin ? 'cursor-pointer hover:bg-muted/80' : ''}`}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${position === 1 ? 'bg-yellow-500 text-white' :
-                            position === 2 ? 'bg-gray-400 text-white' :
-                              position === 3 ? 'bg-amber-600 text-white' :
-                                'bg-muted-foreground text-white'
-                            }`}>
+                          <div
+                            className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
+                              position === 1
+                                ? 'bg-yellow-500 text-white'
+                                : position === 2
+                                  ? 'bg-gray-400 text-white'
+                                  : position === 3
+                                    ? 'bg-amber-600 text-white'
+                                    : 'bg-muted-foreground text-white'
+                            }`}
+                          >
                             {position}
                           </div>
 
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={entry.avatar || undefined} />
-                            <AvatarFallback>{entry.name.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>
+                              {entry.name.charAt(0)}
+                            </AvatarFallback>
                           </Avatar>
 
                           <div>
@@ -296,7 +340,8 @@ export default function DkpDashboard() {
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground">
-                              {entry.nickname} • Lvl {entry.lvl} • GS: {entry.gearScore}
+                              {entry.nickname} • Lvl {entry.lvl} • GS:{' '}
+                              {entry.gearScore}
                             </p>
                             {entry.classe && (
                               <p className="text-xs text-muted-foreground">
@@ -327,18 +372,23 @@ export default function DkpDashboard() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handlePageChange(leaderboardQuery.page! - 1)}
+                        onClick={() =>
+                          handlePageChange(leaderboardQuery.page! - 1)
+                        }
                         disabled={!leaderboard.pagination.hasPrev}
                       >
                         Anterior
                       </Button>
                       <span className="flex items-center px-3 text-sm">
-                        Página {leaderboard.pagination.page} de {leaderboard.pagination.totalPages}
+                        Página {leaderboard.pagination.page} de{' '}
+                        {leaderboard.pagination.totalPages}
                       </span>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handlePageChange(leaderboardQuery.page! + 1)}
+                        onClick={() =>
+                          handlePageChange(leaderboardQuery.page! + 1)
+                        }
                         disabled={!leaderboard.pagination.hasNext}
                       >
                         Próxima
@@ -363,7 +413,9 @@ export default function DkpDashboard() {
                   <div className="text-center">
                     <Award className="mx-auto h-6 w-6 mb-2" />
                     <p className="font-semibold">Ver Raids</p>
-                    <p className="text-xs text-muted-foreground">Participar de raids para ganhar DKP</p>
+                    <p className="text-xs text-muted-foreground">
+                      Participar de raids para ganhar DKP
+                    </p>
                   </div>
                 </Link>
               </Button>
@@ -373,7 +425,9 @@ export default function DkpDashboard() {
                   <div className="text-center">
                     <Trophy className="mx-auto h-6 w-6 mb-2" />
                     <p className="font-semibold">Meu Histórico</p>
-                    <p className="text-xs text-muted-foreground">Ver todas as transações DKP</p>
+                    <p className="text-xs text-muted-foreground">
+                      Ver todas as transações DKP
+                    </p>
                   </div>
                 </Link>
               </Button>
@@ -384,7 +438,9 @@ export default function DkpDashboard() {
                     <div className="text-center">
                       <Plus className="mx-auto h-6 w-6 mb-2" />
                       <p className="font-semibold">Gerenciar DKP</p>
-                      <p className="text-xs text-muted-foreground">Fazer ajustes manuais</p>
+                      <p className="text-xs text-muted-foreground">
+                        Fazer ajustes manuais
+                      </p>
                     </div>
                   </Link>
                 </Button>

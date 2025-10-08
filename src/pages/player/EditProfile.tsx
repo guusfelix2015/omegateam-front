@@ -11,14 +11,30 @@ import {
   X,
   UserCircle,
   Lock,
-  ArrowLeft
+  ArrowLeft,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../components/ui/select';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../../components/ui/avatar';
 import { ClassBadge } from '../../components/ClassBadge';
 import { useMe, useUpdateProfile } from '../../hooks/users.hooks';
 import { useClasses } from '../../hooks/classes.hooks';
@@ -26,8 +42,15 @@ import { Layout } from '../../components/Layout';
 
 const updateProfileSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
-  nickname: z.string().min(1, 'Nickname é obrigatório').max(50, 'Nickname muito longo'),
-  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres').optional().or(z.literal('')),
+  nickname: z
+    .string()
+    .min(1, 'Nickname é obrigatório')
+    .max(50, 'Nickname muito longo'),
+  password: z
+    .string()
+    .min(6, 'Senha deve ter pelo menos 6 caracteres')
+    .optional()
+    .or(z.literal('')),
   lvl: z.number().min(1, 'Level mínimo é 1').max(85, 'Level máximo é 85'),
   classeId: z.string().optional(),
 });
@@ -61,8 +84,6 @@ export const EditProfile: React.FC = () => {
   });
 
   const watchedClasseId = useWatch({ control, name: 'classeId' });
-
-
 
   const onSubmit = async (data: UpdateProfileForm) => {
     try {
@@ -146,7 +167,10 @@ export const EditProfile: React.FC = () => {
                     Level {profileUser.lvl || 1}
                   </span>
                   {profileUser.classe?.name && (
-                    <ClassBadge classeName={profileUser.classe.name} size="sm" />
+                    <ClassBadge
+                      classeName={profileUser.classe.name}
+                      size="sm"
+                    />
                   )}
                 </div>
               </div>
@@ -157,20 +181,22 @@ export const EditProfile: React.FC = () => {
         <div className="flex space-x-1 bg-muted p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('general')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'general'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-              }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'general'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
             <UserCircle className="h-4 w-4" />
             Informações Gerais
           </button>
           <button
             onClick={() => setActiveTab('security')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'security'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-              }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'security'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
             <Lock className="h-4 w-4" />
             Segurança
@@ -184,9 +210,7 @@ export const EditProfile: React.FC = () => {
                 <UserCircle className="h-5 w-5" />
                 Informações Gerais
               </CardTitle>
-              <CardDescription>
-                Edite suas informações pessoais
-              </CardDescription>
+              <CardDescription>Edite suas informações pessoais</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -199,7 +223,9 @@ export const EditProfile: React.FC = () => {
                       placeholder="Seu nome completo"
                     />
                     {errors.name && (
-                      <p className="text-sm text-red-500">{errors.name.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.name.message}
+                      </p>
                     )}
                   </div>
 
@@ -211,7 +237,9 @@ export const EditProfile: React.FC = () => {
                       placeholder="Seu nickname"
                     />
                     {errors.nickname && (
-                      <p className="text-sm text-red-500">{errors.nickname.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.nickname.message}
+                      </p>
                     )}
                   </div>
 
@@ -226,13 +254,14 @@ export const EditProfile: React.FC = () => {
                       placeholder="Seu level atual"
                     />
                     {errors.lvl && (
-                      <p className="text-sm text-red-500">{errors.lvl.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.lvl.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="classe">Classe</Label>
-
 
                     {profileUser && classes ? (
                       <Controller
@@ -249,7 +278,9 @@ export const EditProfile: React.FC = () => {
                               <SelectValue placeholder="Selecione uma classe" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="none">Nenhuma classe</SelectItem>
+                              <SelectItem value="none">
+                                Nenhuma classe
+                              </SelectItem>
                               {classes.map((classe) => (
                                 <SelectItem key={classe.id} value={classe.id}>
                                   {classe.name}
@@ -260,14 +291,21 @@ export const EditProfile: React.FC = () => {
                         )}
                       />
                     ) : (
-                      <div className="text-sm text-muted-foreground">Carregando classes...</div>
+                      <div className="text-sm text-muted-foreground">
+                        Carregando classes...
+                      </div>
                     )}
                     {watchedClasseId && watchedClasseId !== '' && (
                       <div className="mt-2">
-                        <Label className="text-xs text-muted-foreground">Prévia:</Label>
+                        <Label className="text-xs text-muted-foreground">
+                          Prévia:
+                        </Label>
                         <div className="mt-1">
                           <ClassBadge
-                            classeName={classes?.find(c => c.id === watchedClasseId)?.name || ''}
+                            classeName={
+                              classes?.find((c) => c.id === watchedClasseId)
+                                ?.name || ''
+                            }
                             size="md"
                           />
                         </div>
@@ -307,9 +345,7 @@ export const EditProfile: React.FC = () => {
                 <Lock className="h-5 w-5" />
                 Segurança
               </CardTitle>
-              <CardDescription>
-                Altere sua senha de acesso
-              </CardDescription>
+              <CardDescription>Altere sua senha de acesso</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -322,7 +358,9 @@ export const EditProfile: React.FC = () => {
                     placeholder="Digite uma nova senha (deixe em branco para manter a atual)"
                   />
                   {errors.password && (
-                    <p className="text-sm text-red-500">{errors.password.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.password.message}
+                    </p>
                   )}
                 </div>
 

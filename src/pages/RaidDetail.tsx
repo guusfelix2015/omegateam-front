@@ -12,13 +12,29 @@ import {
   Power,
   PowerOff,
   Clock,
-  Target
+  Target,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { useRaid, useRaidInstances, useDeleteRaidInstance, useToggleRaidStatus } from '../hooks/raids.hooks';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../components/ui/tabs';
+import {
+  useRaid,
+  useRaidInstances,
+  useDeleteRaidInstance,
+  useToggleRaidStatus,
+} from '../hooks/raids.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
 
@@ -26,25 +42,35 @@ export default function RaidDetail() {
   const { id } = useParams();
   const { isAdmin } = useAuth();
 
-  const { data: raid, isLoading: isLoadingRaid, error: raidError } = useRaid(id || '');
-  const { data: instancesData, isLoading: isLoadingInstances } = useRaidInstances({
-    raidId: id,
-    sortBy: 'completedAt',
-    sortOrder: 'desc',
-  });
+  const {
+    data: raid,
+    isLoading: isLoadingRaid,
+    error: raidError,
+  } = useRaid(id || '');
+  const { data: instancesData, isLoading: isLoadingInstances } =
+    useRaidInstances({
+      raidId: id,
+      sortBy: 'completedAt',
+      sortOrder: 'desc',
+    });
 
   const deleteInstanceMutation = useDeleteRaidInstance();
   const toggleStatusMutation = useToggleRaidStatus();
 
   const handleDeleteInstance = async (instanceId: string) => {
-    if (window.confirm('Tem certeza que deseja excluir esta instância de raid?')) {
+    if (
+      window.confirm('Tem certeza que deseja excluir esta instância de raid?')
+    ) {
       await deleteInstanceMutation.mutateAsync(instanceId);
     }
   };
 
   const handleToggleStatus = async () => {
     if (raid) {
-      await toggleStatusMutation.mutateAsync({ id: raid.id, activate: !raid.isActive });
+      await toggleStatusMutation.mutateAsync({
+        id: raid.id,
+        activate: !raid.isActive,
+      });
     }
   };
 
@@ -81,7 +107,9 @@ export default function RaidDetail() {
         <div className="text-center py-8">
           <p className="text-red-500">Erro ao carregar raid</p>
           <p className="text-sm text-muted-foreground mt-2">
-            {raidError instanceof Error ? raidError.message : 'Raid não encontrado'}
+            {raidError instanceof Error
+              ? raidError.message
+              : 'Raid não encontrado'}
           </p>
           <Button asChild className="mt-4">
             <Link to="/raids">
@@ -158,7 +186,9 @@ export default function RaidDetail() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className={`w-4 h-4 rounded-full ${getBossLevelColor(raid.bossLevel)}`} />
+                <div
+                  className={`w-4 h-4 rounded-full ${getBossLevelColor(raid.bossLevel)}`}
+                />
                 <div>
                   <p className="text-sm text-muted-foreground">Nível do Boss</p>
                   <p className="text-3xl font-bold">{raid.bossLevel}</p>
@@ -170,10 +200,16 @@ export default function RaidDetail() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <Trophy className={`h-4 w-4 ${getBaseScoreColor(raid.baseScore)}`} />
+                <Trophy
+                  className={`h-4 w-4 ${getBaseScoreColor(raid.baseScore)}`}
+                />
                 <div>
-                  <p className="text-sm text-muted-foreground">Score Base DKP</p>
-                  <p className={`text-3xl font-bold ${getBaseScoreColor(raid.baseScore)}`}>
+                  <p className="text-sm text-muted-foreground">
+                    Score Base DKP
+                  </p>
+                  <p
+                    className={`text-3xl font-bold ${getBaseScoreColor(raid.baseScore)}`}
+                  >
                     {raid.baseScore}
                   </p>
                 </div>
@@ -236,7 +272,9 @@ export default function RaidDetail() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <Clock className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Nenhuma instância encontrada</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Nenhuma instância encontrada
+                  </h3>
                   <p className="text-muted-foreground mb-4">
                     Este raid ainda não foi executado
                   </p>
@@ -253,7 +291,10 @@ export default function RaidDetail() {
             ) : (
               <div className="space-y-4">
                 {instances.map((instance) => (
-                  <Card key={instance.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={instance.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex justify-between items-start">
                         <div>
@@ -264,7 +305,9 @@ export default function RaidDetail() {
                             <div className="flex items-center gap-4 mt-1">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-4 w-4" />
-                                {new Date(instance.completedAt).toLocaleDateString('pt-BR')}
+                                {new Date(
+                                  instance.completedAt
+                                ).toLocaleDateString('pt-BR')}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Users className="h-4 w-4" />
@@ -302,13 +345,23 @@ export default function RaidDetail() {
                         )}
 
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">DKP Total Distribuído:</span>
+                          <span className="text-sm text-muted-foreground">
+                            DKP Total Distribuído:
+                          </span>
                           <span className="font-semibold">
-                            {instance.participants.reduce((sum, p) => sum + p.dkpAwarded, 0)}
+                            {instance.participants.reduce(
+                              (sum, p) => sum + p.dkpAwarded,
+                              0
+                            )}
                           </span>
                         </div>
 
-                        <Button variant="outline" size="sm" asChild className="w-full">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="w-full"
+                        >
                           <Link to={`/raid-instances/${instance.id}`}>
                             Ver Detalhes Completos
                           </Link>
@@ -332,33 +385,55 @@ export default function RaidDetail() {
               <CardContent>
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Total de Execuções</p>
+                    <p className="text-sm text-muted-foreground">
+                      Total de Execuções
+                    </p>
                     <p className="text-2xl font-bold">{instances.length}</p>
                   </div>
 
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Total de Participantes</p>
-                    <p className="text-2xl font-bold">
-                      {instances.reduce((sum, instance) => sum + instance.participants.length, 0)}
+                    <p className="text-sm text-muted-foreground">
+                      Total de Participantes
                     </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">DKP Total Distribuído</p>
                     <p className="text-2xl font-bold">
-                      {instances.reduce((sum, instance) =>
-                        sum + instance.participants.reduce((pSum, p) => pSum + p.dkpAwarded, 0), 0
+                      {instances.reduce(
+                        (sum, instance) => sum + instance.participants.length,
+                        0
                       )}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Média de Participantes</p>
+                    <p className="text-sm text-muted-foreground">
+                      DKP Total Distribuído
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {instances.reduce(
+                        (sum, instance) =>
+                          sum +
+                          instance.participants.reduce(
+                            (pSum, p) => pSum + p.dkpAwarded,
+                            0
+                          ),
+                        0
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Média de Participantes
+                    </p>
                     <p className="text-2xl font-bold">
                       {instances.length > 0
-                        ? Math.round(instances.reduce((sum, instance) => sum + instance.participants.length, 0) / instances.length)
-                        : 0
-                      }
+                        ? Math.round(
+                            instances.reduce(
+                              (sum, instance) =>
+                                sum + instance.participants.length,
+                              0
+                            ) / instances.length
+                          )
+                        : 0}
                     </p>
                   </div>
                 </div>

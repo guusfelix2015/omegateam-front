@@ -5,7 +5,7 @@ import {
   UserSchema,
   type LoginRequest,
   type LoginResponse,
-  type User
+  type User,
 } from '../types/api';
 
 export const authService = {

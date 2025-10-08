@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersService, type UsersQuery, type CreateUserData, type UpdateUserData } from '../services/users.service';
+import {
+  usersService,
+  type UsersQuery,
+  type CreateUserData,
+  type UpdateUserData,
+} from '../services/users.service';
 import { useToast } from './use-toast';
 import { type UpdateProfile } from '../types/api';
 import { useCurrentUser } from './auth.hooks';
@@ -51,7 +56,8 @@ export const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateUserData }) => usersService.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateUserData }) =>
+      usersService.update(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['users', id] });
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -69,16 +75,18 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       queryClient.invalidateQueries({ queryKey: ['users', 'stats'] });
       toast({
-        title: "Usuário deletado!",
-        description: "O usuário foi removido com sucesso.",
+        title: 'Usuário deletado!',
+        description: 'O usuário foi removido com sucesso.',
       });
     },
     onError: (error: any) => {
       console.error('Error deleting user:', error);
       toast({
-        title: "Erro ao deletar usuário",
-        description: error.response?.data?.error?.message || "Ocorreu um erro ao deletar o usuário.",
-        variant: "destructive",
+        title: 'Erro ao deletar usuário',
+        description:
+          error.response?.data?.error?.message ||
+          'Ocorreu um erro ao deletar o usuário.',
+        variant: 'destructive',
       });
     },
   });
@@ -101,16 +109,19 @@ export const useUpdateProfile = () => {
       queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
 
       toast({
-        title: "Perfil atualizado!",
-        description: "Suas informações foram atualizadas com sucesso.",
+        title: 'Perfil atualizado!',
+        description: 'Suas informações foram atualizadas com sucesso.',
       });
     },
     onError: (error: any) => {
       console.error('Error updating profile:', error);
       toast({
-        title: "Erro ao atualizar perfil",
-        description: error.response?.data?.error?.message || error.response?.data?.message || "Ocorreu um erro ao atualizar suas informações.",
-        variant: "destructive",
+        title: 'Erro ao atualizar perfil',
+        description:
+          error.response?.data?.error?.message ||
+          error.response?.data?.message ||
+          'Ocorreu um erro ao atualizar suas informações.',
+        variant: 'destructive',
       });
     },
   });

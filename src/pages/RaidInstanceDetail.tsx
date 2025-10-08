@@ -8,15 +8,38 @@ import {
   Loader2,
   Star,
   Plus,
-  Trash2
+  Trash2,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { useRaidInstance, useAddParticipant, useRemoveParticipant } from '../hooks/raids.hooks';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
+import {
+  useRaidInstance,
+  useAddParticipant,
+  useRemoveParticipant,
+} from '../hooks/raids.hooks';
 import { useUsers } from '../hooks/users.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
@@ -53,7 +76,9 @@ export default function RaidInstanceDetail() {
         <div className="text-center py-8">
           <p className="text-red-500">Erro ao carregar instância</p>
           <p className="text-sm text-muted-foreground mt-2">
-            {error instanceof Error ? error.message : 'Instância não encontrada'}
+            {error instanceof Error
+              ? error.message
+              : 'Instância não encontrada'}
           </p>
           <Button asChild className="mt-4">
             <Link to="/raids">
@@ -67,9 +92,13 @@ export default function RaidInstanceDetail() {
   }
 
   // Filter out users who are already participants
-  const availableUsers = usersData?.data?.filter(user =>
-    !instance.participants.some(participant => participant.userId === user.id)
-  ) || [];
+  const availableUsers =
+    usersData?.data?.filter(
+      (user) =>
+        !instance.participants.some(
+          (participant) => participant.userId === user.id
+        )
+    ) || [];
 
   const handleAddParticipant = async () => {
     if (!selectedUserId || !id) return;
@@ -99,10 +128,17 @@ export default function RaidInstanceDetail() {
     }
   };
 
-  const totalDkp = instance.participants.reduce((sum, p) => sum + p.dkpAwarded, 0);
-  const averageDkp = instance.participants.length > 0 ? totalDkp / instance.participants.length : 0;
-  const topParticipant = instance.participants.reduce((top, current) =>
-    current.dkpAwarded > top.dkpAwarded ? current : top, instance.participants[0]
+  const totalDkp = instance.participants.reduce(
+    (sum, p) => sum + p.dkpAwarded,
+    0
+  );
+  const averageDkp =
+    instance.participants.length > 0
+      ? totalDkp / instance.participants.length
+      : 0;
+  const topParticipant = instance.participants.reduce(
+    (top, current) => (current.dkpAwarded > top.dkpAwarded ? current : top),
+    instance.participants[0]
   );
 
   return (
@@ -122,13 +158,14 @@ export default function RaidInstanceDetail() {
               {instance.raid.name} - Instância #{instance.id.slice(-8)}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Executado em {new Date(instance.completedAt).toLocaleDateString('pt-BR', {
+              Executado em{' '}
+              {new Date(instance.completedAt).toLocaleDateString('pt-BR', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
               })}
             </p>
           </div>
@@ -142,7 +179,9 @@ export default function RaidInstanceDetail() {
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Participantes</p>
-                  <p className="text-2xl font-bold">{instance.participants.length}</p>
+                  <p className="text-2xl font-bold">
+                    {instance.participants.length}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -154,7 +193,9 @@ export default function RaidInstanceDetail() {
                 <Trophy className="h-4 w-4 text-yellow-600" />
                 <div>
                   <p className="text-sm text-muted-foreground">DKP Total</p>
-                  <p className="text-2xl font-bold text-yellow-600">{totalDkp}</p>
+                  <p className="text-2xl font-bold text-yellow-600">
+                    {totalDkp}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -166,7 +207,9 @@ export default function RaidInstanceDetail() {
                 <Star className="h-4 w-4 text-blue-600" />
                 <div>
                   <p className="text-sm text-muted-foreground">DKP Médio</p>
-                  <p className="text-2xl font-bold text-blue-600">{Math.round(averageDkp)}</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {Math.round(averageDkp)}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -178,7 +221,9 @@ export default function RaidInstanceDetail() {
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Boss Level</p>
-                  <p className="text-2xl font-bold">{instance.raid.bossLevel}</p>
+                  <p className="text-2xl font-bold">
+                    {instance.raid.bossLevel}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -207,7 +252,9 @@ export default function RaidInstanceDetail() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Status:</span>
-                <Badge variant={instance.raid.isActive ? 'default' : 'secondary'}>
+                <Badge
+                  variant={instance.raid.isActive ? 'default' : 'secondary'}
+                >
                   {instance.raid.isActive ? 'Ativo' : 'Inativo'}
                 </Badge>
               </div>
@@ -253,7 +300,9 @@ export default function RaidInstanceDetail() {
               <CardContent>
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={topParticipant.user?.avatar || undefined} />
+                    <AvatarImage
+                      src={topParticipant.user?.avatar || undefined}
+                    />
                     <AvatarFallback>
                       {topParticipant.user?.name.charAt(0) || 'U'}
                     </AvatarFallback>
@@ -283,13 +332,18 @@ export default function RaidInstanceDetail() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Participantes ({instance.participants.length})</CardTitle>
+                  <CardTitle>
+                    Participantes ({instance.participants.length})
+                  </CardTitle>
                   <CardDescription>
                     Lista completa de jogadores que participaram desta execução
                   </CardDescription>
                 </div>
                 {isAdmin && availableUsers.length > 0 && (
-                  <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                  <Dialog
+                    open={isAddDialogOpen}
+                    onOpenChange={setIsAddDialogOpen}
+                  >
                     <DialogTrigger asChild>
                       <Button size="sm">
                         <Plus className="h-4 w-4 mr-2" />
@@ -300,13 +354,17 @@ export default function RaidInstanceDetail() {
                       <DialogHeader>
                         <DialogTitle>Adicionar Participante</DialogTitle>
                         <DialogDescription>
-                          Selecione um jogador para adicionar à esta raid instance.
+                          Selecione um jogador para adicionar à esta raid
+                          instance.
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4">
                         <div>
                           <label className="text-sm font-medium">Jogador</label>
-                          <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                          <Select
+                            value={selectedUserId}
+                            onValueChange={setSelectedUserId}
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione um jogador..." />
                             </SelectTrigger>
@@ -328,9 +386,14 @@ export default function RaidInstanceDetail() {
                           </Button>
                           <Button
                             onClick={handleAddParticipant}
-                            disabled={!selectedUserId || addParticipantMutation.isPending}
+                            disabled={
+                              !selectedUserId ||
+                              addParticipantMutation.isPending
+                            }
                           >
-                            {addParticipantMutation.isPending ? 'Adicionando...' : 'Adicionar'}
+                            {addParticipantMutation.isPending
+                              ? 'Adicionando...'
+                              : 'Adicionar'}
                           </Button>
                         </div>
                       </div>
@@ -353,13 +416,17 @@ export default function RaidInstanceDetail() {
                           {index + 1}
                         </div>
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={participant.user?.avatar || undefined} />
+                          <AvatarImage
+                            src={participant.user?.avatar || undefined}
+                          />
                           <AvatarFallback>
                             {participant.user?.name.charAt(0) || 'U'}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-semibold">{participant.user?.name}</p>
+                          <p className="font-semibold">
+                            {participant.user?.name}
+                          </p>
                           <p className="text-sm text-muted-foreground">
                             {participant.user?.nickname}
                           </p>
@@ -368,11 +435,17 @@ export default function RaidInstanceDetail() {
 
                       <div className="flex items-center gap-6">
                         <div className="text-right">
-                          <p className="text-sm text-muted-foreground">Gear Score</p>
-                          <p className="font-semibold">{participant.gearScoreAtTime}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Gear Score
+                          </p>
+                          <p className="font-semibold">
+                            {participant.gearScoreAtTime}
+                          </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-muted-foreground">DKP Recebido</p>
+                          <p className="text-sm text-muted-foreground">
+                            DKP Recebido
+                          </p>
                           <p className="text-lg font-bold text-yellow-600">
                             {participant.dkpAwarded}
                           </p>
@@ -381,7 +454,9 @@ export default function RaidInstanceDetail() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleRemoveParticipant(participant.userId)}
+                            onClick={() =>
+                              handleRemoveParticipant(participant.userId)
+                            }
                             disabled={removeParticipantMutation.isPending}
                             className="text-red-600 hover:text-red-700"
                           >

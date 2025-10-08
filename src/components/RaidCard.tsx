@@ -1,15 +1,21 @@
 import { Link } from 'react-router-dom';
-import { 
-  Edit, 
-  Trash2, 
-  Power, 
+import {
+  Edit,
+  Trash2,
+  Power,
   PowerOff,
   Users,
   Trophy,
   Plus,
-  Calendar
+  Calendar,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { useAuth } from '../hooks/useAuth';
@@ -32,7 +38,7 @@ export function RaidCard({
   isDeleting = false,
   isTogglingStatus = false,
   showActions = true,
-  compact = false
+  compact = false,
 }: RaidCardProps) {
   const { isAdmin } = useAuth();
 
@@ -60,12 +66,16 @@ export function RaidCard({
   };
 
   return (
-    <Card className={`hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary ${compact ? 'p-4' : ''}`}>
+    <Card
+      className={`hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary ${compact ? 'p-4' : ''}`}
+    >
       <CardHeader className={compact ? 'pb-2' : 'pb-3'}>
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <CardTitle className={compact ? 'text-lg' : 'text-xl'}>{raid.name}</CardTitle>
+              <CardTitle className={compact ? 'text-lg' : 'text-xl'}>
+                {raid.name}
+              </CardTitle>
               <Badge variant={raid.isActive ? 'default' : 'secondary'}>
                 {raid.isActive ? 'Ativo' : 'Inativo'}
               </Badge>
@@ -110,24 +120,30 @@ export function RaidCard({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent className={`space-y-4 ${compact ? 'pt-0' : ''}`}>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${getBossLevelColor(raid.bossLevel)}`} />
+              <div
+                className={`w-3 h-3 rounded-full ${getBossLevelColor(raid.bossLevel)}`}
+              />
               <span className="text-sm text-muted-foreground">Nível</span>
             </div>
             <p className="text-2xl font-bold">{raid.bossLevel}</p>
-            <p className="text-xs text-muted-foreground">{getBossLevelDescription(raid.bossLevel)}</p>
+            <p className="text-xs text-muted-foreground">
+              {getBossLevelDescription(raid.bossLevel)}
+            </p>
           </div>
-          
+
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Trophy className="h-3 w-3 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">Score Base</span>
             </div>
-            <p className={`text-2xl font-bold ${getBaseScoreColor(raid.baseScore)}`}>
+            <p
+              className={`text-2xl font-bold ${getBaseScoreColor(raid.baseScore)}`}
+            >
               {raid.baseScore}
             </p>
             <p className="text-xs text-muted-foreground">DKP</p>

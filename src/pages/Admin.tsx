@@ -1,6 +1,19 @@
 import { Link } from 'react-router-dom';
-import { Shield, Users, Building2, BarChart3, Settings, Database } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Shield,
+  Users,
+  Building2,
+  BarChart3,
+  Settings,
+  Database,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Layout } from '../components/Layout';
 
@@ -31,9 +44,7 @@ export default function Admin() {
                 Crie, edite e gerencie todos os membros do sistema.
               </p>
               <Button className="w-full" asChild>
-                <Link to="/members">
-                  Acessar Membros
-                </Link>
+                <Link to="/members">Acessar Membros</Link>
               </Button>
             </CardContent>
           </Card>
@@ -44,18 +55,14 @@ export default function Admin() {
                 <Building2 className="mr-2 h-5 w-5" />
                 Cps
               </CardTitle>
-              <CardDescription>
-                Gerencie Cps
-              </CardDescription>
+              <CardDescription>Gerencie Cps</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
                 Crie e administre todas as Cps do servidor.
               </p>
               <Button className="w-full" asChild>
-                <Link to="/company-parties">
-                  Gerenciar CPs
-                </Link>
+                <Link to="/company-parties">Gerenciar CPs</Link>
               </Button>
             </CardContent>
           </Card>
@@ -66,18 +73,14 @@ export default function Admin() {
                 <BarChart3 className="mr-2 h-5 w-5" />
                 Relatórios
               </CardTitle>
-              <CardDescription>
-                Estatísticas e análises
-              </CardDescription>
+              <CardDescription>Estatísticas e análises</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
                 Visualize relatórios detalhados e estatísticas do sistema.
               </p>
               <Button className="w-full" asChild>
-                <Link to="/reports">
-                  Ver Relatórios
-                </Link>
+                <Link to="/reports">Ver Relatórios</Link>
               </Button>
             </CardContent>
           </Card>
@@ -88,9 +91,7 @@ export default function Admin() {
                 <Settings className="mr-2 h-5 w-5" />
                 Configurações
               </CardTitle>
-              <CardDescription>
-                Configurações do sistema
-              </CardDescription>
+              <CardDescription>Configurações do sistema</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -108,9 +109,7 @@ export default function Admin() {
                 <Database className="mr-2 h-5 w-5" />
                 Backup & Restore
               </CardTitle>
-              <CardDescription>
-                Gerenciamento de dados
-              </CardDescription>
+              <CardDescription>Gerenciamento de dados</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -128,9 +127,7 @@ export default function Admin() {
                 <Shield className="mr-2 h-5 w-5" />
                 Logs & Auditoria
               </CardTitle>
-              <CardDescription>
-                Monitoramento de atividades
-              </CardDescription>
+              <CardDescription>Monitoramento de atividades</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -146,14 +143,14 @@ export default function Admin() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total de Membros</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total de Membros
+              </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">
-                Carregando...
-              </p>
+              <p className="text-xs text-muted-foreground">Carregando...</p>
             </CardContent>
           </Card>
 
@@ -164,35 +161,33 @@ export default function Admin() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">
-                Carregando...
-              </p>
+              <p className="text-xs text-muted-foreground">Carregando...</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Membros Ativos</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Membros Ativos
+              </CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">
-                Carregando...
-              </p>
+              <p className="text-xs text-muted-foreground">Carregando...</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Administradores</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Administradores
+              </CardTitle>
               <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">
-                Carregando...
-              </p>
+              <p className="text-xs text-muted-foreground">Carregando...</p>
             </CardContent>
           </Card>
         </div>

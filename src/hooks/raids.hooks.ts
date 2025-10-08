@@ -6,7 +6,12 @@ import {
   type GetRaidsQuery,
   type GetRaidInstancesQuery,
 } from '../services/raid.service';
-import type { CreateRaid, CreateRaidInstance, CreateRaidInstanceWithItems, UpdateRaid } from '@/types/api';
+import type {
+  CreateRaid,
+  CreateRaidInstance,
+  CreateRaidInstanceWithItems,
+  UpdateRaid,
+} from '@/types/api';
 
 // Raid hooks
 export const useRaids = (query: GetRaidsQuery = {}) => {
@@ -53,7 +58,8 @@ export const useCreateRaid = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao criar raid',
+        description:
+          error.response?.data?.error?.message || 'Erro ao criar raid',
         variant: 'destructive',
       });
     },
@@ -76,7 +82,8 @@ export const useUpdateRaid = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao atualizar raid',
+        description:
+          error.response?.data?.error?.message || 'Erro ao atualizar raid',
         variant: 'destructive',
       });
     },
@@ -98,7 +105,8 @@ export const useDeleteRaid = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao excluir raid',
+        description:
+          error.response?.data?.error?.message || 'Erro ao excluir raid',
         variant: 'destructive',
       });
     },
@@ -121,7 +129,9 @@ export const useToggleRaidStatus = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao alterar status do raid',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao alterar status do raid',
         variant: 'destructive',
       });
     },
@@ -162,7 +172,8 @@ export const useCreateRaidInstance = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateRaidInstance) => raidService.createRaidInstance(data),
+    mutationFn: (data: CreateRaidInstance) =>
+      raidService.createRaidInstance(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
       queryClient.invalidateQueries({ queryKey: ['raids'] });
@@ -174,7 +185,9 @@ export const useCreateRaidInstance = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao criar instância de raid',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao criar instância de raid',
         variant: 'destructive',
       });
     },
@@ -185,7 +198,8 @@ export const useCreateRaidInstanceWithItems = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateRaidInstanceWithItems) => raidService.createRaidInstanceWithItems(data),
+    mutationFn: (data: CreateRaidInstanceWithItems) =>
+      raidService.createRaidInstanceWithItems(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
       queryClient.invalidateQueries({ queryKey: ['raids'] });
@@ -198,7 +212,9 @@ export const useCreateRaidInstanceWithItems = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao criar instância de raid',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao criar instância de raid',
         variant: 'destructive',
       });
     },
@@ -220,7 +236,9 @@ export const useDeleteRaidInstance = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao excluir instância de raid',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao excluir instância de raid',
         variant: 'destructive',
       });
     },
@@ -229,12 +247,19 @@ export const useDeleteRaidInstance = () => {
 
 export const useDkpPreview = () => {
   return useMutation({
-    mutationFn: ({ raidId, participantIds }: { raidId: string; participantIds: string[] }) =>
-      raidService.previewDkpCalculation(raidId, participantIds),
+    mutationFn: ({
+      raidId,
+      participantIds,
+    }: {
+      raidId: string;
+      participantIds: string[];
+    }) => raidService.previewDkpCalculation(raidId, participantIds),
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao calcular preview de DKP',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao calcular preview de DKP',
         variant: 'destructive',
       });
     },
@@ -245,10 +270,17 @@ export const useAddParticipant = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ raidInstanceId, userId }: { raidInstanceId: string; userId: string }) =>
-      raidService.addParticipant(raidInstanceId, userId),
+    mutationFn: ({
+      raidInstanceId,
+      userId,
+    }: {
+      raidInstanceId: string;
+      userId: string;
+    }) => raidService.addParticipant(raidInstanceId, userId),
     onSuccess: (_, { raidInstanceId }) => {
-      queryClient.invalidateQueries({ queryKey: ['raid-instances', raidInstanceId] });
+      queryClient.invalidateQueries({
+        queryKey: ['raid-instances', raidInstanceId],
+      });
       queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
       toast({
         title: 'Sucesso',
@@ -258,7 +290,9 @@ export const useAddParticipant = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao adicionar participante',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao adicionar participante',
         variant: 'destructive',
       });
     },
@@ -269,10 +303,17 @@ export const useRemoveParticipant = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ raidInstanceId, userId }: { raidInstanceId: string; userId: string }) =>
-      raidService.removeParticipant(raidInstanceId, userId),
+    mutationFn: ({
+      raidInstanceId,
+      userId,
+    }: {
+      raidInstanceId: string;
+      userId: string;
+    }) => raidService.removeParticipant(raidInstanceId, userId),
     onSuccess: (_, { raidInstanceId }) => {
-      queryClient.invalidateQueries({ queryKey: ['raid-instances', raidInstanceId] });
+      queryClient.invalidateQueries({
+        queryKey: ['raid-instances', raidInstanceId],
+      });
       queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
       toast({
         title: 'Sucesso',
@@ -282,7 +323,9 @@ export const useRemoveParticipant = () => {
     onError: (error: any) => {
       toast({
         title: 'Erro',
-        description: error.response?.data?.error?.message || 'Erro ao remover participante',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao remover participante',
         variant: 'destructive',
       });
     },

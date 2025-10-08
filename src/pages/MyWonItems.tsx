@@ -4,7 +4,13 @@ import { Award, Loader2, Trophy, Calendar, Coins } from 'lucide-react';
 import { useMyWonItems } from '../hooks/auction.hooks';
 import { WonItemsFilters } from '../components/auction/WonItemsFilters';
 import { Layout } from '../components/Layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 
 const GRADE_COLORS: Record<string, string> = {
@@ -82,7 +88,9 @@ export default function MyWonItems() {
             <CardContent className="pt-6">
               <div className="text-center py-8">
                 <Trophy className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">Nenhum item ganho ainda</h3>
+                <h3 className="text-lg font-medium mb-2">
+                  Nenhum item ganho ainda
+                </h3>
                 <p className="text-muted-foreground">
                   Você ainda não ganhou nenhum item em leilões.
                 </p>
@@ -95,18 +103,25 @@ export default function MyWonItems() {
               <CardHeader>
                 <CardTitle>Itens Ganhos ({wonItems.length})</CardTitle>
                 <CardDescription>
-                  Total de DKP gasto: {wonItems.reduce((sum, item) => sum + item.amountPaid, 0)} DKP
+                  Total de DKP gasto:{' '}
+                  {wonItems.reduce((sum, item) => sum + item.amountPaid, 0)} DKP
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {wonItems.map((item) => (
-                    <div key={item.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                    <div
+                      key={item.id}
+                      className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                    >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-medium">{item.itemName}</h4>
-                            <Badge variant="outline" className={`text-white ${GRADE_COLORS[item.grade]}`}>
+                            <Badge
+                              variant="outline"
+                              className={`text-white ${GRADE_COLORS[item.grade]}`}
+                            >
                               {item.grade}
                             </Badge>
                             <Badge variant="secondary">
@@ -121,16 +136,24 @@ export default function MyWonItems() {
                             </div>
                             <div className="flex items-center gap-1">
                               <Coins className="h-4 w-4 text-green-600" />
-                              <span className="font-semibold text-green-600">{item.amountPaid} DKP</span>
+                              <span className="font-semibold text-green-600">
+                                {item.amountPaid} DKP
+                              </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="h-4 w-4" />
                               <span>
-                                {new Date(item.wonAt).toLocaleDateString('pt-BR')} às{' '}
-                                {new Date(item.wonAt).toLocaleTimeString('pt-BR', {
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
+                                {new Date(item.wonAt).toLocaleDateString(
+                                  'pt-BR'
+                                )}{' '}
+                                às{' '}
+                                {new Date(item.wonAt).toLocaleTimeString(
+                                  'pt-BR',
+                                  {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                  }
+                                )}
                               </span>
                             </div>
                           </div>
@@ -147,4 +170,3 @@ export default function MyWonItems() {
     </Layout>
   );
 }
-

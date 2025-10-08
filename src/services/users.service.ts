@@ -1,5 +1,10 @@
 import { api } from '../lib/axios';
-import { UserSchema, UpdateProfileSchema, type User, type UpdateProfile } from '../types/api';
+import {
+  UserSchema,
+  UpdateProfileSchema,
+  type User,
+  type UpdateProfile,
+} from '../types/api';
 
 export interface UsersQuery {
   page?: number;
@@ -60,14 +65,17 @@ export const usersService = {
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
     if (query.search) params.append('search', query.search);
-    if (query.isActive !== undefined) params.append('isActive', query.isActive.toString());
+    if (query.isActive !== undefined)
+      params.append('isActive', query.isActive.toString());
     if (query.role) params.append('role', query.role);
     if (query.sortBy) params.append('sortBy', query.sortBy);
     if (query.sortOrder) params.append('sortOrder', query.sortOrder);
 
     const response = await api.get(`/users?${params.toString()}`);
 
-    const users = response.data.data.map((user: User) => UserSchema.parse(user));
+    const users = response.data.data.map((user: User) =>
+      UserSchema.parse(user)
+    );
 
     return {
       data: users,

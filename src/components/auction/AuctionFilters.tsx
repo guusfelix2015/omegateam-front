@@ -41,7 +41,10 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<AuctionFilterValues>({});
 
-  const handleFilterChange = (key: keyof AuctionFilterValues, value: string) => {
+  const handleFilterChange = (
+    key: keyof AuctionFilterValues,
+    value: string
+  ) => {
     const newFilters = { ...filters, [key]: value || undefined };
     setFilters(newFilters);
     onFilterChange(newFilters);
@@ -73,7 +76,12 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
         </Button>
 
         {activeFiltersCount > 0 && (
-          <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearFilters}
+            className="gap-2"
+          >
             <X className="h-4 w-4" />
             Limpar Filtros
           </Button>
@@ -85,7 +93,9 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Date From */}
             <div>
-              <label className="block text-sm font-medium mb-2">Data Inicial</label>
+              <label className="block text-sm font-medium mb-2">
+                Data Inicial
+              </label>
               <input
                 type="date"
                 value={filters.dateFrom || ''}
@@ -96,7 +106,9 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
 
             {/* Date To */}
             <div>
-              <label className="block text-sm font-medium mb-2">Data Final</label>
+              <label className="block text-sm font-medium mb-2">
+                Data Final
+              </label>
               <input
                 type="date"
                 value={filters.dateTo || ''}
@@ -107,7 +119,9 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
 
             {/* Item Name */}
             <div>
-              <label className="block text-sm font-medium mb-2">Nome do Item</label>
+              <label className="block text-sm font-medium mb-2">
+                Nome do Item
+              </label>
               <input
                 type="text"
                 value={filters.itemName || ''}
@@ -119,10 +133,14 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium mb-2">Categoria</label>
+              <label className="block text-sm font-medium mb-2">
+                Categoria
+              </label>
               <select
                 value={filters.itemCategory || ''}
-                onChange={(e) => handleFilterChange('itemCategory', e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange('itemCategory', e.target.value)
+                }
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="">Todas</option>
@@ -139,7 +157,9 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
               <label className="block text-sm font-medium mb-2">Grade</label>
               <select
                 value={filters.itemGrade || ''}
-                onChange={(e) => handleFilterChange('itemGrade', e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange('itemGrade', e.target.value)
+                }
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="">Todas</option>
@@ -156,4 +176,3 @@ export function AuctionFilters({ onFilterChange }: AuctionFiltersProps) {
     </div>
   );
 }
-

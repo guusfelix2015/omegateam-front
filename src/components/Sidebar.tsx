@@ -15,7 +15,7 @@ import {
   Trophy,
   Coins,
   Gavel,
-  Award
+  Award,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -126,7 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     window.location.href = '/login';
   };
 
-  const filteredNavItems = navItems.filter(item => {
+  const filteredNavItems = navItems.filter((item) => {
     if (item.adminOnly) {
       return isAdmin;
     }
@@ -139,14 +139,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between p-4 border-b">
-        <div className={cn("flex items-center space-x-2", isCollapsed && "justify-center")}>
+        <div
+          className={cn(
+            'flex items-center space-x-2',
+            isCollapsed && 'justify-center'
+          )}
+        >
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">OT</span>
+            <span className="text-primary-foreground font-bold text-sm">
+              OT
+            </span>
           </div>
           {!isCollapsed && (
             <div>
               <h1 className="font-bold text-lg">OmegaTeam</h1>
-              <p className="text-xs text-muted-foreground">Lineage CP Manager</p>
+              <p className="text-xs text-muted-foreground">
+                Lineage CP Manager
+              </p>
             </div>
           )}
         </div>
@@ -197,14 +206,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               to={item.href}
               onClick={() => setIsMobileOpen(false)}
               className={cn(
-                "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                'flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent",
-                isCollapsed && "justify-center px-2"
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent',
+                isCollapsed && 'justify-center px-2'
               )}
             >
-              <item.icon className={cn("h-5 w-5", isCollapsed && "h-6 w-6")} />
+              <item.icon className={cn('h-5 w-5', isCollapsed && 'h-6 w-6')} />
               {!isCollapsed && <span>{item.name}</span>}
             </Link>
           );
@@ -213,11 +222,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       <div className="p-4 border-t space-y-2">
         {/* Theme Toggle */}
-        <div className={cn(
-          "flex items-center",
-          isCollapsed ? "justify-center" : "justify-between"
-        )}>
-          {!isCollapsed && <span className="text-sm text-muted-foreground">Tema</span>}
+        <div
+          className={cn(
+            'flex items-center',
+            isCollapsed ? 'justify-center' : 'justify-between'
+          )}
+        >
+          {!isCollapsed && (
+            <span className="text-sm text-muted-foreground">Tema</span>
+          )}
           <ThemeToggle />
         </div>
 
@@ -227,12 +240,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
           className={cn(
-            "w-full justify-start text-muted-foreground hover:text-foreground",
-            isCollapsed && "justify-center px-2"
+            'w-full justify-start text-muted-foreground hover:text-foreground',
+            isCollapsed && 'justify-center px-2'
           )}
         >
-          <LogOut className={cn("h-5 w-5", !isCollapsed && "mr-3", isCollapsed && "h-6 w-6")} />
-          {!isCollapsed && "Sair"}
+          <LogOut
+            className={cn(
+              'h-5 w-5',
+              !isCollapsed && 'mr-3',
+              isCollapsed && 'h-6 w-6'
+            )}
+          />
+          {!isCollapsed && 'Sair'}
         </Button>
       </div>
     </div>
@@ -256,18 +275,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         />
       )}
 
-      <aside className={cn(
-        "hidden lg:flex flex-col bg-card border-r transition-all duration-300",
-        isCollapsed ? "w-16" : "w-64",
-        className
-      )}>
+      <aside
+        className={cn(
+          'hidden lg:flex flex-col bg-card border-r transition-all duration-300',
+          isCollapsed ? 'w-16' : 'w-64',
+          className
+        )}
+      >
         <SidebarContent />
       </aside>
 
-      <aside className={cn(
-        "lg:hidden fixed left-0 top-0 z-50 h-full w-64 bg-card border-r transition-transform duration-300",
-        isMobileOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <aside
+        className={cn(
+          'lg:hidden fixed left-0 top-0 z-50 h-full w-64 bg-card border-r transition-transform duration-300',
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
         <SidebarContent />
       </aside>
     </>

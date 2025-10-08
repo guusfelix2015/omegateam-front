@@ -13,9 +13,15 @@ import {
   Trophy,
   Search,
   Filter,
-  BarChart3
+  BarChart3,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
@@ -26,21 +32,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { useRaids, useDeleteRaid, useToggleRaidStatus } from '../hooks/raids.hooks';
+import {
+  useRaids,
+  useDeleteRaid,
+  useToggleRaidStatus,
+} from '../hooks/raids.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
 import { useDebounce } from '../hooks/useDebounce';
 
 export default function RaidsList() {
   const [search, setSearch] = useState('');
-  const [isActiveFilter, setIsActiveFilter] = useState<boolean | undefined>(undefined);
-  const [sortBy, setSortBy] = useState<'name' | 'bossLevel' | 'baseScore' | 'createdAt'>('createdAt');
+  const [isActiveFilter, setIsActiveFilter] = useState<boolean | undefined>(
+    undefined
+  );
+  const [sortBy, setSortBy] = useState<
+    'name' | 'bossLevel' | 'baseScore' | 'createdAt'
+  >('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const debouncedSearch = useDebounce(search, 300);
   const { isAdmin } = useAuth();
 
-  const { data: raidsData, isLoading, error } = useRaids({
+  const {
+    data: raidsData,
+    isLoading,
+    error,
+  } = useRaids({
     search: debouncedSearch,
     isActive: isActiveFilter,
     sortBy,
@@ -150,9 +168,14 @@ export default function RaidsList() {
                 </div>
               </div>
 
-              <Select value={isActiveFilter?.toString() || 'all'} onValueChange={(value) =>
-                setIsActiveFilter(value === 'all' ? undefined : value === 'true')
-              }>
+              <Select
+                value={isActiveFilter?.toString() || 'all'}
+                onValueChange={(value) =>
+                  setIsActiveFilter(
+                    value === 'all' ? undefined : value === 'true'
+                  )
+                }
+              >
                 <SelectTrigger className="w-[140px]">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
@@ -164,7 +187,10 @@ export default function RaidsList() {
                 </SelectContent>
               </Select>
 
-              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+              <Select
+                value={sortBy}
+                onValueChange={(value: any) => setSortBy(value)}
+              >
                 <SelectTrigger className="w-[140px]">
                   <SelectValue />
                 </SelectTrigger>
@@ -179,7 +205,9 @@ export default function RaidsList() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                onClick={() =>
+                  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+                }
               >
                 {sortOrder === 'asc' ? '↑' : '↓'}
               </Button>
@@ -192,9 +220,13 @@ export default function RaidsList() {
           <Card>
             <CardContent className="py-12 text-center">
               <Swords className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Nenhum raid encontrado</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Nenhum raid encontrado
+              </h3>
               <p className="text-muted-foreground mb-4">
-                {search ? 'Tente ajustar os filtros de busca' : 'Comece criando seu primeiro raid'}
+                {search
+                  ? 'Tente ajustar os filtros de busca'
+                  : 'Comece criando seu primeiro raid'}
               </p>
               {isAdmin && !search && (
                 <Button asChild>
@@ -209,18 +241,24 @@ export default function RaidsList() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {raids.map((raid) => (
-              <Card key={raid.id} className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary">
+              <Card
+                key={raid.id}
+                className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary"
+              >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <CardTitle className="text-xl">{raid.name}</CardTitle>
-                        <Badge variant={raid.isActive ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={raid.isActive ? 'default' : 'secondary'}
+                        >
                           {raid.isActive ? 'Ativo' : 'Inativo'}
                         </Badge>
                       </div>
                       <CardDescription>
-                        Criado em {new Date(raid.createdAt).toLocaleDateString('pt-BR')}
+                        Criado em{' '}
+                        {new Date(raid.createdAt).toLocaleDateString('pt-BR')}
                       </CardDescription>
                     </div>
                     {isAdmin && (
@@ -233,7 +271,9 @@ export default function RaidsList() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleToggleStatus(raid.id, raid.isActive)}
+                          onClick={() =>
+                            handleToggleStatus(raid.id, raid.isActive)
+                          }
                           disabled={toggleStatusMutation.isPending}
                         >
                           {raid.isActive ? (
@@ -259,8 +299,12 @@ export default function RaidsList() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${getBossLevelColor(raid.bossLevel)}`} />
-                        <span className="text-sm text-muted-foreground">Nível</span>
+                        <div
+                          className={`w-3 h-3 rounded-full ${getBossLevelColor(raid.bossLevel)}`}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Nível
+                        </span>
                       </div>
                       <p className="text-2xl font-bold">{raid.bossLevel}</p>
                     </div>
@@ -268,16 +312,25 @@ export default function RaidsList() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <Trophy className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Score Base</span>
+                        <span className="text-sm text-muted-foreground">
+                          Score Base
+                        </span>
                       </div>
-                      <p className={`text-2xl font-bold ${getBaseScoreColor(raid.baseScore)}`}>
+                      <p
+                        className={`text-2xl font-bold ${getBaseScoreColor(raid.baseScore)}`}
+                      >
                         {raid.baseScore}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" asChild className="flex-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="flex-1"
+                    >
                       <Link to={`/raids/${raid.id}`}>
                         <Users className="mr-2 h-4 w-4" />
                         Ver Detalhes
@@ -310,7 +363,8 @@ export default function RaidsList() {
               Anterior
             </Button>
             <span className="flex items-center px-4 text-sm text-muted-foreground">
-              Página {raidsData.pagination.page} de {raidsData.pagination.totalPages}
+              Página {raidsData.pagination.page} de{' '}
+              {raidsData.pagination.totalPages}
             </span>
             <Button
               variant="outline"

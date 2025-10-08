@@ -27,16 +27,19 @@ export const useUpdateUserGear = () => {
       queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
 
       toast({
-        title: "Gear atualizado!",
+        title: 'Gear atualizado!',
         description: `Seu gear score agora é ${updatedGear.gearScore}.`,
       });
     },
     onError: (error: any) => {
       console.error('Error updating gear:', error);
       toast({
-        title: "Erro ao atualizar gear",
-        description: error.response?.data?.error?.message || error.response?.data?.message || "Ocorreu um erro ao atualizar seu gear.",
-        variant: "destructive",
+        title: 'Erro ao atualizar gear',
+        description:
+          error.response?.data?.error?.message ||
+          error.response?.data?.message ||
+          'Ocorreu um erro ao atualizar seu gear.',
+        variant: 'destructive',
       });
     },
   });

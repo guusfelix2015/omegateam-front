@@ -1,9 +1,27 @@
 import { useState } from 'react';
-import { Edit, Trash2, Plus, Coins, Calendar, FileText, Trophy, AlertCircle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Coins,
+  Calendar,
+  FileText,
+  Trophy,
+  AlertCircle,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { useRaidInstanceDroppedItems, useDeleteRaidDroppedItem } from '../../hooks/raid-dropped-items.hooks';
+import {
+  useRaidInstanceDroppedItems,
+  useDeleteRaidDroppedItem,
+} from '../../hooks/raid-dropped-items.hooks';
 import { useAuth } from '../../hooks/useAuth';
 import { AddDroppedItemDialog } from './AddDroppedItemDialog';
 import { EditDroppedItemDialog } from './EditDroppedItemDialog';
@@ -41,7 +59,11 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<RaidDroppedItem | null>(null);
 
-  const { data: droppedItems, isLoading, error } = useRaidInstanceDroppedItems(raidInstanceId);
+  const {
+    data: droppedItems,
+    isLoading,
+    error,
+  } = useRaidInstanceDroppedItems(raidInstanceId);
   const deleteItemMutation = useDeleteRaidDroppedItem();
 
   const handleDeleteItem = async (item: RaidDroppedItem) => {
@@ -79,7 +101,9 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
-            <div className="text-destructive">Erro ao carregar itens dropados</div>
+            <div className="text-destructive">
+              Erro ao carregar itens dropados
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -97,7 +121,8 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
                 Itens Dropados
               </CardTitle>
               <CardDescription>
-                {droppedItems?.length || 0} {droppedItems?.length === 1 ? 'item dropado' : 'itens dropados'}
+                {droppedItems?.length || 0}{' '}
+                {droppedItems?.length === 1 ? 'item dropado' : 'itens dropados'}
               </CardDescription>
             </div>
             {isAdmin && (
@@ -117,7 +142,10 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
                 Esta raid instance ainda não possui itens dropados registrados.
               </p>
               {isAdmin && (
-                <Button onClick={() => setShowAddDialog(true)} variant="outline">
+                <Button
+                  onClick={() => setShowAddDialog(true)}
+                  variant="outline"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Adicionar Primeiro Item
                 </Button>
@@ -132,12 +160,18 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
                 const hasNoBids = lastAuction?.status === 'NO_BIDS';
 
                 return (
-                  <div key={item.id} className={`border rounded-lg p-4 ${isAuctioned ? 'bg-gray-50' : ''}`}>
+                  <div
+                    key={item.id}
+                    className={`border rounded-lg p-4 ${isAuctioned ? 'bg-gray-50' : ''}`}
+                  >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-medium">{item.name}</h4>
-                          <Badge variant="outline" className={`text-white ${GRADE_COLORS[item.grade]}`}>
+                          <Badge
+                            variant="outline"
+                            className={`text-white ${GRADE_COLORS[item.grade]}`}
+                          >
                             {item.grade}
                           </Badge>
                           <Badge variant="secondary">
@@ -146,7 +180,10 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
 
                           {/* Auction Status Badge */}
                           {!isAuctioned && (
-                            <Badge variant="outline" className="border-blue-500 text-blue-600">
+                            <Badge
+                              variant="outline"
+                              className="border-blue-500 text-blue-600"
+                            >
                               Disponível para Leilão
                             </Badge>
                           )}
@@ -167,12 +204,18 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                           <div className="flex items-center gap-1">
                             <Coins className="h-4 w-4" />
-                            <span className="font-medium">{item.minDkpBid} DKP</span>
+                            <span className="font-medium">
+                              {item.minDkpBid} DKP
+                            </span>
                             <span>lance mínimo</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            <span>{new Date(item.droppedAt).toLocaleDateString('pt-BR')}</span>
+                            <span>
+                              {new Date(item.droppedAt).toLocaleDateString(
+                                'pt-BR'
+                              )}
+                            </span>
                           </div>
                         </div>
 
@@ -183,19 +226,31 @@ export function DroppedItemsList({ raidInstanceId }: DroppedItemsListProps) {
                               {isSold && lastAuction.currentWinner && (
                                 <>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-blue-900">Vencedor:</span>
-                                    <span className="text-blue-700">{lastAuction.currentWinner.nickname}</span>
+                                    <span className="font-medium text-blue-900">
+                                      Vencedor:
+                                    </span>
+                                    <span className="text-blue-700">
+                                      {lastAuction.currentWinner.nickname}
+                                    </span>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-blue-900">Valor:</span>
-                                    <span className="text-green-600 font-semibold">{lastAuction.currentBid} DKP</span>
+                                    <span className="font-medium text-blue-900">
+                                      Valor:
+                                    </span>
+                                    <span className="text-green-600 font-semibold">
+                                      {lastAuction.currentBid} DKP
+                                    </span>
                                   </div>
                                 </>
                               )}
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-blue-900">Leilão:</span>
+                                <span className="font-medium text-blue-900">
+                                  Leilão:
+                                </span>
                                 <span className="text-blue-700">
-                                  {new Date(lastAuction.auction.createdAt).toLocaleDateString('pt-BR')}
+                                  {new Date(
+                                    lastAuction.auction.createdAt
+                                  ).toLocaleDateString('pt-BR')}
                                 </span>
                               </div>
                               {isAdmin && (

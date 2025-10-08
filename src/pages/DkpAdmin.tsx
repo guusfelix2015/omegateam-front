@@ -12,9 +12,15 @@ import {
   AlertTriangle,
   CheckCircle,
   User,
-  Trophy
+  Trophy,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -28,8 +34,15 @@ import { useDebounce } from '../hooks/useDebounce';
 
 const dkpAdjustmentSchema = z.object({
   userId: z.string().min(1, 'Selecione um usuário'),
-  amount: z.number().int().min(-9999, 'Valor muito baixo').max(9999, 'Valor muito alto'),
-  reason: z.string().min(5, 'Motivo deve ter pelo menos 5 caracteres').max(500, 'Motivo muito longo'),
+  amount: z
+    .number()
+    .int()
+    .min(-9999, 'Valor muito baixo')
+    .max(9999, 'Valor muito alto'),
+  reason: z
+    .string()
+    .min(5, 'Motivo deve ter pelo menos 5 caracteres')
+    .max(500, 'Motivo muito longo'),
 });
 
 type DkpAdjustmentFormData = z.infer<typeof dkpAdjustmentSchema>;
@@ -37,7 +50,9 @@ type DkpAdjustmentFormData = z.infer<typeof dkpAdjustmentSchema>;
 export default function DkpAdmin() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [adjustmentType, setAdjustmentType] = useState<'positive' | 'negative'>('positive');
+  const [adjustmentType, setAdjustmentType] = useState<'positive' | 'negative'>(
+    'positive'
+  );
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -90,7 +105,10 @@ export default function DkpAdmin() {
     if (type === 'negative') {
       setValue('amount', currentAmount > 0 ? -currentAmount : currentAmount);
     } else {
-      setValue('amount', currentAmount < 0 ? Math.abs(currentAmount) : currentAmount);
+      setValue(
+        'amount',
+        currentAmount < 0 ? Math.abs(currentAmount) : currentAmount
+      );
     }
   };
 
@@ -107,8 +125,8 @@ export default function DkpAdmin() {
   };
 
   const users = usersData?.data || [];
-  const availableUsers = users.filter(user =>
-    !selectedUser || user.id !== selectedUser.id
+  const availableUsers = users.filter(
+    (user) => !selectedUser || user.id !== selectedUser.id
   );
 
   return (
@@ -131,8 +149,8 @@ export default function DkpAdmin() {
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            <strong>Atenção:</strong> Ajustes manuais de DKP devem ser feitos com cuidado.
-            Sempre forneça um motivo detalhado para auditoria.
+            <strong>Atenção:</strong> Ajustes manuais de DKP devem ser feitos
+            com cuidado. Sempre forneça um motivo detalhado para auditoria.
           </AlertDescription>
         </Alert>
 
@@ -156,12 +174,15 @@ export default function DkpAdmin() {
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={selectedUser.avatar || undefined} />
-                        <AvatarFallback>{selectedUser.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>
+                          {selectedUser.name.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-semibold">{selectedUser.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {selectedUser.nickname} • DKP: {selectedUser.dkpPoints}
+                          {selectedUser.nickname} • DKP:{' '}
+                          {selectedUser.dkpPoints}
                         </p>
                       </div>
                     </div>
@@ -211,12 +232,15 @@ export default function DkpAdmin() {
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={user.avatar || undefined} />
-                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>
+                              {user.name.charAt(0)}
+                            </AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="font-medium text-sm">{user.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              {user.nickname} • Lvl {user.lvl} • DKP: {user.dkpPoints}
+                              {user.nickname} • Lvl {user.lvl} • DKP:{' '}
+                              {user.dkpPoints}
                             </p>
                           </div>
                         </div>
@@ -250,7 +274,9 @@ export default function DkpAdmin() {
                   <div className="flex gap-2">
                     <Button
                       type="button"
-                      variant={adjustmentType === 'positive' ? 'default' : 'outline'}
+                      variant={
+                        adjustmentType === 'positive' ? 'default' : 'outline'
+                      }
                       onClick={() => handleAdjustmentTypeChange('positive')}
                       className="flex-1"
                     >
@@ -259,7 +285,9 @@ export default function DkpAdmin() {
                     </Button>
                     <Button
                       type="button"
-                      variant={adjustmentType === 'negative' ? 'default' : 'outline'}
+                      variant={
+                        adjustmentType === 'negative' ? 'default' : 'outline'
+                      }
                       onClick={() => handleAdjustmentTypeChange('negative')}
                       className="flex-1"
                     >
@@ -280,11 +308,14 @@ export default function DkpAdmin() {
                     className={errors.amount ? 'border-red-500' : ''}
                   />
                   {errors.amount && (
-                    <p className="text-sm text-red-500">{errors.amount.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.amount.message}
+                    </p>
                   )}
                   {watchedAmount !== 0 && (
                     <p className="text-sm text-muted-foreground">
-                      {watchedAmount > 0 ? 'Adicionará' : 'Removerá'} {Math.abs(watchedAmount)} pontos DKP
+                      {watchedAmount > 0 ? 'Adicionará' : 'Removerá'}{' '}
+                      {Math.abs(watchedAmount)} pontos DKP
                     </p>
                   )}
                 </div>
@@ -299,7 +330,9 @@ export default function DkpAdmin() {
                     className={errors.reason ? 'border-red-500' : ''}
                   />
                   {errors.reason && (
-                    <p className="text-sm text-red-500">{errors.reason.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.reason.message}
+                    </p>
                   )}
                   <p className="text-xs text-muted-foreground">
                     Este motivo será registrado no histórico para auditoria
@@ -322,7 +355,11 @@ export default function DkpAdmin() {
                   </Button>
                   <Button
                     type="submit"
-                    disabled={isSubmitting || !selectedUser || createAdjustmentMutation.isPending}
+                    disabled={
+                      isSubmitting ||
+                      !selectedUser ||
+                      createAdjustmentMutation.isPending
+                    }
                     className="flex-1"
                   >
                     {(isSubmitting || createAdjustmentMutation.isPending) && (
@@ -354,7 +391,9 @@ export default function DkpAdmin() {
           <CardContent className="space-y-3">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <h4 className="font-semibold text-green-600 mb-2">✅ Quando Adicionar DKP:</h4>
+                <h4 className="font-semibold text-green-600 mb-2">
+                  ✅ Quando Adicionar DKP:
+                </h4>
                 <ul className="text-sm space-y-1 text-muted-foreground">
                   <li>• Bônus por performance excepcional</li>
                   <li>• Correção de erros do sistema</li>
@@ -363,7 +402,9 @@ export default function DkpAdmin() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-red-600 mb-2">❌ Quando Remover DKP:</h4>
+                <h4 className="font-semibold text-red-600 mb-2">
+                  ❌ Quando Remover DKP:
+                </h4>
                 <ul className="text-sm space-y-1 text-muted-foreground">
                   <li>• Correção de DKP concedido incorretamente</li>
                   <li>• Penalidades por comportamento inadequado</li>
@@ -374,8 +415,9 @@ export default function DkpAdmin() {
             </div>
             <div className="pt-2 border-t">
               <p className="text-sm text-muted-foreground">
-                <strong>Lembre-se:</strong> Todos os ajustes são registrados com timestamp,
-                motivo e administrador responsável para auditoria completa.
+                <strong>Lembre-se:</strong> Todos os ajustes são registrados com
+                timestamp, motivo e administrador responsável para auditoria
+                completa.
               </p>
             </div>
           </CardContent>

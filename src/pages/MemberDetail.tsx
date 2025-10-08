@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Save, X, User, Shield, Building2, Trash2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  ArrowLeft,
+  Edit,
+  Save,
+  X,
+  User,
+  Shield,
+  Building2,
+  Trash2,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { Switch } from '../components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { useUser, useUpdateUser, useDeleteUser } from '../hooks/users.hooks';
-import { useCompanyParties, useAddPlayerToParty, useRemovePlayerFromParty } from '../hooks/company-parties.hooks';
+import {
+  useCompanyParties,
+  useAddPlayerToParty,
+  useRemovePlayerFromParty,
+} from '../hooks/company-parties.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { Layout } from '../components/Layout';
@@ -18,6 +44,7 @@ import { MemberGearAndDkp } from '../components/MemberGearAndDkp';
 export default function MemberDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isAdmin, user: currentUser } = useAuth();
   const { toast } = useToast();
   const { data: user, isLoading, error } = useUser(id!);
@@ -58,6 +85,7 @@ export default function MemberDetail() {
     if (!user) return;
 
     try {
+      // Update basic user information
       await updateUserMutation.mutateAsync({
         id: user.id,
         data: {
@@ -67,39 +95,46 @@ export default function MemberDetail() {
           lvl: editData.lvl,
           role: editData.role,
           isActive: editData.isActive,
-        }
+        },
       });
 
+      // Handle Company Party changes
       const currentCP = user.companyParties?.[0]?.companyPartyId || '';
       const newCP = editData.companyPartyId;
 
       if (currentCP !== newCP) {
+        // Remove from current CP if exists
         if (currentCP) {
           await removePlayerFromPartyMutation.mutateAsync({
             partyId: currentCP,
-            playerId: user.id
+            playerId: user.id,
           });
         }
 
+        // Add to new CP if selected
         if (newCP && newCP !== 'none') {
           await addPlayerToPartyMutation.mutateAsync({
             partyId: newCP,
-            data: { userId: user.id }
+            data: { userId: user.id },
           });
         }
+
+        // Invalidate user query to refetch updated data with new CP
+        await queryClient.invalidateQueries({ queryKey: ['users', user.id] });
       }
 
       toast({
-        title: "Usuário atualizado!",
-        description: "As alterações foram salvas com sucesso.",
+        title: 'Usuário atualizado!',
+        description: 'As alterações foram salvas com sucesso.',
       });
 
       setIsEditing(false);
-    } catch {
+    } catch (error) {
+      console.error('Error updating user:', error);
       toast({
-        title: "Erro ao atualizar usuário",
-        description: "Ocorreu um erro ao salvar as alterações.",
-        variant: "destructive",
+        title: 'Erro ao atualizar usuário',
+        description: 'Ocorreu um erro ao salvar as alterações.',
+        variant: 'destructive',
       });
     }
   };
@@ -127,9 +162,9 @@ export default function MemberDetail() {
     // Prevent user from deleting themselves
     if (currentUser && currentUser.id === user.id) {
       toast({
-        title: "Ação não permitida",
-        description: "Você não pode deletar sua própria conta.",
-        variant: "destructive",
+        title: 'Ação não permitida',
+        description: 'Você não pode deletar sua própria conta.',
+        variant: 'destructive',
       });
       return;
     }
@@ -241,7 +276,9 @@ export default function MemberDetail() {
                   <Input
                     id="name"
                     value={editData.name}
-                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, name: e.target.value })
+                    }
                   />
                 ) : (
                   <p className="text-sm">{user.name}</p>
@@ -254,7 +291,9 @@ export default function MemberDetail() {
                   <Input
                     id="nickname"
                     value={editData.nickname}
-                    onChange={(e) => setEditData({ ...editData, nickname: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, nickname: e.target.value })
+                    }
                   />
                 ) : (
                   <p className="text-sm">{user.nickname}</p>
@@ -268,7 +307,9 @@ export default function MemberDetail() {
                     id="email"
                     type="email"
                     value={editData.email}
-                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, email: e.target.value })
+                    }
                   />
                 ) : (
                   <p className="text-sm">{user.email}</p>
@@ -284,7 +325,12 @@ export default function MemberDetail() {
                     min="1"
                     max="85"
                     value={editData.lvl}
-                    onChange={(e) => setEditData({ ...editData, lvl: parseInt(e.target.value) || 1 })}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        lvl: parseInt(e.target.value) || 1,
+                      })
+                    }
                   />
                 ) : (
                   <p className="text-sm">Level {user.lvl}</p>
@@ -323,8 +369,14 @@ export default function MemberDetail() {
                     </SelectContent>
                   </Select>
                 ) : (
-                  <Badge variant={user.role === 'ADMIN' ? 'default' : 'secondary'}>
-                    {user.role === 'ADMIN' ? 'Administrador' : user.role === 'CP_LEADER' ? 'Líder de CP' : 'Jogador'}
+                  <Badge
+                    variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
+                  >
+                    {user.role === 'ADMIN'
+                      ? 'Administrador'
+                      : user.role === 'CP_LEADER'
+                        ? 'Líder de CP'
+                        : 'Jogador'}
                   </Badge>
                 )}
               </div>
@@ -352,7 +404,10 @@ export default function MemberDetail() {
                   <Select
                     value={editData.companyPartyId || 'none'}
                     onValueChange={(value) =>
-                      setEditData({ ...editData, companyPartyId: value === 'none' ? '' : value })
+                      setEditData({
+                        ...editData,
+                        companyPartyId: value === 'none' ? '' : value,
+                      })
                     }
                   >
                     <SelectTrigger>
@@ -382,7 +437,9 @@ export default function MemberDetail() {
                         {user.companyParties[0].companyParty?.name || 'N/A'}
                       </Badge>
                     ) : (
-                      <span className="text-muted-foreground">Nenhuma Company Party</span>
+                      <span className="text-muted-foreground">
+                        Nenhuma Company Party
+                      </span>
                     )}
                   </div>
                 )}
@@ -410,9 +467,7 @@ export default function MemberDetail() {
                 <Building2 className="mr-2 h-5 w-5" />
                 Cps
               </CardTitle>
-              <CardDescription>
-                Cps que este membro participa
-              </CardDescription>
+              <CardDescription>Cps que este membro participa</CardDescription>
             </CardHeader>
             <CardContent>
               {user.companyParties && user.companyParties.length > 0 ? (
@@ -422,13 +477,20 @@ export default function MemberDetail() {
                       <CardContent className="pt-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="font-medium">{userCP.companyParty?.name}</h4>
+                            <h4 className="font-medium">
+                              {userCP.companyParty?.name}
+                            </h4>
                             <p className="text-sm text-muted-foreground">
-                              Entrou em {new Date(userCP.joinedAt).toLocaleDateString('pt-BR')}
+                              Entrou em{' '}
+                              {new Date(userCP.joinedAt).toLocaleDateString(
+                                'pt-BR'
+                              )}
                             </p>
                           </div>
                           <Button variant="outline" size="sm" asChild>
-                            <Link to={`/company-parties/${userCP.companyPartyId}`}>
+                            <Link
+                              to={`/company-parties/${userCP.companyPartyId}`}
+                            >
                               Ver CP
                             </Link>
                           </Button>
@@ -454,7 +516,8 @@ export default function MemberDetail() {
           <CardHeader>
             <CardTitle>Gear e DKP</CardTitle>
             <CardDescription>
-              Informações detalhadas sobre equipamentos e pontos DKP de {user.name}
+              Informações detalhadas sobre equipamentos e pontos DKP de{' '}
+              {user.name}
             </CardDescription>
           </CardHeader>
           <CardContent>

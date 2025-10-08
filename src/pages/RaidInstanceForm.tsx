@@ -12,16 +12,27 @@ import {
   X,
   Search,
   Calculator,
-  Package
+  Package,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { useRaid, useCreateRaidInstance, useCreateRaidInstanceWithItems, useDkpPreview } from '../hooks/raids.hooks';
+import {
+  useRaid,
+  useCreateRaidInstance,
+  useCreateRaidInstanceWithItems,
+  useDkpPreview,
+} from '../hooks/raids.hooks';
 import { useUsers } from '../hooks/users.hooks';
 import { Layout } from '../components/Layout';
 import { useDebounce } from '../hooks/useDebounce';
@@ -42,8 +53,12 @@ export default function RaidInstanceForm() {
   const { raidId } = useParams();
 
   const [currentStep, setCurrentStep] = useState<WizardStep>('participants');
-  const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
-  const [droppedItems, setDroppedItems] = useState<CreateRaidInstanceDroppedItem[]>([]);
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    []
+  );
+  const [droppedItems, setDroppedItems] = useState<
+    CreateRaidInstanceDroppedItem[]
+  >([]);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -101,15 +116,15 @@ export default function RaidInstanceForm() {
   };
 
   const toggleParticipant = (userId: string) => {
-    setSelectedParticipants(prev =>
+    setSelectedParticipants((prev) =>
       prev.includes(userId)
-        ? prev.filter(id => id !== userId)
+        ? prev.filter((id) => id !== userId)
         : [...prev, userId]
     );
   };
 
   const removeParticipant = (userId: string) => {
-    setSelectedParticipants(prev => prev.filter(id => id !== userId));
+    setSelectedParticipants((prev) => prev.filter((id) => id !== userId));
   };
 
   // Wizard navigation functions
@@ -165,8 +180,12 @@ export default function RaidInstanceForm() {
   }
 
   const users = usersData?.data || [];
-  const selectedUsers = users.filter(user => selectedParticipants.includes(user.id));
-  const availableUsers = users.filter(user => !selectedParticipants.includes(user.id));
+  const selectedUsers = users.filter((user) =>
+    selectedParticipants.includes(user.id)
+  );
+  const availableUsers = users.filter(
+    (user) => !selectedParticipants.includes(user.id)
+  );
 
   return (
     <Layout>
@@ -174,7 +193,10 @@ export default function RaidInstanceForm() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate(`/raids/${raidId}`)}>
+            <Button
+              variant="ghost"
+              onClick={() => navigate(`/raids/${raidId}`)}
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar
             </Button>
@@ -191,20 +213,37 @@ export default function RaidInstanceForm() {
 
           {/* Wizard Progress */}
           <div className="flex items-center gap-2">
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${currentStep === 'participants' ? 'bg-primary text-primary-foreground' :
-              ['droppedItems', 'summary'].includes(currentStep) ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-              }`}>
+            <div
+              className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+                currentStep === 'participants'
+                  ? 'bg-primary text-primary-foreground'
+                  : ['droppedItems', 'summary'].includes(currentStep)
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-600'
+              }`}
+            >
               <Users className="h-4 w-4" />
               Participantes
             </div>
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${currentStep === 'droppedItems' ? 'bg-primary text-primary-foreground' :
-              currentStep === 'summary' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-              }`}>
+            <div
+              className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+                currentStep === 'droppedItems'
+                  ? 'bg-primary text-primary-foreground'
+                  : currentStep === 'summary'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-600'
+              }`}
+            >
               <Package className="h-4 w-4" />
               Itens
             </div>
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${currentStep === 'summary' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-600'
-              }`}>
+            <div
+              className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+                currentStep === 'summary'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-gray-100 text-gray-600'
+              }`}
+            >
               <Calculator className="h-4 w-4" />
               Resumo
             </div>
@@ -223,11 +262,15 @@ export default function RaidInstanceForm() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Nível do Boss:</span>
+                    <span className="text-muted-foreground">
+                      Nível do Boss:
+                    </span>
                     <span className="font-semibold">{raid.bossLevel}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Score Base DKP:</span>
+                    <span className="text-muted-foreground">
+                      Score Base DKP:
+                    </span>
                     <span className="font-semibold">{raid.baseScore}</span>
                   </div>
                   <div className="flex justify-between">
@@ -258,7 +301,9 @@ export default function RaidInstanceForm() {
                         className={errors.notes ? 'border-red-500' : ''}
                       />
                       {errors.notes && (
-                        <p className="text-sm text-red-500">{errors.notes.message}</p>
+                        <p className="text-sm text-red-500">
+                          {errors.notes.message}
+                        </p>
                       )}
                     </div>
 
@@ -273,7 +318,11 @@ export default function RaidInstanceForm() {
                       </Button>
                       <Button
                         type="submit"
-                        disabled={isSubmitting || selectedParticipants.length === 0 || createInstanceMutation.isPending}
+                        disabled={
+                          isSubmitting ||
+                          selectedParticipants.length === 0 ||
+                          createInstanceMutation.isPending
+                        }
                         className="flex-1"
                       >
                         {(isSubmitting || createInstanceMutation.isPending) && (
@@ -305,11 +354,16 @@ export default function RaidInstanceForm() {
                   ) : (
                     <div className="space-y-2">
                       {selectedUsers.map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-2 bg-muted rounded-lg">
+                        <div
+                          key={user.id}
+                          className="flex items-center justify-between p-2 bg-muted rounded-lg"
+                        >
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={user.avatar || undefined} />
-                              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                              <AvatarFallback>
+                                {user.name.charAt(0)}
+                              </AvatarFallback>
                             </Avatar>
                             <div>
                               <p className="font-medium text-sm">{user.name}</p>
@@ -349,9 +403,13 @@ export default function RaidInstanceForm() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Média por Participante:</span>
+                      <span className="text-muted-foreground">
+                        Média por Participante:
+                      </span>
                       <span className="font-semibold">
-                        {Math.round(dkpPreviewMutation.data.averageDkpPerParticipant)}
+                        {Math.round(
+                          dkpPreviewMutation.data.averageDkpPerParticipant
+                        )}
                       </span>
                     </div>
                     <div className="pt-2 border-t">
@@ -394,12 +452,15 @@ export default function RaidInstanceForm() {
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={user.avatar || undefined} />
-                              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                              <AvatarFallback>
+                                {user.name.charAt(0)}
+                              </AvatarFallback>
                             </Avatar>
                             <div>
                               <p className="font-medium text-sm">{user.name}</p>
                               <p className="text-xs text-muted-foreground">
-                                {user.nickname} • Lvl {user.lvl} • GS: {user.gearScore}
+                                {user.nickname} • Lvl {user.lvl} • GS:{' '}
+                                {user.gearScore}
                               </p>
                             </div>
                           </div>
@@ -451,7 +512,10 @@ export default function RaidInstanceForm() {
             dkpPreview={dkpPreviewMutation.data}
             onSubmit={handleFinalSubmit}
             onPrevious={handlePreviousStep}
-            isSubmitting={createInstanceMutation.isPending || createInstanceWithItemsMutation.isPending}
+            isSubmitting={
+              createInstanceMutation.isPending ||
+              createInstanceWithItemsMutation.isPending
+            }
           />
         )}
       </div>

@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
-  requiredRole
+  requiredRole,
 }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();

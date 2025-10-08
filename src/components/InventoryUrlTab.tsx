@@ -42,7 +42,11 @@ export const InventoryUrlTab = () => {
           <h3 className="text-lg font-semibold">Inventário URL</h3>
         </div>
         {!isEditing && (
-          <Button onClick={() => setIsEditing(true)} size="sm" variant="outline">
+          <Button
+            onClick={() => setIsEditing(true)}
+            size="sm"
+            variant="outline"
+          >
             Editar URL
           </Button>
         )}
@@ -52,7 +56,9 @@ export const InventoryUrlTab = () => {
       {isEditing && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">URL da Imagem do Inventário</CardTitle>
+            <CardTitle className="text-sm">
+              URL da Imagem do Inventário
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -65,7 +71,8 @@ export const InventoryUrlTab = () => {
                 onChange={(e) => setBagUrl(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Cole aqui a URL de uma imagem do seu inventário (ex: screenshot do jogo)
+                Cole aqui a URL de uma imagem do seu inventário (ex: screenshot
+                do jogo)
               </p>
             </div>
             <div className="flex gap-2">
@@ -115,8 +122,12 @@ export const InventoryUrlTab = () => {
                 />
                 <div className="hidden text-center py-8">
                   <Image className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-muted-foreground">Erro ao carregar a imagem</p>
-                  <p className="text-sm text-muted-foreground">Verifique se a URL está correta</p>
+                  <p className="text-muted-foreground">
+                    Erro ao carregar a imagem
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Verifique se a URL está correta
+                  </p>
                 </div>
               </div>
             </div>
@@ -128,11 +139,17 @@ export const InventoryUrlTab = () => {
         <Card>
           <CardContent className="text-center py-8">
             <Image className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Nenhuma imagem configurada</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              Nenhuma imagem configurada
+            </h3>
             <p className="text-sm text-muted-foreground mb-4">
               Adicione uma URL de imagem para mostrar seu inventário
             </p>
-            <Button onClick={() => setIsEditing(true)} size="sm" className="flex items-center gap-2">
+            <Button
+              onClick={() => setIsEditing(true)}
+              size="sm"
+              className="flex items-center gap-2"
+            >
               <Image className="h-4 w-4" />
               Adicionar URL
             </Button>

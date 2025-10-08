@@ -8,7 +8,7 @@ import {
   History,
   Image,
   Loader2,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -70,23 +70,37 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
   userId,
   userName,
   bagUrl,
-  isReadOnly = false
+  isReadOnly = false,
 }) => {
-  const { data: gear, isLoading: gearLoading, error: gearError } = useUserGearById(userId);
-  const { data: dkpSummary, isLoading: dkpLoading, error: dkpError } = useUserDkpSummary(userId);
-  const { data: dkpHistory, isLoading: historyLoading } = useUserDkpHistory(userId, { limit: 5 });
+  const {
+    data: gear,
+    isLoading: gearLoading,
+    error: gearError,
+  } = useUserGearById(userId);
+  const {
+    data: dkpSummary,
+    isLoading: dkpLoading,
+    error: dkpError,
+  } = useUserDkpSummary(userId);
+  const { data: dkpHistory, isLoading: historyLoading } = useUserDkpHistory(
+    userId,
+    { limit: 5 }
+  );
 
   // Group items by category
   const groupedItems = React.useMemo(() => {
     if (!gear?.ownedItems) return {};
 
-    return gear.ownedItems.reduce((acc, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = [];
-      }
-      acc[item.category].push(item);
-      return acc;
-    }, {} as Record<string, typeof gear.ownedItems>);
+    return gear.ownedItems.reduce(
+      (acc, item) => {
+        if (!acc[item.category]) {
+          acc[item.category] = [];
+        }
+        acc[item.category].push(item);
+        return acc;
+      },
+      {} as Record<string, typeof gear.ownedItems>
+    );
   }, [gear]);
 
   if (gearLoading || dkpLoading) {
@@ -122,7 +136,8 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
         <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <AlertCircle className="h-4 w-4 text-blue-600" />
           <span className="text-sm text-blue-700">
-            Visualização somente leitura - Apenas administradores podem editar informações
+            Visualização somente leitura - Apenas administradores podem editar
+            informações
           </span>
         </div>
       )}
@@ -207,20 +222,32 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
               {historyLoading ? (
                 <div className="text-center py-4">
                   <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Carregando histórico...</p>
+                  <p className="text-sm text-muted-foreground">
+                    Carregando histórico...
+                  </p>
                 </div>
               ) : dkpHistory?.data && dkpHistory.data.length > 0 ? (
                 <div className="space-y-3">
                   {dkpHistory.data.map((transaction) => (
-                    <div key={transaction.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                    <div
+                      key={transaction.id}
+                      className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                    >
                       <div>
                         <p className="font-medium">{transaction.reason}</p>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(transaction.createdAt).toLocaleDateString('pt-BR')}
+                          {new Date(transaction.createdAt).toLocaleDateString(
+                            'pt-BR'
+                          )}
                         </p>
                       </div>
-                      <Badge variant={transaction.amount > 0 ? "default" : "destructive"}>
-                        {transaction.amount > 0 ? '+' : ''}{transaction.amount} DKP
+                      <Badge
+                        variant={
+                          transaction.amount > 0 ? 'default' : 'destructive'
+                        }
+                      >
+                        {transaction.amount > 0 ? '+' : ''}
+                        {transaction.amount} DKP
                       </Badge>
                     </div>
                   ))}
@@ -244,7 +271,9 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
             </div>
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 text-blue-500" />
-              <span className="font-medium">{gear?.ownedItems.length || 0}</span>
+              <span className="font-medium">
+                {gear?.ownedItems.length || 0}
+              </span>
               <span className="text-sm text-muted-foreground">itens</span>
             </div>
           </div>
@@ -258,7 +287,9 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
                     <CardTitle className="flex items-center gap-2 text-sm font-medium">
                       {getCategoryIcon(category)}
                       {getCategoryName(category)}
-                      <Badge variant="secondary" className="text-xs h-4">{items.length}</Badge>
+                      <Badge variant="secondary" className="text-xs h-4">
+                        {items.length}
+                      </Badge>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
@@ -269,9 +300,13 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
                           className="flex items-center gap-2 p-2 bg-muted/20 rounded-md hover:bg-muted/40 transition-colors"
                         >
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{item.name}</p>
+                            <p className="text-sm font-medium truncate">
+                              {item.name}
+                            </p>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <span className={getGradeColor(item.grade)}>{item.grade}</span>
+                              <span className={getGradeColor(item.grade)}>
+                                {item.grade}
+                              </span>
                               <span>•</span>
                               <span>{item.valorGsInt} GS</span>
                             </div>
@@ -287,7 +322,9 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
             <Card>
               <CardContent className="text-center py-8">
                 <Package className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <h3 className="text-lg font-semibold mb-2">Nenhum item equipado</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Nenhum item equipado
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   Este membro ainda não possui itens equipados
                 </p>
@@ -332,7 +369,9 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
                 <div className="flex items-center gap-3">
                   <Award className="h-4 w-4 text-blue-600" />
                   <div>
-                    <p className="text-sm text-muted-foreground">DKP de Raids</p>
+                    <p className="text-sm text-muted-foreground">
+                      DKP de Raids
+                    </p>
                     <p className="text-2xl font-bold text-blue-600">
                       {dkpSummary?.totalRaidRewards || 0}
                     </p>
@@ -346,7 +385,9 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
                 <div className="flex items-center gap-3">
                   <History className="h-4 w-4 text-purple-600" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Participações</p>
+                    <p className="text-sm text-muted-foreground">
+                      Participações
+                    </p>
                     <p className="text-2xl font-bold text-purple-600">
                       {dkpSummary?.raidParticipations || 0}
                     </p>
@@ -381,8 +422,12 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
                   />
                   <div className="hidden text-center py-8">
                     <Image className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">Erro ao carregar a imagem</p>
-                    <p className="text-sm text-muted-foreground">Verifique se a URL está correta</p>
+                    <p className="text-muted-foreground">
+                      Erro ao carregar a imagem
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Verifique se a URL está correta
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -391,7 +436,9 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
             <Card>
               <CardContent className="text-center py-8">
                 <Image className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Nenhuma imagem configurada</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Nenhuma imagem configurada
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   Este membro ainda não configurou uma URL de inventário
                 </p>

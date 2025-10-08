@@ -1,8 +1,17 @@
 import { useState } from 'react';
 import { Coins, Loader2, RotateCcw } from 'lucide-react';
-import { useAuctionedItems, useResetAuctionedFlag } from '../hooks/auction.hooks';
+import {
+  useAuctionedItems,
+  useResetAuctionedFlag,
+} from '../hooks/auction.hooks';
 import { Layout } from '../components/Layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
@@ -108,7 +117,9 @@ export default function AuctionedItemsManagement() {
             {!auctionedItems || auctionedItems.length === 0 ? (
               <div className="text-center py-8">
                 <Coins className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Nenhum item foi leiloado ainda.</p>
+                <p className="text-muted-foreground">
+                  Nenhum item foi leiloado ainda.
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -123,7 +134,10 @@ export default function AuctionedItemsManagement() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-medium">{item.name}</h4>
-                            <Badge variant="outline" className={`text-white ${GRADE_COLORS[item.grade]}`}>
+                            <Badge
+                              variant="outline"
+                              className={`text-white ${GRADE_COLORS[item.grade]}`}
+                            >
                               {item.grade}
                             </Badge>
                             <Badge variant="secondary">
@@ -139,12 +153,18 @@ export default function AuctionedItemsManagement() {
                             {lastAuction && (
                               <>
                                 <div>
-                                  <span className="font-medium">Último Leilão:</span>{' '}
-                                  {new Date(lastAuction.auction.createdAt).toLocaleDateString('pt-BR')}
+                                  <span className="font-medium">
+                                    Último Leilão:
+                                  </span>{' '}
+                                  {new Date(
+                                    lastAuction.auction.createdAt
+                                  ).toLocaleDateString('pt-BR')}
                                 </div>
                                 {lastAuction.currentWinner && (
                                   <div>
-                                    <span className="font-medium">Vencedor:</span>{' '}
+                                    <span className="font-medium">
+                                      Vencedor:
+                                    </span>{' '}
                                     {lastAuction.currentWinner.nickname}
                                   </div>
                                 )}
@@ -185,7 +205,8 @@ export default function AuctionedItemsManagement() {
           <DialogHeader>
             <DialogTitle>Resetar Flag de Item Leiloado</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja resetar a flag deste item? Ele poderá ser leiloado novamente.
+              Tem certeza que deseja resetar a flag deste item? Ele poderá ser
+              leiloado novamente.
             </DialogDescription>
           </DialogHeader>
 
@@ -225,4 +246,3 @@ export default function AuctionedItemsManagement() {
     </Layout>
   );
 }
-

@@ -75,9 +75,9 @@ export const UserCompanyPartySchema = z.object({
 export const CompanyPartySchema = z.object({
   id: z.string(),
   name: z.string(),
-  description: z.string().optional(),
-  leaderId: z.string().optional(),
-  maxMembers: z.number().optional(),
+  description: z.string().nullable().optional(),
+  leaderId: z.string().nullable().optional(),
+  maxMembers: z.number().nullable().optional(),
   playerCount: z.number().optional(),
   averageLevel: z.number().optional(),
   currentMembers: z.number().optional(), // Keep for backward compatibility
@@ -92,7 +92,10 @@ export const CompanyPartySchema = z.object({
 export const CreateCompanyPartySchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   description: z.string().min(1, 'Descrição é obrigatória'),
-  maxMembers: z.number().min(1, 'Máximo de membros deve ser pelo menos 1').max(100, 'Máximo de 100 membros'),
+  maxMembers: z
+    .number()
+    .min(1, 'Máximo de membros deve ser pelo menos 1')
+    .max(100, 'Máximo de 100 membros'),
 });
 
 export const UpdateCompanyPartySchema = CreateCompanyPartySchema.partial();
@@ -158,7 +161,7 @@ export const ItemCategorySchema = z.enum([
   'RING',
   'SHIELD',
   'WEAPON',
-  'COMUM'
+  'COMUM',
 ]);
 
 export const ItemGradeSchema = z.enum(['D', 'C', 'B', 'A', 'S']);
@@ -267,12 +270,14 @@ export const RaidParticipantSchema = z.object({
   gearScoreAtTime: z.number(),
   dkpAwarded: z.number(),
   createdAt: z.string(),
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    nickname: z.string(),
-    avatar: z.string().nullable(),
-  }).optional(),
+  user: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      nickname: z.string(),
+      avatar: z.string().nullable(),
+    })
+    .optional(),
 });
 
 export const RaidInstanceSchema = z.object({
@@ -320,26 +325,33 @@ export const DkpTransactionSchema = z.object({
   createdBy: z.string(),
   raidInstanceId: z.string().nullable(),
   createdAt: z.string(),
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    nickname: z.string(),
-    avatar: z.string().nullable(),
-  }).optional(),
-  createdByUser: z.object({
-    id: z.string(),
-    name: z.string(),
-    nickname: z.string(),
-  }).optional(),
-  raidInstance: z.object({
-    id: z.string(),
-    completedAt: z.string(),
-    raid: z.object({
+  user: z
+    .object({
       id: z.string(),
       name: z.string(),
-      bossLevel: z.number(),
-    }),
-  }).nullable().optional(),
+      nickname: z.string(),
+      avatar: z.string().nullable(),
+    })
+    .optional(),
+  createdByUser: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      nickname: z.string(),
+    })
+    .optional(),
+  raidInstance: z
+    .object({
+      id: z.string(),
+      completedAt: z.string(),
+      raid: z.object({
+        id: z.string(),
+        name: z.string(),
+        bossLevel: z.number(),
+      }),
+    })
+    .nullable()
+    .optional(),
 });
 
 export const DkpAdjustmentSchema = z.object({
@@ -356,10 +368,12 @@ export const DkpLeaderboardEntrySchema = z.object({
   dkpPoints: z.number(),
   gearScore: z.number(),
   lvl: z.number(),
-  classe: z.object({
-    id: z.string(),
-    name: z.string(),
-  }).nullable(),
+  classe: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .nullable(),
 });
 
 export const UserDkpSummarySchema = z.object({
@@ -379,12 +393,14 @@ export const DkpStatsSchema = z.object({
   totalDkpSpent: z.number(),
   totalManualAdjustments: z.number(),
   averageDkpPerUser: z.number(),
-  topDkpHolder: z.object({
-    id: z.string(),
-    name: z.string(),
-    nickname: z.string(),
-    dkpPoints: z.number(),
-  }).nullable(),
+  topDkpHolder: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      nickname: z.string(),
+      dkpPoints: z.number(),
+    })
+    .nullable(),
 });
 
 // DKP type exports
@@ -395,8 +411,12 @@ export type UpdateRaid = z.infer<typeof UpdateRaidSchema>;
 export type RaidParticipant = z.infer<typeof RaidParticipantSchema>;
 export type RaidInstance = z.infer<typeof RaidInstanceSchema>;
 export type CreateRaidInstance = z.infer<typeof CreateRaidInstanceSchema>;
-export type CreateRaidInstanceDroppedItem = z.infer<typeof CreateRaidInstanceDroppedItemSchema>;
-export type CreateRaidInstanceWithItems = z.infer<typeof CreateRaidInstanceWithItemsSchema>;
+export type CreateRaidInstanceDroppedItem = z.infer<
+  typeof CreateRaidInstanceDroppedItemSchema
+>;
+export type CreateRaidInstanceWithItems = z.infer<
+  typeof CreateRaidInstanceWithItemsSchema
+>;
 export type AddParticipant = z.infer<typeof AddParticipantSchema>;
 export type DkpTransaction = z.infer<typeof DkpTransactionSchema>;
 export type DkpAdjustment = z.infer<typeof DkpAdjustmentSchema>;
@@ -418,30 +438,44 @@ export const RaidDroppedItemSchema = z.object({
   notes: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  raidInstance: z.object({
-    id: z.string(),
-    completedAt: z.string(),
-    raid: z.object({
+  raidInstance: z
+    .object({
       id: z.string(),
-      name: z.string(),
-      bossLevel: z.number(),
-    }),
-  }).optional(),
-  auctionItems: z.array(z.object({
-    id: z.string(),
-    status: z.enum(['WAITING', 'IN_AUCTION', 'SOLD', 'NO_BIDS', 'CANCELLED']),
-    currentBid: z.number().nullable(),
-    finishedAt: z.string().nullable(),
-    auction: z.object({
-      id: z.string(),
-      createdAt: z.string(),
-    }),
-    currentWinner: z.object({
-      id: z.string(),
-      name: z.string(),
-      nickname: z.string(),
-    }).nullable(),
-  })).optional(),
+      completedAt: z.string(),
+      raid: z.object({
+        id: z.string(),
+        name: z.string(),
+        bossLevel: z.number(),
+      }),
+    })
+    .optional(),
+  auctionItems: z
+    .array(
+      z.object({
+        id: z.string(),
+        status: z.enum([
+          'WAITING',
+          'IN_AUCTION',
+          'SOLD',
+          'NO_BIDS',
+          'CANCELLED',
+        ]),
+        currentBid: z.number().nullable(),
+        finishedAt: z.string().nullable(),
+        auction: z.object({
+          id: z.string(),
+          createdAt: z.string(),
+        }),
+        currentWinner: z
+          .object({
+            id: z.string(),
+            name: z.string(),
+            nickname: z.string(),
+          })
+          .nullable(),
+      })
+    )
+    .optional(),
 });
 
 export const CreateRaidDroppedItemSchema = z.object({
@@ -452,7 +486,8 @@ export const CreateRaidDroppedItemSchema = z.object({
   notes: z.string().optional(),
 });
 
-export const UpdateRaidDroppedItemSchema = CreateRaidDroppedItemSchema.partial();
+export const UpdateRaidDroppedItemSchema =
+  CreateRaidDroppedItemSchema.partial();
 
 export const RaidDroppedItemsListSchema = z.object({
   data: z.array(RaidDroppedItemSchema),

@@ -4,13 +4,28 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { CreateRaidInstanceDroppedItemSchema, type CreateRaidInstanceDroppedItem } from '@/types/api';
+import {
+  CreateRaidInstanceDroppedItemSchema,
+  type CreateRaidInstanceDroppedItem,
+} from '@/types/api';
 
 const droppedItemsStepSchema = z.object({
   droppedItems: z.array(CreateRaidInstanceDroppedItemSchema),
@@ -55,8 +70,12 @@ const GRADE_COLORS = {
   S: 'bg-red-100 text-red-800',
 };
 
-export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }: DroppedItemsStepProps) {
-
+export function DroppedItemsStep({
+  droppedItems,
+  onUpdate,
+  onNext,
+  onPrevious,
+}: DroppedItemsStepProps) {
   const {
     register,
     control,
@@ -114,8 +133,7 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                 <CardDescription>
                   {fields.length === 0
                     ? 'Nenhum item adicionado ainda'
-                    : `${fields.length} item(s) adicionado(s)`
-                  }
+                    : `${fields.length} item(s) adicionado(s)`}
                 </CardDescription>
               </div>
               <Button type="button" onClick={addItem} size="sm">
@@ -128,7 +146,9 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
             {fields.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <p>Nenhum item dropado foi adicionado.</p>
-                <p className="text-sm mt-1">Clique em "Adicionar Item" para começar.</p>
+                <p className="text-sm mt-1">
+                  Clique em "Adicionar Item" para começar.
+                </p>
               </div>
             ) : (
               fields.map((field, index) => (
@@ -137,8 +157,20 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">Item {index + 1}</Badge>
                       {watchedItems[index]?.grade && (
-                        <Badge className={GRADE_COLORS[watchedItems[index].grade as keyof typeof GRADE_COLORS]}>
-                          {GRADE_LABELS[watchedItems[index].grade as keyof typeof GRADE_LABELS]}
+                        <Badge
+                          className={
+                            GRADE_COLORS[
+                              watchedItems[index]
+                                .grade as keyof typeof GRADE_COLORS
+                            ]
+                          }
+                        >
+                          {
+                            GRADE_LABELS[
+                              watchedItems[index]
+                                .grade as keyof typeof GRADE_LABELS
+                            ]
+                          }
                         </Badge>
                       )}
                     </div>
@@ -155,12 +187,18 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor={`droppedItems.${index}.name`}>Nome do Item *</Label>
+                      <Label htmlFor={`droppedItems.${index}.name`}>
+                        Nome do Item *
+                      </Label>
                       <Input
                         id={`droppedItems.${index}.name`}
                         placeholder="Ex: Sword of Flames"
                         {...register(`droppedItems.${index}.name`)}
-                        className={errors.droppedItems?.[index]?.name ? 'border-red-500' : ''}
+                        className={
+                          errors.droppedItems?.[index]?.name
+                            ? 'border-red-500'
+                            : ''
+                        }
                       />
                       {errors.droppedItems?.[index]?.name && (
                         <p className="text-sm text-red-500">
@@ -170,10 +208,17 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`droppedItems.${index}.category`}>Categoria *</Label>
+                      <Label htmlFor={`droppedItems.${index}.category`}>
+                        Categoria *
+                      </Label>
                       <Select
                         value={watchedItems[index]?.category || ''}
-                        onValueChange={(value) => setValue(`droppedItems.${index}.category`, value as any)}
+                        onValueChange={(value) =>
+                          setValue(
+                            `droppedItems.${index}.category`,
+                            value as any
+                          )
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione a categoria" />
@@ -181,7 +226,11 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                         <SelectContent>
                           {availableCategories.map((category: string) => (
                             <SelectItem key={category} value={category}>
-                              {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS]}
+                              {
+                                CATEGORY_LABELS[
+                                  category as keyof typeof CATEGORY_LABELS
+                                ]
+                              }
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -189,10 +238,14 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`droppedItems.${index}.grade`}>Grade *</Label>
+                      <Label htmlFor={`droppedItems.${index}.grade`}>
+                        Grade *
+                      </Label>
                       <Select
                         value={watchedItems[index]?.grade || ''}
-                        onValueChange={(value) => setValue(`droppedItems.${index}.grade`, value as any)}
+                        onValueChange={(value) =>
+                          setValue(`droppedItems.${index}.grade`, value as any)
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione a grade" />
@@ -208,14 +261,22 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor={`droppedItems.${index}.minDkpBid`}>Lance Mínimo DKP *</Label>
+                      <Label htmlFor={`droppedItems.${index}.minDkpBid`}>
+                        Lance Mínimo DKP *
+                      </Label>
                       <Input
                         id={`droppedItems.${index}.minDkpBid`}
                         type="number"
                         min="0"
                         placeholder="0"
-                        {...register(`droppedItems.${index}.minDkpBid`, { valueAsNumber: true })}
-                        className={errors.droppedItems?.[index]?.minDkpBid ? 'border-red-500' : ''}
+                        {...register(`droppedItems.${index}.minDkpBid`, {
+                          valueAsNumber: true,
+                        })}
+                        className={
+                          errors.droppedItems?.[index]?.minDkpBid
+                            ? 'border-red-500'
+                            : ''
+                        }
                       />
                       {errors.droppedItems?.[index]?.minDkpBid && (
                         <p className="text-sm text-red-500">
@@ -225,7 +286,9 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor={`droppedItems.${index}.notes`}>Notas (Opcional)</Label>
+                      <Label htmlFor={`droppedItems.${index}.notes`}>
+                        Notas (Opcional)
+                      </Label>
                       <Textarea
                         id={`droppedItems.${index}.notes`}
                         placeholder="Informações adicionais sobre o item..."
@@ -241,7 +304,12 @@ export function DroppedItemsStep({ droppedItems, onUpdate, onNext, onPrevious }:
         </Card>
 
         <div className="flex gap-4">
-          <Button type="button" variant="outline" onClick={onPrevious} className="flex-1">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onPrevious}
+            className="flex-1"
+          >
             Voltar
           </Button>
           <Button type="submit" className="flex-1">

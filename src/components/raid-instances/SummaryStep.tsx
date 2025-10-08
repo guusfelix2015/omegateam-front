@@ -1,6 +1,12 @@
 import { Loader2, Users, Package, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Raid, User, CreateRaidInstanceDroppedItem } from '@/types/api';
@@ -87,19 +93,27 @@ export function SummaryStep({
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Nome</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Nome
+                </p>
                 <p className="font-medium">{raid.name}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Nível do Boss</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Nível do Boss
+                </p>
                 <Badge variant="secondary">{raid.bossLevel}</Badge>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Score Base</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Score Base
+                </p>
                 <p className="font-medium">{raid.baseScore}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Status</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Status
+                </p>
                 <Badge variant={raid.isActive ? 'default' : 'secondary'}>
                   {raid.isActive ? 'Ativo' : 'Inativo'}
                 </Badge>
@@ -116,15 +130,21 @@ export function SummaryStep({
               Participantes ({selectedParticipants.length})
             </CardTitle>
             <CardDescription>
-              Total de DKP a ser distribuído: <span className="font-medium">{totalDkpToAward}</span>
+              Total de DKP a ser distribuído:{' '}
+              <span className="font-medium">{totalDkpToAward}</span>
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3">
               {selectedParticipants.map((participant) => {
-                const participantDkp = dkpPreview?.participants.find((p) => p.userId === participant.id);
+                const participantDkp = dkpPreview?.participants.find(
+                  (p) => p.userId === participant.id
+                );
                 return (
-                  <div key={participant.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={participant.id}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={participant.avatar || undefined} />
@@ -163,17 +183,36 @@ export function SummaryStep({
             <CardContent>
               <div className="grid gap-3">
                 {droppedItems.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <p className="font-medium">{item.name}</p>
-                          <Badge className={GRADE_COLORS[item.grade as keyof typeof GRADE_COLORS]}>
-                            {GRADE_LABELS[item.grade as keyof typeof GRADE_LABELS]}
+                          <Badge
+                            className={
+                              GRADE_COLORS[
+                                item.grade as keyof typeof GRADE_COLORS
+                              ]
+                            }
+                          >
+                            {
+                              GRADE_LABELS[
+                                item.grade as keyof typeof GRADE_LABELS
+                              ]
+                            }
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{CATEGORY_LABELS[item.category as keyof typeof CATEGORY_LABELS]}</span>
+                          <span>
+                            {
+                              CATEGORY_LABELS[
+                                item.category as keyof typeof CATEGORY_LABELS
+                              ]
+                            }
+                          </span>
                           {item.notes && (
                             <>
                               <span>•</span>
@@ -183,9 +222,7 @@ export function SummaryStep({
                         </div>
                       </div>
                     </div>
-                    <Badge variant="outline">
-                      Min: {item.minDkpBid} DKP
-                    </Badge>
+                    <Badge variant="outline">Min: {item.minDkpBid} DKP</Badge>
                   </div>
                 ))}
               </div>
@@ -212,7 +249,12 @@ export function SummaryStep({
       <div className="border-t" />
 
       <div className="flex gap-4">
-        <Button type="button" variant="outline" onClick={onPrevious} className="flex-1">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onPrevious}
+          className="flex-1"
+        >
           Voltar
         </Button>
         <Button onClick={onSubmit} disabled={isSubmitting} className="flex-1">

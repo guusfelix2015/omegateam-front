@@ -56,15 +56,18 @@ export const useCreateItem = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
       toast({
-        title: "Item criado!",
-        description: "O item foi criado com sucesso.",
+        title: 'Item criado!',
+        description: 'O item foi criado com sucesso.',
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Erro ao criar item",
-        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
-        variant: "destructive",
+        title: 'Erro ao criar item',
+        description:
+          error.response?.data?.error?.message ||
+          error.response?.data?.message ||
+          'Erro interno do servidor',
+        variant: 'destructive',
       });
     },
   });
@@ -81,15 +84,18 @@ export const useUpdateItem = () => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
       queryClient.invalidateQueries({ queryKey: ['items', id] });
       toast({
-        title: "Item atualizado!",
-        description: "O item foi atualizado com sucesso.",
+        title: 'Item atualizado!',
+        description: 'O item foi atualizado com sucesso.',
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Erro ao atualizar item",
-        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
-        variant: "destructive",
+        title: 'Erro ao atualizar item',
+        description:
+          error.response?.data?.error?.message ||
+          error.response?.data?.message ||
+          'Erro interno do servidor',
+        variant: 'destructive',
       });
     },
   });
@@ -104,15 +110,18 @@ export const useDeleteItem = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['items'] });
       toast({
-        title: "Item excluído!",
-        description: "O item foi excluído com sucesso.",
+        title: 'Item excluído!',
+        description: 'O item foi excluído com sucesso.',
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Erro ao excluir item",
-        description: error.response?.data?.error?.message || error.response?.data?.message || "Erro interno do servidor",
-        variant: "destructive",
+        title: 'Erro ao excluir item',
+        description:
+          error.response?.data?.error?.message ||
+          error.response?.data?.message ||
+          'Erro interno do servidor',
+        variant: 'destructive',
       });
     },
   });

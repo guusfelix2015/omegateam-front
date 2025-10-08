@@ -1,13 +1,26 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Trash2, UserMinus, Edit, AlertTriangle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  ArrowLeft,
+  Users,
+  Trash2,
+  UserMinus,
+  Edit,
+  AlertTriangle,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import {
   useCompanyParty,
   useDeleteCompanyParty,
-  useRemovePlayerFromParty
+  useRemovePlayerFromParty,
 } from '../hooks/company-parties.hooks';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../hooks/useAuth';
@@ -17,7 +30,11 @@ export default function CompanyPartyDetail() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
 
-  const { data: companyParty, isLoading: loadingParty, error: partyError } = useCompanyParty(id || '');
+  const {
+    data: companyParty,
+    isLoading: loadingParty,
+    error: partyError,
+  } = useCompanyParty(id || '');
   const deletePartyMutation = useDeleteCompanyParty();
   const removePlayerMutation = useRemovePlayerFromParty();
 
@@ -27,9 +44,10 @@ export default function CompanyPartyDetail() {
   const handleDeleteParty = async () => {
     if (!companyParty) return;
 
-    const confirmMessage = members && members.length > 0
-      ? `Tem certeza que deseja excluir a Company Party "${companyParty.name}"?\n\nIsto removerá todos os ${members.length} membros da CP.`
-      : `Tem certeza que deseja excluir a Company Party "${companyParty.name}"?`;
+    const confirmMessage =
+      members && members.length > 0
+        ? `Tem certeza que deseja excluir a Company Party "${companyParty.name}"?\n\nIsto removerá todos os ${members.length} membros da CP.`
+        : `Tem certeza que deseja excluir a Company Party "${companyParty.name}"?`;
 
     if (window.confirm(confirmMessage)) {
       try {
@@ -42,7 +60,11 @@ export default function CompanyPartyDetail() {
   };
 
   const handleRemovePlayer = async (playerId: string, playerName: string) => {
-    if (window.confirm(`Tem certeza que deseja remover ${playerName} da Company Party?`)) {
+    if (
+      window.confirm(
+        `Tem certeza que deseja remover ${playerName} da Company Party?`
+      )
+    ) {
       try {
         await removePlayerMutation.mutateAsync({ partyId: id!, playerId });
       } catch (error) {
@@ -71,9 +93,13 @@ export default function CompanyPartyDetail() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <p className="text-destructive mb-4">
-              Erro ao carregar Company Party: {partyError.message || 'Erro desconhecido'}
+              Erro ao carregar Company Party:{' '}
+              {partyError.message || 'Erro desconhecido'}
             </p>
-            <Button variant="outline" onClick={() => navigate('/company-parties')}>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/company-parties')}
+            >
               Voltar para Cps
             </Button>
           </div>
@@ -87,8 +113,13 @@ export default function CompanyPartyDetail() {
       <Layout>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <p className="text-destructive mb-4">Company Party não encontrada</p>
-            <Button variant="outline" onClick={() => navigate('/company-parties')}>
+            <p className="text-destructive mb-4">
+              Company Party não encontrada
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/company-parties')}
+            >
               Voltar para Cps
             </Button>
           </div>
@@ -148,21 +179,29 @@ export default function CompanyPartyDetail() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-4">
               <div>
-                <p className="text-sm text-muted-foreground">Total de Membros</p>
+                <p className="text-sm text-muted-foreground">
+                  Total de Membros
+                </p>
                 <p className="text-2xl font-bold">{members?.length || 0}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Level Médio</p>
                 <p className="text-2xl font-bold text-blue-600">
                   {members && members.length > 0
-                    ? Math.round(members.reduce((sum, member) => sum + member.lvl, 0) / members.length)
-                    : 0
-                  }
+                    ? Math.round(
+                        members.reduce((sum, member) => sum + member.lvl, 0) /
+                          members.length
+                      )
+                    : 0}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Máximo de Membros</p>
-                <p className="text-2xl font-bold">{companyParty.maxMembers || 'N/A'}</p>
+                <p className="text-sm text-muted-foreground">
+                  Máximo de Membros
+                </p>
+                <p className="text-2xl font-bold">
+                  {companyParty.maxMembers || 'N/A'}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Criada em</p>
@@ -183,7 +222,10 @@ export default function CompanyPartyDetail() {
                 Membros ({members?.length || 0})
               </div>
               {members && members.length > 0 && isAdmin && (
-                <Badge variant="outline" className="text-orange-600 border-orange-600">
+                <Badge
+                  variant="outline"
+                  className="text-orange-600 border-orange-600"
+                >
                   <AlertTriangle className="mr-1 h-3 w-3" />
                   Excluir CP remove todos os membros
                 </Badge>
@@ -213,7 +255,10 @@ export default function CompanyPartyDetail() {
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {members.map((member) => (
-                  <Card key={member.id} className="hover:shadow-md transition-shadow">
+                  <Card
+                    key={member.id}
+                    className="hover:shadow-md transition-shadow"
+                  >
                     <CardContent className="pt-4">
                       <div className="flex items-center space-x-3">
                         <Avatar>
@@ -234,16 +279,21 @@ export default function CompanyPartyDetail() {
                       </div>
 
                       <div className="mt-4 flex space-x-2">
-                        <Button variant="outline" size="sm" asChild className="flex-1">
-                          <Link to={`/members/${member.id}`}>
-                            Ver Perfil
-                          </Link>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="flex-1"
+                        >
+                          <Link to={`/members/${member.id}`}>Ver Perfil</Link>
                         </Button>
                         {isAdmin && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleRemovePlayer(member.id, member.name)}
+                            onClick={() =>
+                              handleRemovePlayer(member.id, member.name)
+                            }
                             disabled={removePlayerMutation.isPending}
                           >
                             <UserMinus className="h-4 w-4" />

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
 // Enums
-export const auctionStatusSchema = z.enum(['PENDING', 'ACTIVE', 'FINISHED', 'CANCELLED']);
+export const auctionStatusSchema = z.enum([
+  'PENDING',
+  'ACTIVE',
+  'FINISHED',
+  'CANCELLED',
+]);
 export const auctionItemStatusSchema = z.enum([
   'WAITING',
   'IN_AUCTION',
@@ -245,7 +250,9 @@ export const auditLogSchema = z.object({
 });
 
 export type AuctionedItem = z.infer<typeof auctionedItemSchema>;
-export type ResetAuctionedFlagInput = z.infer<typeof resetAuctionedFlagInputSchema>;
+export type ResetAuctionedFlagInput = z.infer<
+  typeof resetAuctionedFlagInputSchema
+>;
 export type AuditLog = z.infer<typeof auditLogSchema>;
 
 // Won items query schema
@@ -319,4 +326,3 @@ export type CategoryDistribution = z.infer<typeof categoryDistributionSchema>;
 export type GradeDistribution = z.infer<typeof gradeDistributionSchema>;
 export type AuctionTrend = z.infer<typeof auctionTrendSchema>;
 export type AuctionAnalytics = z.infer<typeof auctionAnalyticsSchema>;
-

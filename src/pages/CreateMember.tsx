@@ -3,21 +3,39 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ArrowLeft, Save, User, Users } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { Layout } from '../components/Layout';
 import { useToast } from '../hooks/use-toast';
 import { useCreateUser } from '../hooks/users.hooks';
-import { useCompanyParties, useAddPlayerToParty } from '../hooks/company-parties.hooks';
+import {
+  useCompanyParties,
+  useAddPlayerToParty,
+} from '../hooks/company-parties.hooks';
 import { useClasses } from '../hooks/classes.hooks';
 
 const createMemberSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
-  nickname: z.string().min(1, 'Nickname é obrigatório').max(50, 'Nickname muito longo'),
+  nickname: z
+    .string()
+    .min(1, 'Nickname é obrigatório')
+    .max(50, 'Nickname muito longo'),
   email: z.email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   lvl: z.number().min(1, 'Level mínimo é 1').max(85, 'Level máximo é 85'),
@@ -34,7 +52,11 @@ export default function CreateMember() {
   const { toast } = useToast();
   const createUserMutation = useCreateUser();
   const addPlayerToPartyMutation = useAddPlayerToParty();
-  const { data: companyParties, isLoading: loadingCPs, error: cpError } = useCompanyParties();
+  const {
+    data: companyParties,
+    isLoading: loadingCPs,
+    error: cpError,
+  } = useCompanyParties();
   const { data: classes, isLoading: loadingClasses } = useClasses();
 
   const {
@@ -69,7 +91,7 @@ export default function CreateMember() {
         try {
           await addPlayerToPartyMutation.mutateAsync({
             partyId: data.companyPartyId,
-            data: { userId: newUser.id }
+            data: { userId: newUser.id },
           });
         } catch (cpError) {
           console.warn('Failed to add user to Company Party:', cpError);
@@ -77,7 +99,7 @@ export default function CreateMember() {
       }
 
       toast({
-        title: "Membro criado com sucesso!",
+        title: 'Membro criado com sucesso!',
         description: data.companyPartyId
           ? `${data.name} foi adicionado ao sistema e à Cp.`
           : `${data.name} foi adicionado ao sistema.`,
@@ -87,9 +109,9 @@ export default function CreateMember() {
     } catch (error) {
       console.error('Error creating member:', error);
       toast({
-        title: "Erro ao criar membro",
-        description: "Ocorreu um erro ao criar o membro. Tente novamente.",
-        variant: "destructive",
+        title: 'Erro ao criar membro',
+        description: 'Ocorreu um erro ao criar o membro. Tente novamente.',
+        variant: 'destructive',
       });
     }
   };
@@ -106,7 +128,9 @@ export default function CreateMember() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold">Criar Novo Membro</h1>
-            <p className="text-muted-foreground">Adicione um novo membro ao sistema</p>
+            <p className="text-muted-foreground">
+              Adicione um novo membro ao sistema
+            </p>
           </div>
         </div>
 
@@ -131,7 +155,9 @@ export default function CreateMember() {
                     placeholder="Nome completo"
                   />
                   {errors.name && (
-                    <p className="text-sm text-destructive">{errors.name.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.name.message}
+                    </p>
                   )}
                 </div>
 
@@ -143,7 +169,9 @@ export default function CreateMember() {
                     placeholder="Nome no jogo"
                   />
                   {errors.nickname && (
-                    <p className="text-sm text-destructive">{errors.nickname.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.nickname.message}
+                    </p>
                   )}
                 </div>
 
@@ -156,7 +184,9 @@ export default function CreateMember() {
                     placeholder="email@exemplo.com"
                   />
                   {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.email.message}
+                    </p>
                   )}
                 </div>
 
@@ -169,7 +199,9 @@ export default function CreateMember() {
                     placeholder="Mínimo 6 caracteres"
                   />
                   {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.password.message}
+                    </p>
                   )}
                 </div>
 
@@ -184,7 +216,9 @@ export default function CreateMember() {
                     placeholder="1-85"
                   />
                   {errors.lvl && (
-                    <p className="text-sm text-destructive">{errors.lvl.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.lvl.message}
+                    </p>
                   )}
                 </div>
               </CardContent>
@@ -202,7 +236,9 @@ export default function CreateMember() {
                   <Label htmlFor="role">Função</Label>
                   <Select
                     value={watchedRole}
-                    onValueChange={(value: 'ADMIN' | 'PLAYER' | 'CP_LEADER') => setValue('role', value)}
+                    onValueChange={(value: 'ADMIN' | 'PLAYER' | 'CP_LEADER') =>
+                      setValue('role', value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma função" />
@@ -214,22 +250,32 @@ export default function CreateMember() {
                     </SelectContent>
                   </Select>
                   {errors.role && (
-                    <p className="text-sm text-destructive">{errors.role.message}</p>
+                    <p className="text-sm text-destructive">
+                      {errors.role.message}
+                    </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="companyPartyId">Company Party (opcional)</Label>
+                  <Label htmlFor="companyPartyId">
+                    Company Party (opcional)
+                  </Label>
                   <Select
                     value={watch('companyPartyId') || ''}
-                    onValueChange={(value) => setValue('companyPartyId', value === 'none' ? '' : value)}
+                    onValueChange={(value) =>
+                      setValue('companyPartyId', value === 'none' ? '' : value)
+                    }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={
-                        loadingCPs ? "Carregando..." :
-                          cpError ? "Erro ao carregar CPs" :
-                            "Selecione uma Company Party"
-                      } />
+                      <SelectValue
+                        placeholder={
+                          loadingCPs
+                            ? 'Carregando...'
+                            : cpError
+                              ? 'Erro ao carregar CPs'
+                              : 'Selecione uma Company Party'
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">
@@ -238,27 +284,30 @@ export default function CreateMember() {
                           Nenhuma Company Party
                         </div>
                       </SelectItem>
-                      {companyParties && companyParties.length > 0 ? (
-                        companyParties.map((cp) => (
-                          <SelectItem key={cp.id} value={cp.id}>
-                            <div className="flex items-center gap-2">
-                              <Users className="h-4 w-4" />
-                              {cp.name} ({cp.playerCount || cp.currentMembers || 0} membros)
-                            </div>
-                          </SelectItem>
-                        ))
-                      ) : !loadingCPs && (
-                        <SelectItem value="empty" disabled>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Users className="h-4 w-4" />
-                            Nenhuma Company Party encontrada
-                          </div>
-                        </SelectItem>
-                      )}
+                      {companyParties && companyParties.length > 0
+                        ? companyParties.map((cp) => (
+                            <SelectItem key={cp.id} value={cp.id}>
+                              <div className="flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                {cp.name} (
+                                {cp.playerCount || cp.currentMembers || 0}{' '}
+                                membros)
+                              </div>
+                            </SelectItem>
+                          ))
+                        : !loadingCPs && (
+                            <SelectItem value="empty" disabled>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Users className="h-4 w-4" />
+                                Nenhuma Company Party encontrada
+                              </div>
+                            </SelectItem>
+                          )}
                     </SelectContent>
                   </Select>
                   <p className="text-sm text-muted-foreground">
-                    O membro será automaticamente adicionado à Company Party selecionada
+                    O membro será automaticamente adicionado à Company Party
+                    selecionada
                   </p>
                 </div>
 
@@ -266,7 +315,9 @@ export default function CreateMember() {
                   <Label htmlFor="classe">Classe (Opcional)</Label>
                   <Select
                     value={watch('classeId') || ''}
-                    onValueChange={(value) => setValue('classeId', value === 'none' ? '' : value)}
+                    onValueChange={(value) =>
+                      setValue('classeId', value === 'none' ? '' : value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione uma classe" />
@@ -294,13 +345,15 @@ export default function CreateMember() {
                             </div>
                           </SelectItem>
                         ))
-                      ) : !loadingClasses && (
-                        <SelectItem value="empty" disabled>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <User className="h-4 w-4" />
-                            Nenhuma classe encontrada
-                          </div>
-                        </SelectItem>
+                      ) : (
+                        !loadingClasses && (
+                          <SelectItem value="empty" disabled>
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <User className="h-4 w-4" />
+                              Nenhuma classe encontrada
+                            </div>
+                          </SelectItem>
+                        )
                       )}
                     </SelectContent>
                   </Select>
@@ -329,16 +382,14 @@ export default function CreateMember() {
                       ? 'Administrador'
                       : watchedRole === 'CP_LEADER'
                         ? 'Líder de CP'
-                        : 'Jogador'
-                    }
+                        : 'Jogador'}
                   </h4>
                   <p className="text-sm text-muted-foreground">
                     {watchedRole === 'ADMIN'
                       ? 'Acesso completo ao sistema, pode gerenciar membro CP e configurações.'
                       : watchedRole === 'CP_LEADER'
                         ? 'Pode liderar Cps, gerenciar membros da sua CP e visualizar informações do sistema.'
-                        : 'Acesso limitado ao sistema, pode visualizar informações e participar de Cps.'
-                    }
+                        : 'Acesso limitado ao sistema, pode visualizar informações e participar de Cps.'}
                   </p>
                 </div>
               </CardContent>

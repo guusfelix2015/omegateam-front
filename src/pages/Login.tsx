@@ -3,7 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useLogin } from '../hooks/auth.hooks';
@@ -82,7 +88,9 @@ export default function Login() {
                 {...register('email')}
               />
               {errors.email && (
-                <p className="text-sm text-destructive">{errors.email.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -97,7 +105,9 @@ export default function Login() {
                 {...register('password')}
               />
               {errors.password && (
-                <p className="text-sm text-destructive">{errors.password.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -106,7 +116,7 @@ export default function Login() {
               className="w-full"
               disabled={loginMutation.isPending || isSubmitting}
             >
-              {(loginMutation.isPending || isSubmitting) ? (
+              {loginMutation.isPending || isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Entrando...

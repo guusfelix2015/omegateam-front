@@ -8,14 +8,30 @@ import {
   Award,
   History,
   RefreshCw,
-  Loader2
+  Loader2,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { useMyDkpSummary, useMyDkpHistory, useRefreshDkpData } from '../hooks/dkp.hooks';
+import {
+  useMyDkpSummary,
+  useMyDkpHistory,
+  useRefreshDkpData,
+} from '../hooks/dkp.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
 import type { DkpTransactionType } from '../types/api';
@@ -31,11 +47,12 @@ export default function DkpProfile() {
   });
 
   const { data: summary, isLoading: isLoadingSummary } = useMyDkpSummary();
-  const { data: history, isLoading: isLoadingHistory } = useMyDkpHistory(historyQuery);
+  const { data: history, isLoading: isLoadingHistory } =
+    useMyDkpHistory(historyQuery);
   const refreshData = useRefreshDkpData();
 
   const handleFilterChange = (key: keyof DkpHistoryQuery, value: any) => {
-    setHistoryQuery(prev => ({
+    setHistoryQuery((prev) => ({
       ...prev,
       [key]: value,
       page: 1, // Reset to first page when filtering
@@ -43,7 +60,7 @@ export default function DkpProfile() {
   };
 
   const handlePageChange = (newPage: number) => {
-    setHistoryQuery(prev => ({ ...prev, page: newPage }));
+    setHistoryQuery((prev) => ({ ...prev, page: newPage }));
   };
 
   const getTransactionTypeColor = (type: DkpTransactionType) => {
@@ -140,7 +157,9 @@ export default function DkpProfile() {
               <div className="flex items-center gap-3">
                 <Award className="h-4 w-4 text-blue-600" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Raids Participados</p>
+                  <p className="text-sm text-muted-foreground">
+                    Raids Participados
+                  </p>
                   <p className="text-2xl font-bold text-blue-600">
                     {summary?.raidParticipations || 0}
                   </p>
@@ -154,12 +173,15 @@ export default function DkpProfile() {
               <div className="flex items-center gap-3">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Última Atividade</p>
+                  <p className="text-sm text-muted-foreground">
+                    Última Atividade
+                  </p>
                   <p className="text-sm font-semibold">
                     {summary?.lastActivity
-                      ? new Date(summary.lastActivity).toLocaleDateString('pt-BR')
-                      : 'Nunca'
-                    }
+                      ? new Date(summary.lastActivity).toLocaleDateString(
+                          'pt-BR'
+                        )
+                      : 'Nunca'}
                   </p>
                 </div>
               </div>
@@ -183,7 +205,8 @@ export default function DkpProfile() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Ajustes Manuais:</span>
                 <span className="font-semibold text-blue-600">
-                  {summary?.totalManualAdjustments || 0 > 0 ? '+' : ''}{summary?.totalManualAdjustments || 0}
+                  {summary?.totalManualAdjustments || 0 > 0 ? '+' : ''}
+                  {summary?.totalManualAdjustments || 0}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -194,7 +217,9 @@ export default function DkpProfile() {
               </div>
               <div className="pt-2 border-t">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground font-medium">Saldo Final:</span>
+                  <span className="text-muted-foreground font-medium">
+                    Saldo Final:
+                  </span>
                   <span className="font-bold text-lg text-yellow-600">
                     {summary?.currentDkpPoints || 0}
                   </span>
@@ -215,7 +240,9 @@ export default function DkpProfile() {
                 </Avatar>
                 <div>
                   <p className="font-semibold">{user?.name}</p>
-                  <p className="text-sm text-muted-foreground">{user?.nickname}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {user?.nickname}
+                  </p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -229,7 +256,9 @@ export default function DkpProfile() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Classe:</span>
-                  <span className="font-semibold">{user?.classe?.name || 'N/A'}</span>
+                  <span className="font-semibold">
+                    {user?.classe?.name || 'N/A'}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -254,7 +283,12 @@ export default function DkpProfile() {
               <div className="flex gap-2">
                 <Select
                   value={historyQuery.type || 'all'}
-                  onValueChange={(value) => handleFilterChange('type', value === 'all' ? undefined : value)}
+                  onValueChange={(value) =>
+                    handleFilterChange(
+                      'type',
+                      value === 'all' ? undefined : value
+                    )
+                  }
                 >
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Tipo" />
@@ -277,7 +311,9 @@ export default function DkpProfile() {
             ) : !history?.data || history.data.length === 0 ? (
               <div className="text-center py-8">
                 <History className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Nenhuma transação encontrada</p>
+                <p className="text-muted-foreground">
+                  Nenhuma transação encontrada
+                </p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -287,7 +323,9 @@ export default function DkpProfile() {
                     className="flex items-center justify-between p-4 bg-muted rounded-lg"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-3 h-3 rounded-full ${getTransactionTypeColor(transaction.type)}`} />
+                      <div
+                        className={`w-3 h-3 rounded-full ${getTransactionTypeColor(transaction.type)}`}
+                      />
                       <div>
                         <p className="font-semibold">{transaction.reason}</p>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -295,7 +333,11 @@ export default function DkpProfile() {
                             {getTransactionTypeLabel(transaction.type)}
                           </Badge>
                           <span>•</span>
-                          <span>{new Date(transaction.createdAt).toLocaleDateString('pt-BR')}</span>
+                          <span>
+                            {new Date(transaction.createdAt).toLocaleDateString(
+                              'pt-BR'
+                            )}
+                          </span>
                           {transaction.raidInstance && (
                             <>
                               <span>•</span>
@@ -306,9 +348,15 @@ export default function DkpProfile() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className={`text-lg font-bold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                        {transaction.amount > 0 ? '+' : ''}{transaction.amount}
+                      <p
+                        className={`text-lg font-bold ${
+                          transaction.amount > 0
+                            ? 'text-green-600'
+                            : 'text-red-600'
+                        }`}
+                      >
+                        {transaction.amount > 0 ? '+' : ''}
+                        {transaction.amount}
                       </p>
                       <p className="text-xs text-muted-foreground">DKP</p>
                     </div>
@@ -327,7 +375,8 @@ export default function DkpProfile() {
                       Anterior
                     </Button>
                     <span className="flex items-center px-3 text-sm">
-                      Página {history.pagination.page} de {history.pagination.totalPages}
+                      Página {history.pagination.page} de{' '}
+                      {history.pagination.totalPages}
                     </span>
                     <Button
                       variant="outline"

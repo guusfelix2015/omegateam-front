@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useMemo, useEffect } from 'react';
-import { Check, Star, Package, Sword, Shield, Crown, Loader2 } from 'lucide-react';
+import {
+  Check,
+  Star,
+  Package,
+  Sword,
+  Shield,
+  Crown,
+  Loader2,
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +20,13 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 import { useItems } from '../hooks/items.hooks';
 import { useUpdateUserGear } from '../hooks/gear.hooks';
 import type { UserGearResponse } from '../types/api';
@@ -84,12 +98,14 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [gradeFilter, setGradeFilter] = useState<string>('all');
   // Track quantities per item: Map<itemId, quantity>
-  const [itemQuantities, setItemQuantities] = useState<Map<string, number>>(new Map());
+  const [itemQuantities, setItemQuantities] = useState<Map<string, number>>(
+    new Map()
+  );
 
   const { data: itemsData, isLoading } = useItems({
     search: search || undefined,
-    category: categoryFilter !== 'all' ? categoryFilter as any : undefined,
-    grade: gradeFilter !== 'all' ? gradeFilter as any : undefined,
+    category: categoryFilter !== 'all' ? (categoryFilter as any) : undefined,
+    grade: gradeFilter !== 'all' ? (gradeFilter as any) : undefined,
     limit: 100, // Get more items for selection
   });
 
@@ -101,7 +117,7 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   useEffect(() => {
     if (currentGear?.ownedItemIds) {
       const quantities = new Map<string, number>();
-      currentGear.ownedItemIds.forEach(id => {
+      currentGear.ownedItemIds.forEach((id) => {
         quantities.set(id, (quantities.get(id) || 0) + 1);
       });
       setItemQuantities(quantities);
@@ -111,7 +127,7 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   const totalGearScore = useMemo(() => {
     let total = 0;
     itemQuantities.forEach((quantity, itemId) => {
-      const item = items.find(i => i.id === itemId);
+      const item = items.find((i) => i.id === itemId);
       if (item) {
         total += item.valorGsInt * quantity;
       }
@@ -121,14 +137,14 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
 
   const totalItemCount = useMemo(() => {
     let count = 0;
-    itemQuantities.forEach(quantity => {
+    itemQuantities.forEach((quantity) => {
       count += quantity;
     });
     return count;
   }, [itemQuantities]);
 
   const handleQuantityChange = (itemId: string, quantity: number) => {
-    setItemQuantities(prev => {
+    setItemQuantities((prev) => {
       const newMap = new Map(prev);
       if (quantity === 0) {
         newMap.delete(itemId);
@@ -140,7 +156,7 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   };
 
   const handleToggle = (itemId: string) => {
-    setItemQuantities(prev => {
+    setItemQuantities((prev) => {
       const newMap = new Map(prev);
       const current = newMap.get(itemId) || 0;
       if (current > 0) {
@@ -173,7 +189,7 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
     // Reset to current gear
     if (currentGear?.ownedItemIds) {
       const quantities = new Map<string, number>();
-      currentGear.ownedItemIds.forEach(id => {
+      currentGear.ownedItemIds.forEach((id) => {
         quantities.set(id, (quantities.get(id) || 0) + 1);
       });
       setItemQuantities(quantities);
@@ -204,12 +220,16 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-yellow-600" />
-              <span className="text-lg font-bold text-yellow-800">{totalGearScore}</span>
+              <span className="text-lg font-bold text-yellow-800">
+                {totalGearScore}
+              </span>
               <span className="text-xs text-yellow-600">GS</span>
             </div>
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 text-blue-600" />
-              <span className="font-medium text-blue-800">{totalItemCount}</span>
+              <span className="font-medium text-blue-800">
+                {totalItemCount}
+              </span>
               <span className="text-xs text-blue-600">itens</span>
             </div>
           </div>
@@ -294,21 +314,25 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
             <div className="space-y-1">
               {items.map((item) => {
                 const currentQuantity = itemQuantities.get(item.id) || 0;
-                const isJewelry = item.category === 'RING' || item.category === 'EARRING';
+                const isJewelry =
+                  item.category === 'RING' || item.category === 'EARRING';
 
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-center gap-3 p-2 border rounded-md transition-colors ${currentQuantity > 0
-                      ? 'bg-primary/10 border-primary'
-                      : 'hover:bg-muted/30'
-                      }`}
+                    className={`flex items-center gap-3 p-2 border rounded-md transition-colors ${
+                      currentQuantity > 0
+                        ? 'bg-primary/10 border-primary'
+                        : 'hover:bg-muted/30'
+                    }`}
                   >
                     {/* Item control - Checkbox or Quantity Selector */}
                     {isJewelry ? (
                       <Select
                         value={currentQuantity.toString()}
-                        onValueChange={(value) => handleQuantityChange(item.id, parseInt(value))}
+                        onValueChange={(value) =>
+                          handleQuantityChange(item.id, parseInt(value))
+                        }
                       >
                         <SelectTrigger className="w-20 h-8">
                           <SelectValue />
@@ -320,7 +344,10 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div onClick={() => handleToggle(item.id)} className="cursor-pointer">
+                      <div
+                        onClick={() => handleToggle(item.id)}
+                        className="cursor-pointer"
+                      >
                         <Checkbox
                           checked={currentQuantity > 0}
                           onChange={() => handleToggle(item.id)}
@@ -333,7 +360,9 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
                         {getCategoryIcon(item.category)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{item.name}</h4>
+                        <h4 className="font-medium text-sm truncate">
+                          {item.name}
+                        </h4>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <Badge variant="outline" className="text-xs h-4 px-1">
                             {getCategoryName(item.category)}
@@ -348,7 +377,9 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
                           </span>
                         </div>
                       </div>
-                      <Badge className={`${getGradeColor(item.grade)} text-xs h-5 px-2`}>
+                      <Badge
+                        className={`${getGradeColor(item.grade)} text-xs h-5 px-2`}
+                      >
                         {item.grade}
                       </Badge>
                     </div>

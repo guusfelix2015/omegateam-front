@@ -10,14 +10,11 @@ interface SearchInputProps {
   className?: string;
 }
 
-export const SearchInput = memo(forwardRef<HTMLInputElement, SearchInputProps>(
-  function SearchInput({
-    value,
-    onChange,
-    onSearch,
-    placeholder = "Buscar...",
-    className = ""
-  }, ref) {
+export const SearchInput = memo(
+  forwardRef<HTMLInputElement, SearchInputProps>(function SearchInput(
+    { value, onChange, onSearch, placeholder = 'Buscar...', className = '' },
+    ref
+  ) {
     const handleKeyDown = (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' && onSearch) {
         e.preventDefault();
@@ -38,5 +35,5 @@ export const SearchInput = memo(forwardRef<HTMLInputElement, SearchInputProps>(
         />
       </div>
     );
-  }
-));
+  })
+);

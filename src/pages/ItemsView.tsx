@@ -1,12 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Loader2, Settings } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/pagination';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../components/ui/pagination';
 import { useItems, useLookups } from '../hooks/items.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
@@ -42,7 +60,11 @@ export default function ItemsView() {
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 500);
 
-  const { data: itemsData, isLoading, error } = useItems({
+  const {
+    data: itemsData,
+    isLoading,
+    error,
+  } = useItems({
     page,
     limit: 12,
     search: debouncedSearch,
@@ -185,7 +207,10 @@ export default function ItemsView() {
                     <div className="space-y-2">
                       <CardTitle className="text-lg">{item.name}</CardTitle>
                       <div className="flex gap-2">
-                        <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        <Badge
+                          variant="secondary"
+                          className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        >
                           {CATEGORY_LABELS[item.category]}
                         </Badge>
                         <Badge
@@ -201,11 +226,15 @@ export default function ItemsView() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">GS INT:</span>
-                      <span className="font-medium">{item.valorGsInt.toLocaleString()}</span>
+                      <span className="font-medium">
+                        {item.valorGsInt.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <span className="text-muted-foreground">DKP:</span>
-                      <span className="font-medium">{item.valorDkp.toLocaleString()}</span>
+                      <span className="font-medium">
+                        {item.valorDkp.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
@@ -222,39 +251,52 @@ export default function ItemsView() {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => setPage(Math.max(1, page - 1))}
-                    className={!pagination.hasPrev ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    className={
+                      !pagination.hasPrev
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
 
-                {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => {
-                  let pageNumber;
-                  if (pagination.totalPages <= 5) {
-                    pageNumber = i + 1;
-                  } else if (page <= 3) {
-                    pageNumber = i + 1;
-                  } else if (page >= pagination.totalPages - 2) {
-                    pageNumber = pagination.totalPages - 4 + i;
-                  } else {
-                    pageNumber = page - 2 + i;
-                  }
+                {Array.from(
+                  { length: Math.min(pagination.totalPages, 5) },
+                  (_, i) => {
+                    let pageNumber;
+                    if (pagination.totalPages <= 5) {
+                      pageNumber = i + 1;
+                    } else if (page <= 3) {
+                      pageNumber = i + 1;
+                    } else if (page >= pagination.totalPages - 2) {
+                      pageNumber = pagination.totalPages - 4 + i;
+                    } else {
+                      pageNumber = page - 2 + i;
+                    }
 
-                  return (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        onClick={() => setPage(pageNumber)}
-                        isActive={page === pageNumber}
-                        className="cursor-pointer"
-                      >
-                        {pageNumber}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
+                    return (
+                      <PaginationItem key={pageNumber}>
+                        <PaginationLink
+                          onClick={() => setPage(pageNumber)}
+                          isActive={page === pageNumber}
+                          className="cursor-pointer"
+                        >
+                          {pageNumber}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+                )}
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => setPage(Math.min(pagination.totalPages, page + 1))}
-                    className={!pagination.hasNext ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    onClick={() =>
+                      setPage(Math.min(pagination.totalPages, page + 1))
+                    }
+                    className={
+                      !pagination.hasNext
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-pointer'
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>

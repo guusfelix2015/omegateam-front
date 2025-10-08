@@ -13,9 +13,15 @@ import {
   X,
   AlertCircle,
   Gavel,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
@@ -27,7 +33,10 @@ import {
   SelectValue,
 } from '../components/ui/select';
 import { Layout } from '../components/Layout';
-import { useRaidDroppedItems, useRaidDroppedItemStats } from '../hooks/raid-dropped-items.hooks';
+import {
+  useRaidDroppedItems,
+  useRaidDroppedItemStats,
+} from '../hooks/raid-dropped-items.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { CreateAuctionModal } from '../components/auction/CreateAuctionModal';
 import type { ItemCategory, ItemGrade, RaidDroppedItem } from '../types/api';
@@ -59,16 +68,27 @@ export default function DroppedItemsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedGrade, setSelectedGrade] = useState<string>('ALL');
-  const [sortBy, setSortBy] = useState<'droppedAt' | 'name' | 'minDkpBid'>('droppedAt');
+  const [sortBy, setSortBy] = useState<'droppedAt' | 'name' | 'minDkpBid'>(
+    'droppedAt'
+  );
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateAuctionModal, setShowCreateAuctionModal] = useState(false);
-  const [selectedItemForAuction, setSelectedItemForAuction] = useState<RaidDroppedItem | undefined>();
+  const [selectedItemForAuction, setSelectedItemForAuction] = useState<
+    RaidDroppedItem | undefined
+  >();
 
-  const { data: droppedItemsData, isLoading, error } = useRaidDroppedItems({
+  const {
+    data: droppedItemsData,
+    isLoading,
+    error,
+  } = useRaidDroppedItems({
     page: currentPage,
     limit: 20,
-    category: selectedCategory !== 'ALL' ? (selectedCategory as ItemCategory) : undefined,
+    category:
+      selectedCategory !== 'ALL'
+        ? (selectedCategory as ItemCategory)
+        : undefined,
     grade: selectedGrade !== 'ALL' ? (selectedGrade as ItemGrade) : undefined,
     sortBy,
     sortOrder,
@@ -94,9 +114,10 @@ export default function DroppedItemsPage() {
     setCurrentPage(1);
   };
 
-  const filteredItems = droppedItemsData?.data?.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredItems =
+    droppedItemsData?.data?.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
   if (isLoading) {
     return (
@@ -143,7 +164,8 @@ export default function DroppedItemsPage() {
           <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <AlertCircle className="h-4 w-4 text-blue-600" />
             <span className="text-sm text-blue-700">
-              Visualização somente leitura - Apenas administradores podem gerenciar itens dropados
+              Visualização somente leitura - Apenas administradores podem
+              gerenciar itens dropados
             </span>
           </div>
         )}
@@ -156,7 +178,9 @@ export default function DroppedItemsPage() {
                 <div className="flex items-center gap-3">
                   <Package className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Total de Itens</p>
+                    <p className="text-sm text-muted-foreground">
+                      Total de Itens
+                    </p>
                     <p className="text-2xl font-bold">{stats.total}</p>
                   </div>
                 </div>
@@ -182,12 +206,20 @@ export default function DroppedItemsPage() {
                 <div className="flex items-center gap-3">
                   <TrendingUp className="h-4 w-4 text-green-600" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Categoria Mais Comum</p>
+                    <p className="text-sm text-muted-foreground">
+                      Categoria Mais Comum
+                    </p>
                     <p className="text-lg font-bold text-green-600">
                       {Object.entries(stats.totalByCategory).length > 0
-                        ? CATEGORY_LABELS[Object.entries(stats.totalByCategory).reduce((a, b) =>
-                          stats.totalByCategory[a[0]] > stats.totalByCategory[b[0]] ? a : b
-                        )[0]] || 'N/A'
+                        ? CATEGORY_LABELS[
+                            Object.entries(stats.totalByCategory).reduce(
+                              (a, b) =>
+                                stats.totalByCategory[a[0]] >
+                                stats.totalByCategory[b[0]]
+                                  ? a
+                                  : b
+                            )[0]
+                          ] || 'N/A'
                         : 'N/A'}
                     </p>
                   </div>
@@ -200,12 +232,16 @@ export default function DroppedItemsPage() {
                 <div className="flex items-center gap-3">
                   <Swords className="h-4 w-4 text-purple-600" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Grade Mais Comum</p>
+                    <p className="text-sm text-muted-foreground">
+                      Grade Mais Comum
+                    </p>
                     <p className="text-2xl font-bold text-purple-600">
                       {Object.entries(stats.totalByGrade).length > 0
                         ? Object.entries(stats.totalByGrade).reduce((a, b) =>
-                          stats.totalByGrade[a[0]] > stats.totalByGrade[b[0]] ? a : b
-                        )[0] || 'N/A'
+                            stats.totalByGrade[a[0]] > stats.totalByGrade[b[0]]
+                              ? a
+                              : b
+                          )[0] || 'N/A'
                         : 'N/A'}
                     </p>
                   </div>
@@ -240,14 +276,19 @@ export default function DroppedItemsPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Categoria</label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Todas" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ALL">Todas</SelectItem>
                     {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>{label}</SelectItem>
+                      <SelectItem key={key} value={key}>
+                        {label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -272,7 +313,10 @@ export default function DroppedItemsPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Ordenar por</label>
-                <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <Select
+                  value={sortBy}
+                  onValueChange={(value: any) => setSortBy(value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -286,7 +330,10 @@ export default function DroppedItemsPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Ordem</label>
-                <Select value={sortOrder} onValueChange={(value: any) => setSortOrder(value)}>
+                <Select
+                  value={sortOrder}
+                  onValueChange={(value: any) => setSortOrder(value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -315,9 +362,7 @@ export default function DroppedItemsPage() {
         {/* Items List */}
         <Card>
           <CardHeader>
-            <CardTitle>
-              Itens Encontrados ({filteredItems.length})
-            </CardTitle>
+            <CardTitle>Itens Encontrados ({filteredItems.length})</CardTitle>
             <CardDescription>
               Clique em um item para ver a raid instance onde foi dropado
             </CardDescription>
@@ -326,7 +371,9 @@ export default function DroppedItemsPage() {
             {filteredItems.length === 0 ? (
               <div className="text-center py-8">
                 <Coins className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">Nenhum item encontrado</h3>
+                <h3 className="text-lg font-medium mb-2">
+                  Nenhum item encontrado
+                </h3>
                 <p className="text-muted-foreground">
                   Tente ajustar os filtros ou termo de busca.
                 </p>
@@ -345,7 +392,10 @@ export default function DroppedItemsPage() {
                       >
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-medium">{item.name}</h4>
-                          <Badge variant="outline" className={`text-white ${GRADE_COLORS[item.grade]}`}>
+                          <Badge
+                            variant="outline"
+                            className={`text-white ${GRADE_COLORS[item.grade]}`}
+                          >
                             {item.grade}
                           </Badge>
                           <Badge variant="secondary">
@@ -359,7 +409,10 @@ export default function DroppedItemsPage() {
                               LEILOADO
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="border-blue-500 text-blue-600">
+                            <Badge
+                              variant="outline"
+                              className="border-blue-500 text-blue-600"
+                            >
                               Disponível para Leilão
                             </Badge>
                           )}
@@ -370,15 +423,24 @@ export default function DroppedItemsPage() {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                           <div className="flex items-center gap-1">
                             <Coins className="h-4 w-4" />
-                            <span className="font-medium">{item.minDkpBid} DKP</span>
+                            <span className="font-medium">
+                              {item.minDkpBid} DKP
+                            </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            <span>{new Date(item.droppedAt).toLocaleDateString('pt-BR')}</span>
+                            <span>
+                              {new Date(item.droppedAt).toLocaleDateString(
+                                'pt-BR'
+                              )}
+                            </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Swords className="h-4 w-4" />
-                            <span>{item.raidInstance?.raid?.name || 'Raid desconhecida'}</span>
+                            <span>
+                              {item.raidInstance?.raid?.name ||
+                                'Raid desconhecida'}
+                            </span>
                           </div>
                         </div>
 
@@ -412,27 +474,29 @@ export default function DroppedItemsPage() {
         </Card>
 
         {/* Pagination */}
-        {droppedItemsData?.pagination && droppedItemsData.pagination.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-              disabled={!droppedItemsData.pagination.hasPrev}
-            >
-              Anterior
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              Página {droppedItemsData.pagination.page} de {droppedItemsData.pagination.totalPages}
-            </span>
-            <Button
-              variant="outline"
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              disabled={!droppedItemsData.pagination.hasNext}
-            >
-              Próxima
-            </Button>
-          </div>
-        )}
+        {droppedItemsData?.pagination &&
+          droppedItemsData.pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={!droppedItemsData.pagination.hasPrev}
+              >
+                Anterior
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Página {droppedItemsData.pagination.page} de{' '}
+                {droppedItemsData.pagination.totalPages}
+              </span>
+              <Button
+                variant="outline"
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                disabled={!droppedItemsData.pagination.hasNext}
+              >
+                Próxima
+              </Button>
+            </div>
+          )}
       </div>
 
       {/* Create Auction Modal */}

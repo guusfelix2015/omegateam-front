@@ -13,7 +13,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     authService.initializeAuth();
-
   }, []);
 
   return (

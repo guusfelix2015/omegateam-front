@@ -87,13 +87,17 @@ export const GearManager: React.FC = () => {
     );
   }
 
-  const groupedItems = gear?.ownedItems.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<string, typeof gear.ownedItems>) || {};
+  const groupedItems =
+    gear?.ownedItems.reduce(
+      (acc, item) => {
+        if (!acc[item.category]) {
+          acc[item.category] = [];
+        }
+        acc[item.category].push(item);
+        return acc;
+      },
+      {} as Record<string, typeof gear.ownedItems>
+    ) || {};
 
   return (
     <div className="space-y-4">
@@ -120,11 +124,17 @@ export const GearManager: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Package className="h-4 w-4 text-blue-500" />
-                <span className="font-medium">{gear?.ownedItems.length || 0}</span>
+                <span className="font-medium">
+                  {gear?.ownedItems.length || 0}
+                </span>
                 <span className="text-sm text-muted-foreground">itens</span>
               </div>
             </div>
-            <Button onClick={() => setIsModalOpen(true)} size="sm" className="flex items-center gap-2">
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              size="sm"
+              className="flex items-center gap-2"
+            >
               <Plus className="h-4 w-4" />
               Gerenciar
             </Button>
@@ -139,7 +149,9 @@ export const GearManager: React.FC = () => {
                     <CardTitle className="flex items-center gap-2 text-sm font-medium">
                       {getCategoryIcon(category)}
                       {getCategoryName(category)}
-                      <Badge variant="secondary" className="text-xs h-4">{items.length}</Badge>
+                      <Badge variant="secondary" className="text-xs h-4">
+                        {items.length}
+                      </Badge>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
@@ -150,13 +162,17 @@ export const GearManager: React.FC = () => {
                           className="flex items-center gap-2 p-2 bg-muted/20 rounded-md hover:bg-muted/40 transition-colors"
                         >
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-sm truncate">{item.name}</h4>
+                            <h4 className="font-medium text-sm truncate">
+                              {item.name}
+                            </h4>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Star className="h-3 w-3" />
                                 {item.valorGsInt}
                               </span>
-                              <Badge className={`${getGradeColor(item.grade)} text-xs h-4 px-1`}>
+                              <Badge
+                                className={`${getGradeColor(item.grade)} text-xs h-4 px-1`}
+                              >
                                 {item.grade}
                               </Badge>
                             </div>
@@ -172,11 +188,17 @@ export const GearManager: React.FC = () => {
             <Card>
               <CardContent className="text-center py-8">
                 <Package className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <h3 className="text-lg font-semibold mb-2">Nenhum item equipado</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Nenhum item equipado
+                </h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Comece a equipar itens para aumentar seu gear score
                 </p>
-                <Button onClick={() => setIsModalOpen(true)} size="sm" className="flex items-center gap-2">
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
                   <Plus className="h-4 w-4" />
                   Adicionar Itens
                 </Button>

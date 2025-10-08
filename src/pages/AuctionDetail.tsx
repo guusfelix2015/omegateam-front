@@ -1,7 +1,22 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Trophy, Coins, User, CheckCircle, XCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Trophy,
+  Coins,
+  User,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react';
 import { Layout } from '../components/Layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { useAuction } from '../hooks/auction.hooks';
@@ -89,7 +104,11 @@ export default function AuctionDetail() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/auctions')}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/auctions')}
+            >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
@@ -99,7 +118,9 @@ export default function AuctionDetail() {
               </p>
             </div>
           </div>
-          <Badge className={`${STATUS_COLORS[auction.status]} text-white text-lg px-4 py-2`}>
+          <Badge
+            className={`${STATUS_COLORS[auction.status]} text-white text-lg px-4 py-2`}
+          >
             {STATUS_LABELS[auction.status]}
           </Badge>
         </div>
@@ -136,7 +157,9 @@ export default function AuctionDetail() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Timer Padrão</p>
-                  <p className="font-medium">{auction.defaultTimerSeconds} segundos</p>
+                  <p className="font-medium">
+                    {auction.defaultTimerSeconds} segundos
+                  </p>
                 </div>
               </div>
 
@@ -145,7 +168,9 @@ export default function AuctionDetail() {
                   <Coins className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Incremento Mínimo</p>
+                  <p className="text-sm text-muted-foreground">
+                    Incremento Mínimo
+                  </p>
                   <p className="font-medium">{auction.minBidIncrement} DKP</p>
                 </div>
               </div>
@@ -181,14 +206,21 @@ export default function AuctionDetail() {
                         <span className="text-lg font-semibold text-muted-foreground">
                           #{index + 1}
                         </span>
-                        <h4 className="font-medium text-lg">{item.raidDroppedItem.name}</h4>
-                        <Badge className={`text-white ${GRADE_COLORS[item.raidDroppedItem.grade]}`}>
+                        <h4 className="font-medium text-lg">
+                          {item.raidDroppedItem.name}
+                        </h4>
+                        <Badge
+                          className={`text-white ${GRADE_COLORS[item.raidDroppedItem.grade]}`}
+                        >
                           {item.raidDroppedItem.grade}
                         </Badge>
                         <Badge variant="secondary">
-                          {CATEGORY_LABELS[item.raidDroppedItem.category] || item.raidDroppedItem.category}
+                          {CATEGORY_LABELS[item.raidDroppedItem.category] ||
+                            item.raidDroppedItem.category}
                         </Badge>
-                        <Badge className={`text-white ${ITEM_STATUS_COLORS[item.status]}`}>
+                        <Badge
+                          className={`text-white ${ITEM_STATUS_COLORS[item.status]}`}
+                        >
                           {ITEM_STATUS_LABELS[item.status]}
                         </Badge>
                       </div>
@@ -197,13 +229,17 @@ export default function AuctionDetail() {
                         <div className="flex items-center gap-2 text-sm">
                           <Trophy className="h-4 w-4 text-muted-foreground" />
                           <span className="text-muted-foreground">Raid:</span>
-                          <span className="font-medium">{item.raidDroppedItem.raidInstance.raid.name}</span>
+                          <span className="font-medium">
+                            {item.raidDroppedItem.raidInstance.raid.name}
+                          </span>
                         </div>
 
                         {item.currentBid && (
                           <div className="flex items-center gap-2 text-sm">
                             <Coins className="h-4 w-4 text-green-600" />
-                            <span className="text-muted-foreground">Lance Atual:</span>
+                            <span className="text-muted-foreground">
+                              Lance Atual:
+                            </span>
                             <span className="font-semibold text-green-600">
                               {item.currentBid} DKP
                             </span>
@@ -213,7 +249,9 @@ export default function AuctionDetail() {
                         {item.currentWinner && (
                           <div className="flex items-center gap-2 text-sm">
                             <User className="h-4 w-4 text-blue-600" />
-                            <span className="text-muted-foreground">Vencedor:</span>
+                            <span className="text-muted-foreground">
+                              Vencedor:
+                            </span>
                             <span className="font-medium text-blue-600">
                               {item.currentWinner.nickname}
                             </span>
@@ -250,7 +288,9 @@ export default function AuctionDetail() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">Total de Itens</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Total de Itens
+                </p>
                 <p className="text-2xl font-bold">{auction.items.length}</p>
               </div>
               <div className="text-center p-4 bg-green-50 dark:bg-green-950 rounded-lg">
@@ -260,7 +300,9 @@ export default function AuctionDetail() {
                 </p>
               </div>
               <div className="text-center p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">DKP Total Arrecadado</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  DKP Total Arrecadado
+                </p>
                 <p className="text-2xl font-bold text-blue-600">
                   {auction.items
                     .filter((i) => i.status === 'SOLD')
@@ -272,7 +314,9 @@ export default function AuctionDetail() {
 
             {auction.items.filter((i) => i.status === 'NO_BIDS').length > 0 && (
               <div className="mt-4 text-center p-4 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">Itens Sem Lances</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Itens Sem Lances
+                </p>
                 <p className="text-2xl font-bold text-yellow-600">
                   {auction.items.filter((i) => i.status === 'NO_BIDS').length}
                 </p>
@@ -284,4 +328,3 @@ export default function AuctionDetail() {
     </Layout>
   );
 }
-

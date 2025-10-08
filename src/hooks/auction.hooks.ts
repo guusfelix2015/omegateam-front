@@ -19,16 +19,19 @@ import type {
 export const auctionKeys = {
   all: ['auctions'] as const,
   lists: () => [...auctionKeys.all, 'list'] as const,
-  list: (params?: GetAuctionsQuery) => [...auctionKeys.lists(), params] as const,
+  list: (params?: GetAuctionsQuery) =>
+    [...auctionKeys.lists(), params] as const,
   details: () => [...auctionKeys.all, 'detail'] as const,
   detail: (id: string) => [...auctionKeys.details(), id] as const,
   active: () => [...auctionKeys.all, 'active'] as const,
   wonItems: () => [...auctionKeys.all, 'won-items'] as const,
   myWonItems: () => [...auctionKeys.wonItems(), 'me'] as const,
-  userWonItems: (userId: string) => [...auctionKeys.wonItems(), userId] as const,
+  userWonItems: (userId: string) =>
+    [...auctionKeys.wonItems(), userId] as const,
   auctionedItems: () => [...auctionKeys.all, 'auctioned-items'] as const,
   auditLogs: () => [...auctionKeys.all, 'audit-logs'] as const,
-  auditLog: (entityId: string) => [...auctionKeys.auditLogs(), entityId] as const,
+  auditLog: (entityId: string) =>
+    [...auctionKeys.auditLogs(), entityId] as const,
   analytics: () => [...auctionKeys.all, 'analytics'] as const,
 };
 
@@ -74,7 +77,9 @@ export function useActiveAuction() {
       if (!data) return 3000; // No active auction - poll every 3s
 
       // Find current item in auction
-      const currentItem = data.items.find((item: any) => item.status === 'IN_AUCTION');
+      const currentItem = data.items.find(
+        (item: any) => item.status === 'IN_AUCTION'
+      );
       if (!currentItem || !currentItem.startedAt) return 3000;
 
       // Calculate time remaining
@@ -207,7 +212,9 @@ export function useResetAuctionedFlag() {
 // Get audit logs (ADMIN only)
 export function useAuditLogs(entityId?: string) {
   return useQuery<AuditLog[]>({
-    queryKey: entityId ? auctionKeys.auditLog(entityId) : auctionKeys.auditLogs(),
+    queryKey: entityId
+      ? auctionKeys.auditLog(entityId)
+      : auctionKeys.auditLogs(),
     queryFn: () => auctionService.getAuditLogs(entityId),
   });
 }
@@ -219,4 +226,3 @@ export function useAuctionAnalytics() {
     queryFn: () => auctionService.getAuctionAnalytics(),
   });
 }
-

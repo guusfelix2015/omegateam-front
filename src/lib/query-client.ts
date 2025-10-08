@@ -8,7 +8,10 @@ export const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
       retry: (failureCount, error: any) => {
         // Don't retry on 401/403 errors
-        if (error?.response?.status === 401 || error?.response?.status === 403) {
+        if (
+          error?.response?.status === 401 ||
+          error?.response?.status === 403
+        ) {
           return false;
         }
         return failureCount < 3;

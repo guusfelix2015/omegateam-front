@@ -64,7 +64,11 @@ const GRADE_OPTIONS = [
   { value: 'S', label: 'S' },
 ];
 
-export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedItemDialogProps) {
+export function EditDroppedItemDialog({
+  item,
+  open,
+  onOpenChange,
+}: EditDroppedItemDialogProps) {
   const { data: lookups } = useLookups();
   const updateItemMutation = useUpdateRaidDroppedItem();
 
@@ -114,7 +118,8 @@ export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedI
   };
 
   // Get available categories from lookups or use default list
-  const availableCategories = lookups?.categories || Object.keys(CATEGORY_LABELS);
+  const availableCategories =
+    lookups?.categories || Object.keys(CATEGORY_LABELS);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -161,7 +166,9 @@ export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedI
                 </SelectContent>
               </Select>
               {errors.category && (
-                <p className="text-sm text-destructive">{errors.category.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.category.message}
+                </p>
               )}
             </div>
 
@@ -183,7 +190,9 @@ export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedI
                 </SelectContent>
               </Select>
               {errors.grade && (
-                <p className="text-sm text-destructive">{errors.grade.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.grade.message}
+                </p>
               )}
             </div>
           </div>
@@ -198,7 +207,9 @@ export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedI
               {...register('minDkpBid', { valueAsNumber: true })}
             />
             {errors.minDkpBid && (
-              <p className="text-sm text-destructive">{errors.minDkpBid.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.minDkpBid.message}
+              </p>
             )}
           </div>
 
@@ -225,7 +236,9 @@ export function EditDroppedItemDialog({ item, open, onOpenChange }: EditDroppedI
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Salvar Alterações
             </Button>
           </DialogFooter>

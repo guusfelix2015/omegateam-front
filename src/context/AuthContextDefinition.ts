@@ -10,4 +10,6 @@ export interface AuthContextType {
   error: Error | null;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);

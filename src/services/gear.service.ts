@@ -1,5 +1,10 @@
 import { api } from '../lib/axios';
-import { UserGearResponseSchema, UpdateUserGearSchema, type UserGearResponse, type UpdateUserGear } from '../types/api';
+import {
+  UserGearResponseSchema,
+  UpdateUserGearSchema,
+  type UserGearResponse,
+  type UpdateUserGear,
+} from '../types/api';
 
 export const gearService = {
   async getUserGear(): Promise<UserGearResponse> {

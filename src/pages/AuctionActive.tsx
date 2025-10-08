@@ -1,6 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Gavel, Clock, Trophy, TrendingUp, Sparkles, Crown, Timer } from 'lucide-react';
-import { useActiveAuction, usePlaceBid, useStartAuction, useFinalizeAuctionItem } from '../hooks/auction.hooks';
+import {
+  Gavel,
+  Clock,
+  Trophy,
+  TrendingUp,
+  Sparkles,
+  Crown,
+  Timer,
+} from 'lucide-react';
+import {
+  useActiveAuction,
+  usePlaceBid,
+  useStartAuction,
+  useFinalizeAuctionItem,
+} from '../hooks/auction.hooks';
 import { useAuth } from '@/hooks/useAuth';
 import { Layout } from '../components/Layout';
 import { Card } from '../components/ui/card';
@@ -19,7 +32,9 @@ export default function AuctionActive() {
   const [localTimer, setLocalTimer] = useState<number>(0);
 
   // Get current item in auction
-  const currentItem = auction?.items.find((item) => item.status === 'IN_AUCTION');
+  const currentItem = auction?.items.find(
+    (item) => item.status === 'IN_AUCTION'
+  );
 
   // Calculate time remaining based on timestamp
   const calculateTimeRemaining = useCallback(() => {
@@ -135,7 +150,8 @@ export default function AuctionActive() {
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold">Nenhum Leilão Ativo</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Não há leilão em andamento no momento. Aguarde o próximo leilão.
+                  Não há leilão em andamento no momento. Aguarde o próximo
+                  leilão.
                 </p>
               </div>
             </div>
@@ -210,11 +226,15 @@ export default function AuctionActive() {
                 <div className="flex items-center gap-2 mt-1 text-muted-foreground">
                   <Avatar className="h-5 w-5">
                     <AvatarImage src={auction.creator.avatar || undefined} />
-                    <AvatarFallback>{auction.creator.nickname[0]}</AvatarFallback>
+                    <AvatarFallback>
+                      {auction.creator.nickname[0]}
+                    </AvatarFallback>
                   </Avatar>
                   <span>Criado por {auction.creator.nickname}</span>
                   <span>•</span>
-                  <span>{new Date(auction.createdAt).toLocaleDateString('pt-BR')}</span>
+                  <span>
+                    {new Date(auction.createdAt).toLocaleDateString('pt-BR')}
+                  </span>
                 </div>
               </div>
             </div>
@@ -225,7 +245,9 @@ export default function AuctionActive() {
                 size="lg"
                 className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
               >
-                {startAuctionMutation.isPending ? 'Iniciando...' : 'Iniciar Leilão'}
+                {startAuctionMutation.isPending
+                  ? 'Iniciando...'
+                  : 'Iniciar Leilão'}
               </Button>
             )}
           </div>
@@ -253,13 +275,21 @@ export default function AuctionActive() {
                     <Gavel className="h-12 w-12 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-2">{currentItem.raidDroppedItem.name}</h3>
+                    <h3 className="text-2xl font-bold mb-2">
+                      {currentItem.raidDroppedItem.name}
+                    </h3>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Badge className={GRADE_COLORS[currentItem.raidDroppedItem.grade]}>
+                      <Badge
+                        className={
+                          GRADE_COLORS[currentItem.raidDroppedItem.grade]
+                        }
+                      >
                         Grade {currentItem.raidDroppedItem.grade}
                       </Badge>
                       <Badge variant="outline">
-                        {CATEGORY_LABELS[currentItem.raidDroppedItem.category] || currentItem.raidDroppedItem.category}
+                        {CATEGORY_LABELS[
+                          currentItem.raidDroppedItem.category
+                        ] || currentItem.raidDroppedItem.category}
                       </Badge>
                       <Badge variant="secondary" className="text-xs">
                         {currentItem.raidDroppedItem.raidInstance.raid.name}
@@ -279,29 +309,45 @@ export default function AuctionActive() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-12 w-12 border-2 border-green-500">
-                            <AvatarImage src={currentItem.currentWinner.avatar || undefined} />
+                            <AvatarImage
+                              src={
+                                currentItem.currentWinner.avatar || undefined
+                              }
+                            />
                             <AvatarFallback className="bg-green-500 text-white">
                               {currentItem.currentWinner.nickname[0]}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-semibold">{currentItem.currentWinner.nickname}</div>
-                            <div className="text-sm text-muted-foreground">{currentItem.currentWinner.name}</div>
+                            <div className="font-semibold">
+                              {currentItem.currentWinner.nickname}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {currentItem.currentWinner.name}
+                            </div>
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="text-3xl font-bold text-green-600 dark:text-green-400">
                             {currentItem.currentBid.toLocaleString()}
                           </div>
-                          <div className="text-sm text-muted-foreground">DKP</div>
+                          <div className="text-sm text-muted-foreground">
+                            DKP
+                          </div>
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center py-4">
-                      <div className="text-sm text-muted-foreground mb-2">Lance Mínimo</div>
-                      <div className="text-3xl font-bold">{currentItem.minBid.toLocaleString()} DKP</div>
-                      <div className="text-sm text-muted-foreground mt-2">Nenhum lance ainda</div>
+                      <div className="text-sm text-muted-foreground mb-2">
+                        Lance Mínimo
+                      </div>
+                      <div className="text-3xl font-bold">
+                        {currentItem.minBid.toLocaleString()} DKP
+                      </div>
+                      <div className="text-sm text-muted-foreground mt-2">
+                        Nenhum lance ainda
+                      </div>
                     </div>
                   )}
                 </div>
@@ -311,10 +357,14 @@ export default function AuctionActive() {
               <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-lg border-2 border-blue-200 dark:border-blue-800">
                 <Clock className="h-12 w-12 text-blue-600 dark:text-blue-400 mb-4" />
                 <div className="text-center">
-                  <div className={`text-6xl font-bold ${localTimer <= 10 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-blue-600 dark:text-blue-400'}`}>
+                  <div
+                    className={`text-6xl font-bold ${localTimer <= 10 ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-blue-600 dark:text-blue-400'}`}
+                  >
                     {localTimer}
                   </div>
-                  <div className="text-sm text-muted-foreground mt-2">segundos restantes</div>
+                  <div className="text-sm text-muted-foreground mt-2">
+                    segundos restantes
+                  </div>
                 </div>
                 {localTimer <= 10 && (
                   <div className="mt-4 px-4 py-2 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm font-semibold animate-pulse">
@@ -328,14 +378,17 @@ export default function AuctionActive() {
             <div className="mt-6 p-6 bg-muted rounded-lg border-2 border-dashed border-primary/50">
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="text-sm font-medium mb-2 block">Seu Lance (DKP)</label>
+                  <label className="text-sm font-medium mb-2 block">
+                    Seu Lance (DKP)
+                  </label>
                   <Input
                     type="number"
                     value={bidAmount}
                     onChange={(e) => setBidAmount(Number(e.target.value))}
                     min={
                       currentItem.currentBid
-                        ? currentItem.currentBid + (auction.minBidIncrement || 1)
+                        ? currentItem.currentBid +
+                          (auction.minBidIncrement || 1)
                         : currentItem.minBid
                     }
                     placeholder={`Mínimo: ${currentItem.currentBid ? currentItem.currentBid + (auction.minBidIncrement || 1) : currentItem.minBid} DKP`}
@@ -358,7 +411,9 @@ export default function AuctionActive() {
                       size="lg"
                       variant="destructive"
                     >
-                      {finalizeItemMutation.isPending ? 'Finalizando...' : 'Finalizar'}
+                      {finalizeItemMutation.isPending
+                        ? 'Finalizando...'
+                        : 'Finalizar'}
                     </Button>
                   )}
                 </div>
@@ -377,25 +432,34 @@ export default function AuctionActive() {
                   {currentItem.bids.slice(0, 10).map((bid, index) => (
                     <div
                       key={bid.id}
-                      className={`flex items-center justify-between p-3 rounded-lg border ${index === 0
-                        ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800'
-                        : 'bg-muted border-border'
-                        }`}
+                      className={`flex items-center justify-between p-3 rounded-lg border ${
+                        index === 0
+                          ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800'
+                          : 'bg-muted border-border'
+                      }`}
                     >
                       <div className="flex items-center gap-3">
-                        {index === 0 && <Crown className="h-4 w-4 text-yellow-600" />}
+                        {index === 0 && (
+                          <Crown className="h-4 w-4 text-yellow-600" />
+                        )}
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={bid.user.avatar || undefined} />
-                          <AvatarFallback>{bid.user.nickname[0]}</AvatarFallback>
+                          <AvatarFallback>
+                            {bid.user.nickname[0]}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="font-medium">{bid.user.nickname}</div>
                           <div className="text-xs text-muted-foreground">
-                            {new Date(bid.createdAt).toLocaleTimeString('pt-BR')}
+                            {new Date(bid.createdAt).toLocaleTimeString(
+                              'pt-BR'
+                            )}
                           </div>
                         </div>
                       </div>
-                      <div className={`text-lg font-bold ${index === 0 ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                      <div
+                        className={`text-lg font-bold ${index === 0 ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'}`}
+                      >
                         {bid.amount.toLocaleString()} DKP
                       </div>
                     </div>
@@ -416,13 +480,16 @@ export default function AuctionActive() {
 
           <div className="space-y-3">
             {auction.items.map((item, index) => {
-              const STATUS_CONFIG: Record<string, {
-                bg: string;
-                border: string;
-                badge: string;
-                label: string;
-                icon: React.ReactNode;
-              }> = {
+              const STATUS_CONFIG: Record<
+                string,
+                {
+                  bg: string;
+                  border: string;
+                  badge: string;
+                  label: string;
+                  icon: React.ReactNode;
+                }
+              > = {
                 IN_AUCTION: {
                   bg: 'bg-blue-50 dark:bg-blue-950',
                   border: 'border-blue-500 dark:border-blue-600',
@@ -460,7 +527,8 @@ export default function AuctionActive() {
                 },
               };
 
-              const config = STATUS_CONFIG[item.status] || STATUS_CONFIG.WAITING;
+              const config =
+                STATUS_CONFIG[item.status] || STATUS_CONFIG.WAITING;
 
               return (
                 <div
@@ -474,15 +542,25 @@ export default function AuctionActive() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-lg">{item.raidDroppedItem.name}</span>
-                          <Badge className={GRADE_COLORS[item.raidDroppedItem.grade]} variant="secondary">
+                          <span className="font-semibold text-lg">
+                            {item.raidDroppedItem.name}
+                          </span>
+                          <Badge
+                            className={GRADE_COLORS[item.raidDroppedItem.grade]}
+                            variant="secondary"
+                          >
                             {item.raidDroppedItem.grade}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{CATEGORY_LABELS[item.raidDroppedItem.category] || item.raidDroppedItem.category}</span>
+                          <span>
+                            {CATEGORY_LABELS[item.raidDroppedItem.category] ||
+                              item.raidDroppedItem.category}
+                          </span>
                           <span>•</span>
-                          <span>{item.raidDroppedItem.raidInstance.raid.name}</span>
+                          <span>
+                            {item.raidDroppedItem.raidInstance.raid.name}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -491,11 +569,17 @@ export default function AuctionActive() {
                       {item.currentWinner && (
                         <div className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
-                            <AvatarImage src={item.currentWinner.avatar || undefined} />
-                            <AvatarFallback>{item.currentWinner.nickname[0]}</AvatarFallback>
+                            <AvatarImage
+                              src={item.currentWinner.avatar || undefined}
+                            />
+                            <AvatarFallback>
+                              {item.currentWinner.nickname[0]}
+                            </AvatarFallback>
                           </Avatar>
                           <div className="text-right">
-                            <div className="text-sm font-medium">{item.currentWinner.nickname}</div>
+                            <div className="text-sm font-medium">
+                              {item.currentWinner.nickname}
+                            </div>
                             {item.currentBid && (
                               <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
                                 {item.currentBid.toLocaleString()} DKP
@@ -504,7 +588,9 @@ export default function AuctionActive() {
                           </div>
                         </div>
                       )}
-                      <Badge className={`${config.badge} flex items-center gap-1 px-3 py-1`}>
+                      <Badge
+                        className={`${config.badge} flex items-center gap-1 px-3 py-1`}
+                      >
                         {config.icon}
                         {config.label}
                       </Badge>

@@ -44,7 +44,11 @@ const CATEGORY_LABELS: Record<string, string> = {
   COMUM: 'Comum',
 };
 
-export function CreateAuctionModal({ open, onOpenChange, preSelectedItem }: CreateAuctionModalProps) {
+export function CreateAuctionModal({
+  open,
+  onOpenChange,
+  preSelectedItem,
+}: CreateAuctionModalProps) {
   const navigate = useNavigate();
   const createAuctionMutation = useCreateAuction();
   const [defaultTimerSeconds, setDefaultTimerSeconds] = useState<number>(20);
@@ -98,14 +102,20 @@ export function CreateAuctionModal({ open, onOpenChange, preSelectedItem }: Crea
           {/* Selected Item Display */}
           {preSelectedItem && (
             <div className="border rounded-lg p-4 bg-blue-50">
-              <Label className="text-sm font-medium mb-2 block">Item Selecionado</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Item Selecionado
+              </Label>
               <div className="flex items-center gap-2">
                 <span className="font-medium">{preSelectedItem.name}</span>
-                <Badge variant="outline" className={`text-white ${GRADE_COLORS[preSelectedItem.grade]}`}>
+                <Badge
+                  variant="outline"
+                  className={`text-white ${GRADE_COLORS[preSelectedItem.grade]}`}
+                >
                   {preSelectedItem.grade}
                 </Badge>
                 <Badge variant="secondary">
-                  {CATEGORY_LABELS[preSelectedItem.category] || preSelectedItem.category}
+                  {CATEGORY_LABELS[preSelectedItem.category] ||
+                    preSelectedItem.category}
                 </Badge>
                 <span className="text-sm text-muted-foreground ml-auto">
                   Lance mínimo: {preSelectedItem.minDkpBid} DKP
@@ -128,7 +138,9 @@ export function CreateAuctionModal({ open, onOpenChange, preSelectedItem }: Crea
                   min="10"
                   max="300"
                   value={defaultTimerSeconds}
-                  onChange={(e) => setDefaultTimerSeconds(Number(e.target.value))}
+                  onChange={(e) =>
+                    setDefaultTimerSeconds(Number(e.target.value))
+                  }
                   required
                 />
                 <p className="text-xs text-muted-foreground">
@@ -199,4 +211,3 @@ export function CreateAuctionModal({ open, onOpenChange, preSelectedItem }: Crea
     </Dialog>
   );
 }
-

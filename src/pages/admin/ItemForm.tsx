@@ -4,14 +4,35 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Save, ArrowLeft } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { useItem, useCreateItem, useUpdateItem, useLookups } from '../../hooks/items.hooks';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../components/ui/select';
+import {
+  useItem,
+  useCreateItem,
+  useUpdateItem,
+  useLookups,
+} from '../../hooks/items.hooks';
 import { Layout } from '../../components/Layout';
-import { CreateItemSchema, type CreateItem, type ItemCategory } from '../../types/api';
+import {
+  CreateItemSchema,
+  type CreateItem,
+  type ItemCategory,
+} from '../../types/api';
 
 const CATEGORY_LABELS: Record<ItemCategory, string> = {
   HELMET: 'Capacete',
@@ -109,14 +130,18 @@ export default function ItemForm() {
               {isEditing ? 'Editar Item' : 'Novo Item'}
             </h1>
             <p className="text-muted-foreground">
-              {isEditing ? 'Edite as informações do item' : 'Crie um novo item no sistema'}
+              {isEditing
+                ? 'Edite as informações do item'
+                : 'Crie um novo item no sistema'}
             </p>
           </div>
         </div>
 
         <Card className="max-w-2xl">
           <CardHeader>
-            <CardTitle>{isEditing ? 'Editar Item' : 'Criar Novo Item'}</CardTitle>
+            <CardTitle>
+              {isEditing ? 'Editar Item' : 'Criar Novo Item'}
+            </CardTitle>
             <CardDescription>
               Preencha as informações do item abaixo
             </CardDescription>
@@ -140,7 +165,9 @@ export default function ItemForm() {
                   <Label htmlFor="category">Categoria</Label>
                   <Select
                     value={watchedCategory}
-                    onValueChange={(value) => setValue('category', value as any)}
+                    onValueChange={(value) =>
+                      setValue('category', value as any)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione a categoria" />
@@ -154,7 +181,9 @@ export default function ItemForm() {
                     </SelectContent>
                   </Select>
                   {errors.category && (
-                    <p className="text-sm text-red-500">{errors.category.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.category.message}
+                    </p>
                   )}
                 </div>
 
@@ -176,7 +205,9 @@ export default function ItemForm() {
                     </SelectContent>
                   </Select>
                   {errors.grade && (
-                    <p className="text-sm text-red-500">{errors.grade.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.grade.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -192,7 +223,9 @@ export default function ItemForm() {
                     {...register('valorGsInt', { valueAsNumber: true })}
                   />
                   {errors.valorGsInt && (
-                    <p className="text-sm text-red-500">{errors.valorGsInt.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.valorGsInt.message}
+                    </p>
                   )}
                 </div>
 
@@ -206,7 +239,9 @@ export default function ItemForm() {
                     {...register('valorDkp', { valueAsNumber: true })}
                   />
                   {errors.valorDkp && (
-                    <p className="text-sm text-red-500">{errors.valorDkp.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.valorDkp.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -214,10 +249,16 @@ export default function ItemForm() {
               <div className="flex gap-4">
                 <Button
                   type="submit"
-                  disabled={isSubmitting || createItemMutation.isPending || updateItemMutation.isPending}
+                  disabled={
+                    isSubmitting ||
+                    createItemMutation.isPending ||
+                    updateItemMutation.isPending
+                  }
                   className="flex-1"
                 >
-                  {(isSubmitting || createItemMutation.isPending || updateItemMutation.isPending) && (
+                  {(isSubmitting ||
+                    createItemMutation.isPending ||
+                    updateItemMutation.isPending) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   <Save className="mr-2 h-4 w-4" />

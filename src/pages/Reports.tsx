@@ -1,5 +1,18 @@
-import { BarChart3, TrendingUp, Users, Building2, Calendar, Download } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  Building2,
+  Calendar,
+  Download,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Layout } from '../components/Layout';
 
@@ -24,7 +37,9 @@ export default function Reports() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total de Membros</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total de Membros
+              </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -52,7 +67,9 @@ export default function Reports() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Taxa de Atividade</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Taxa de Atividade
+              </CardTitle>
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -66,14 +83,14 @@ export default function Reports() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Novos Membros</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Novos Membros
+              </CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">
-                Este mês
-              </p>
+              <p className="text-xs text-muted-foreground">Este mês</p>
             </CardContent>
           </Card>
         </div>
@@ -85,13 +102,12 @@ export default function Reports() {
                 <Users className="mr-2 h-5 w-5" />
                 Relatório de Membros
               </CardTitle>
-              <CardDescription>
-                Análise detalhada dos membros
-              </CardDescription>
+              <CardDescription>Análise detalhada dos membros</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Estatísticas de crescimento, atividade e distribuição de membros.
+                Estatísticas de crescimento, atividade e distribuição de
+                membros.
               </p>
               <Button className="w-full" variant="outline" disabled>
                 Gerar Relatório
@@ -105,9 +121,7 @@ export default function Reports() {
                 <Building2 className="mr-2 h-5 w-5" />
                 Relatório de Cps
               </CardTitle>
-              <CardDescription>
-                Performance das Cps
-              </CardDescription>
+              <CardDescription>Performance das Cps</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -125,9 +139,7 @@ export default function Reports() {
                 <BarChart3 className="mr-2 h-5 w-5" />
                 Relatório de Atividade
               </CardTitle>
-              <CardDescription>
-                Métricas de uso do sistema
-              </CardDescription>
+              <CardDescription>Métricas de uso do sistema</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -145,9 +157,7 @@ export default function Reports() {
                 <TrendingUp className="mr-2 h-5 w-5" />
                 Relatório de Crescimento
               </CardTitle>
-              <CardDescription>
-                Tendências e projeções
-              </CardDescription>
+              <CardDescription>Tendências e projeções</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -165,9 +175,7 @@ export default function Reports() {
                 <Calendar className="mr-2 h-5 w-5" />
                 Relatório Mensal
               </CardTitle>
-              <CardDescription>
-                Resumo executivo mensal
-              </CardDescription>
+              <CardDescription>Resumo executivo mensal</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -185,9 +193,7 @@ export default function Reports() {
                 <Download className="mr-2 h-5 w-5" />
                 Exportação de Dados
               </CardTitle>
-              <CardDescription>
-                Backup e exportação
-              </CardDescription>
+              <CardDescription>Backup e exportação</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
@@ -204,10 +210,13 @@ export default function Reports() {
           <CardContent className="pt-6">
             <div className="text-center">
               <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Relatórios em Desenvolvimento</h3>
+              <h3 className="text-lg font-medium mb-2">
+                Relatórios em Desenvolvimento
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Os relatórios detalhados estão sendo desenvolvidos e estarão disponíveis em breve.
-                Por enquanto, você pode acessar as informações básicas através das outras seções do sistema.
+                Os relatórios detalhados estão sendo desenvolvidos e estarão
+                disponíveis em breve. Por enquanto, você pode acessar as
+                informações básicas através das outras seções do sistema.
               </p>
               <div className="flex justify-center space-x-2">
                 <Button variant="outline" asChild>

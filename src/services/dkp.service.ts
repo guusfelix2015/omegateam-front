@@ -38,7 +38,9 @@ const DkpHistoryResponseSchema = z.object({
   }),
 });
 
-export type DkpLeaderboardResponse = z.infer<typeof DkpLeaderboardResponseSchema>;
+export type DkpLeaderboardResponse = z.infer<
+  typeof DkpLeaderboardResponseSchema
+>;
 export type DkpHistoryResponse = z.infer<typeof DkpHistoryResponseSchema>;
 
 export interface DkpLeaderboardQuery {
@@ -60,7 +62,9 @@ export interface DkpHistoryQuery {
 
 export const dkpService = {
   // DKP Leaderboard
-  async getDkpLeaderboard(query: DkpLeaderboardQuery = {}): Promise<DkpLeaderboardResponse> {
+  async getDkpLeaderboard(
+    query: DkpLeaderboardQuery = {}
+  ): Promise<DkpLeaderboardResponse> {
     const params = new URLSearchParams();
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
@@ -78,7 +82,9 @@ export const dkpService = {
   },
 
   // Current user's DKP history
-  async getMyDkpHistory(query: DkpHistoryQuery = {}): Promise<DkpHistoryResponse> {
+  async getMyDkpHistory(
+    query: DkpHistoryQuery = {}
+  ): Promise<DkpHistoryResponse> {
     const params = new URLSearchParams();
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
@@ -106,7 +112,10 @@ export const dkpService = {
   },
 
   // Get specific user's DKP history (authenticated users)
-  async getUserDkpHistory(userId: string, query: DkpHistoryQuery = {}): Promise<DkpHistoryResponse> {
+  async getUserDkpHistory(
+    userId: string,
+    query: DkpHistoryQuery = {}
+  ): Promise<DkpHistoryResponse> {
     const params = new URLSearchParams();
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
@@ -116,7 +125,9 @@ export const dkpService = {
     if (query.sortBy) params.append('sortBy', query.sortBy);
     if (query.sortOrder) params.append('sortOrder', query.sortOrder);
 
-    const response = await api.get(`/dkp/users/${userId}/history?${params.toString()}`);
+    const response = await api.get(
+      `/dkp/users/${userId}/history?${params.toString()}`
+    );
     return DkpHistoryResponseSchema.parse(response.data);
   },
 
