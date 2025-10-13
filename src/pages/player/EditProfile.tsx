@@ -54,6 +54,8 @@ const updateProfileSchema = z.object({
     .or(z.literal('')),
   lvl: z.number().min(1, 'Level mínimo é 1').max(85, 'Level máximo é 85'),
   classeId: z.string().optional(),
+  playerType: z.enum(['PVP', 'PVE']).nullable().optional(),
+  clan: z.enum(['CLA1', 'CLA2']).nullable().optional(),
 });
 
 type UpdateProfileForm = z.infer<typeof updateProfileSchema>;
@@ -82,6 +84,8 @@ export const EditProfile: React.FC = () => {
       password: '',
       lvl: profileUser?.lvl || 1,
       classeId: profileUser?.classeId || '',
+      playerType: profileUser?.playerType || null,
+      clan: profileUser?.clan || null,
     },
   });
 
@@ -209,20 +213,22 @@ export const EditProfile: React.FC = () => {
         <div className="flex space-x-1 bg-muted p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('general')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'general'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-              }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'general'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
             <UserCircle className="h-4 w-4" />
             Informações Gerais
           </button>
           <button
             onClick={() => setActiveTab('security')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'security'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-              }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'security'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
             <Lock className="h-4 w-4" />
             Segurança
@@ -239,7 +245,10 @@ export const EditProfile: React.FC = () => {
               <CardDescription>Edite suas informações pessoais</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmitGeneral)} className="space-y-4">
+              <form
+                onSubmit={handleSubmit(onSubmitGeneral)}
+                className="space-y-4"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Nome</Label>
@@ -338,6 +347,56 @@ export const EditProfile: React.FC = () => {
                       </div>
                     )}
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="playerType">Tipo de Jogador</Label>
+                    <Controller
+                      name="playerType"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value || 'none'}
+                          onValueChange={(value) => {
+                            field.onChange(value === 'none' ? null : value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Nenhum</SelectItem>
+                            <SelectItem value="PVP">PVP</SelectItem>
+                            <SelectItem value="PVE">PVE</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="clan">Clan</Label>
+                    <Controller
+                      name="clan"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value || 'none'}
+                          onValueChange={(value) => {
+                            field.onChange(value === 'none' ? null : value);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o clan" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Nenhum</SelectItem>
+                            <SelectItem value="CLA1">CLA1</SelectItem>
+                            <SelectItem value="CLA2">CLA2</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4">
@@ -374,7 +433,10 @@ export const EditProfile: React.FC = () => {
               <CardDescription>Altere sua senha de acesso</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmitSecurity)} className="space-y-4">
+              <form
+                onSubmit={handleSubmit(onSubmitSecurity)}
+                className="space-y-4"
+              >
                 <div className="space-y-2">
                   <Label htmlFor="password">Nova Senha</Label>
                   <Input

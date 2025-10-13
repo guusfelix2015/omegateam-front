@@ -22,6 +22,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '../../components/ui/avatar';
+import { Badge } from '../../components/ui/badge';
 import { ClassBadge } from '../../components/ClassBadge';
 import { GearManager } from '../../components/GearManager';
 import { useMe } from '../../hooks/users.hooks';
@@ -103,7 +104,7 @@ export default function Profile() {
               <div className="space-y-1">
                 <h2 className="text-2xl font-semibold">{user?.name}</h2>
                 <p className="text-muted-foreground">@{user?.nickname}</p>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
                   <span className="flex items-center gap-1">
                     <Shield className="h-4 w-4" />
                     {user?.role === 'ADMIN' ? 'Administrador' : 'Jogador'}
@@ -114,6 +115,16 @@ export default function Profile() {
                   </span>
                   {user?.classe?.name && (
                     <ClassBadge classeName={user.classe.name} size="sm" />
+                  )}
+                  {user?.playerType && (
+                    <Badge variant="outline" className="text-xs">
+                      {user.playerType}
+                    </Badge>
+                  )}
+                  {user?.clan && (
+                    <Badge variant="secondary" className="text-xs">
+                      {user.clan}
+                    </Badge>
                   )}
                 </div>
               </div>

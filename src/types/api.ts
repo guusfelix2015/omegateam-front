@@ -37,6 +37,8 @@ export const UserSchema = z.object({
   nickname: z.string(),
   avatar: z.string().nullable().optional(),
   classeId: z.string().nullable().optional(),
+  playerType: z.enum(['PVP', 'PVE']).nullable().optional(),
+  clan: z.enum(['CLA1', 'CLA2']).nullable().optional(),
   ownedItemIds: z.array(z.string()).default([]),
   gearScore: z.number().default(0),
   dkpPoints: z.number().default(0),
@@ -117,10 +119,15 @@ export const CreateUserSchema = z.object({
 export const UpdateProfileSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').optional(),
   nickname: z.string().min(1, 'Nickname é obrigatório').optional(),
-  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres').optional(),
+  password: z
+    .string()
+    .min(6, 'Senha deve ter pelo menos 6 caracteres')
+    .optional(),
   avatar: z.string().url('URL inválida').nullable().optional(),
   lvl: z.number().min(1).max(85).optional(),
   classeId: z.string().nullable().optional(),
+  playerType: z.enum(['PVP', 'PVE']).nullable().optional(),
+  clan: z.enum(['CLA1', 'CLA2']).nullable().optional(),
   bagUrl: z.string().url('URL inválida').nullable().optional(),
 });
 
