@@ -1,15 +1,9 @@
 import { useState, useMemo } from 'react';
 import {
-  Sword,
-  Shield,
-  Crown,
-  Package,
-  Shirt,
-  Footprints,
-  Hand,
   Star,
   X,
   Check,
+  Package,
 } from 'lucide-react';
 import {
   Dialog,
@@ -37,27 +31,100 @@ interface EquipmentSelectionModalProps {
 }
 
 /**
- * Get icon component for item category
+ * Get icon component for item category - matching enhanced EquipmentSlot icons
  */
 const getCategoryIcon = (category: ItemCategory, className: string = 'h-5 w-5') => {
+  const baseClasses = className;
+
   switch (category) {
-    case 'WEAPON':
-      return <Sword className={className} />;
-    case 'SHIELD':
-      return <Shield className={className} />;
-    case 'RING':
-    case 'EARRING':
-    case 'NECKLACE':
-      return <Crown className={className} />;
     case 'HELMET':
-      return <Crown className={className} />;
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 3C8 3 5 5.5 5 8.5v4c0 1.5 0.5 2.5 1.5 3.5" strokeLinecap="round" />
+          <path d="M12 3C16 3 19 5.5 19 8.5v4c0 1.5-0.5 2.5-1.5 3.5" strokeLinecap="round" />
+          <rect x="8" y="10" width="8" height="3" rx="0.5" fill="currentColor" opacity="0.3" />
+          <path d="M6.5 16C7 17 8 18 9 18.5h6c1-0.5 2-1.5 2.5-2.5" strokeLinecap="round" />
+        </svg>
+      );
     case 'ARMOR':
-    case 'PANTS':
-      return <Shirt className={className} />;
-    case 'BOOTS':
-      return <Footprints className={className} />;
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 3C9 3 7 4 6 5v10c0 3 2 5 6 6 4-1 6-3 6-6V5c-1-1-3-2-6-2z" strokeLinecap="round" />
+          <ellipse cx="7" cy="6" rx="2" ry="1.5" fill="currentColor" opacity="0.2" />
+          <ellipse cx="17" cy="6" rx="2" ry="1.5" fill="currentColor" opacity="0.2" />
+          <path d="M12 5v14" strokeWidth="1" />
+        </svg>
+      );
     case 'GLOVES':
-      return <Hand className={className} />;
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M6 14c0 3 1 5 3 6h6c2-1 3-3 3-6v-3H6v3z" strokeLinecap="round" />
+          <path d="M8 11V7c0-1 0.5-2 1-2s1 1 1 2v4" strokeLinecap="round" />
+          <path d="M11 11V5c0-1 0.5-2 1-2s1 1 1 2v6" strokeLinecap="round" />
+          <path d="M14 11V6c0-1 0.5-2 1-2s1 1 1 2v5" strokeLinecap="round" />
+        </svg>
+      );
+    case 'BOOTS':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M9 4v12h3v4h6v-4h-3V4H9z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 16h6v4h-6v-4z" fill="currentColor" opacity="0.15" />
+          <path d="M10 7h4M10 10h4M10 13h4" strokeWidth="1.5" opacity="0.6" />
+          <path d="M9 15h6" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+      );
+    case 'PANTS':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M7 5h10v2H7V5z" fill="currentColor" opacity="0.2" strokeLinecap="round" />
+          <path d="M8 7v12c0 0.5 0.5 1 1 1h2c0.5 0 1-0.5 1-1V7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M13 7v12c0 0.5 0.5 1 1 1h2c0.5 0 1-0.5 1-1V7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 7v13" strokeWidth="1.5" opacity="0.4" />
+          <circle cx="9.5" cy="13" r="1.5" opacity="0.3" fill="currentColor" />
+          <circle cx="14.5" cy="13" r="1.5" opacity="0.3" fill="currentColor" />
+        </svg>
+      );
+    case 'SHIELD':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 2L4 5v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V5l-8-3z" />
+          <path d="M12 7v10M8 12h8" strokeLinecap="round" strokeWidth="2" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.2" />
+        </svg>
+      );
+    case 'WEAPON':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M19 5L9 15" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M6 12l6 6" strokeWidth="2" strokeLinecap="round" />
+          <path d="M12 18l-6-6" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="5" cy="19" r="1.5" fill="currentColor" />
+        </svg>
+      );
+    case 'RING':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <ellipse cx="12" cy="14" rx="7" ry="3" strokeWidth="2" />
+          <path d="M12 7l-3 4h6l-3-4z" fill="currentColor" opacity="0.6" stroke="currentColor" strokeWidth="1" />
+          <path d="M12 7v4M9 11h6" strokeWidth="0.5" opacity="0.8" />
+        </svg>
+      );
+    case 'EARRING':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 4c2 0 3 1 3 2s-1 2-3 2" strokeWidth="2" strokeLinecap="round" />
+          <path d="M12 8v6" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M12 14l-2.5 4h5l-2.5-4z" fill="currentColor" opacity="0.6" stroke="currentColor" strokeWidth="1" />
+        </svg>
+      );
+    case 'NECKLACE':
+      return (
+        <svg className={baseClasses} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M4 8c1-1 2-2 3-2s2 1 3 2" strokeLinecap="round" />
+          <path d="M20 8c-1-1-2-2-3-2s-2 1-3 2" strokeLinecap="round" />
+          <path d="M12 11l-3 6h6l-3-6z" fill="currentColor" opacity="0.6" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      );
     default:
       return <Package className={className} />;
   }
@@ -182,7 +249,7 @@ export const EquipmentSelectionModal: React.FC<EquipmentSelectionModalProps> = (
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-4">
               {sortedItems.map((item) => {
                 const isCurrentlyEquipped = currentItem?.id === item.id;
 
@@ -191,53 +258,54 @@ export const EquipmentSelectionModal: React.FC<EquipmentSelectionModalProps> = (
                     key={item.id}
                     className={`
                       flex items-center justify-between
-                      p-3
-                      border rounded-lg
+                      p-5
+                      border-2 rounded-xl
                       transition-all
+                      min-h-[80px]
                       ${isCurrentlyEquipped
                         ? 'bg-primary/10 border-primary'
-                        : 'hover:bg-muted/50 border-muted'
+                        : 'hover:bg-muted/50 border-muted hover:border-primary/50'
                       }
                     `}
                   >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="text-muted-foreground">
-                        {getCategoryIcon(category, 'h-5 w-5')}
+                    <div className="flex items-center gap-5 flex-1 min-w-0">
+                      <div className="text-muted-foreground flex-shrink-0">
+                        {getCategoryIcon(category, 'h-12 w-12')}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium truncate">{item.name}</h4>
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Star className="h-3 w-3" />
-                            {item.valorGsInt} GS
+                        <h4 className="font-semibold text-lg truncate mb-2">{item.name}</h4>
+                        <div className="flex items-center gap-5 text-base text-muted-foreground">
+                          <span className="flex items-center gap-2">
+                            <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                            <span className="font-medium">{item.valorGsInt} GS</span>
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Package className="h-3 w-3" />
-                            {item.valorDkp} DKP
+                          <span className="flex items-center gap-2">
+                            <Package className="h-5 w-5" />
+                            <span className="font-medium">{item.valorDkp} DKP</span>
                           </span>
                         </div>
                       </div>
                       <Badge
-                        className={`${getGradeColorClasses(item.grade)} text-xs px-2 py-1`}
+                        className={`${getGradeColorClasses(item.grade)} text-base px-3 py-1.5 flex-shrink-0`}
                       >
                         {item.grade}
                       </Badge>
                     </div>
 
                     <Button
-                      size="sm"
+                      size="lg"
                       onClick={() => handleEquipItem(item)}
                       disabled={isCurrentlyEquipped}
-                      className="ml-3 flex items-center gap-2"
+                      className="ml-5 flex items-center gap-2 px-6"
                     >
                       {isCurrentlyEquipped ? (
                         <>
-                          <Check className="h-4 w-4" />
+                          <Check className="h-5 w-5" />
                           Equipado
                         </>
                       ) : (
                         <>
-                          <Check className="h-4 w-4" />
+                          <Check className="h-5 w-5" />
                           Equipar
                         </>
                       )}

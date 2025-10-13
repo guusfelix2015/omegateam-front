@@ -18,13 +18,14 @@ export type EquipmentSlotType =
   | 'GLOVES';
 
 /**
- * Equipment slot configuration
+ * Equipment slot configuration with row/column positioning
  */
 export interface EquipmentSlot {
   type: EquipmentSlotType;
   category: ItemCategory;
   label: string;
-  position: 'left' | 'center' | 'right';
+  row: number; // Row number in the grid (1-6)
+  col: number; // Column position: 1=left, 2=center, 3=right
 }
 
 /**
@@ -46,26 +47,39 @@ export interface EquippedGear {
 }
 
 /**
- * Equipment slot definitions with their positions in the grid
+ * Equipment slot definitions matching Lineage 2 character screen layout
+ * Organized in rows to form character silhouette:
+ * Row 1: Helmet (center only)
+ * Row 2: Gloves (left) + Armor (center, large) + Boots (right)
+ * Row 3: Pants (center only)
+ * Row 4: Weapon (left) + Shield (right)
+ * Row 5: Accessories top row - Earring 1 (left) + Necklace (center) + Earring 2 (right)
+ * Row 6: Accessories bottom row - Ring 1 (left) + Ring 2 (right) - staggered/pyramid layout
  */
 export const EQUIPMENT_SLOTS: EquipmentSlot[] = [
-  // Left column - Accessories
-  { type: 'EARRING_1', category: 'EARRING', label: 'Brinco 1', position: 'left' },
-  { type: 'RING_1', category: 'RING', label: 'Anel 1', position: 'left' },
-  { type: 'RING_2', category: 'RING', label: 'Anel 2', position: 'left' },
+  // Row 1: Helmet (center only)
+  { type: 'HELMET', category: 'HELMET', label: 'Elmo', row: 1, col: 2 },
 
-  // Center column - Main Equipment
-  { type: 'HELMET', category: 'HELMET', label: 'Capacete', position: 'center' },
-  { type: 'NECKLACE', category: 'NECKLACE', label: 'Colar', position: 'center' },
-  { type: 'ARMOR', category: 'ARMOR', label: 'Armadura', position: 'center' },
-  { type: 'PANTS', category: 'PANTS', label: 'Calças', position: 'center' },
-  { type: 'BOOTS', category: 'BOOTS', label: 'Botas', position: 'center' },
+  // Row 2: Gloves + Armor + Boots
+  { type: 'GLOVES', category: 'GLOVES', label: 'Luvas', row: 2, col: 1 },
+  { type: 'ARMOR', category: 'ARMOR', label: 'Armadura', row: 2, col: 2 },
+  { type: 'BOOTS', category: 'BOOTS', label: 'Botas', row: 2, col: 3 },
 
-  // Right column - Combat Equipment & Accessories
-  { type: 'EARRING_2', category: 'EARRING', label: 'Brinco 2', position: 'right' },
-  { type: 'WEAPON', category: 'WEAPON', label: 'Arma', position: 'right' },
-  { type: 'SHIELD', category: 'SHIELD', label: 'Escudo', position: 'right' },
-  { type: 'GLOVES', category: 'GLOVES', label: 'Luvas', position: 'right' },
+  // Row 3: Pants (center only)
+  { type: 'PANTS', category: 'PANTS', label: 'Calças', row: 3, col: 2 },
+
+  // Row 4: Weapons
+  { type: 'WEAPON', category: 'WEAPON', label: 'Arma', row: 4, col: 1 },
+  { type: 'SHIELD', category: 'SHIELD', label: 'Escudo', row: 4, col: 3 },
+
+  // Row 5: Accessories top row - Earrings + Necklace (3 items)
+  { type: 'EARRING_1', category: 'EARRING', label: 'Brinco', row: 5, col: 1 },
+  { type: 'NECKLACE', category: 'NECKLACE', label: 'Colar', row: 5, col: 2 },
+  { type: 'EARRING_2', category: 'EARRING', label: 'Brinco', row: 5, col: 3 },
+
+  // Row 6: Accessories bottom row - Rings (2 items, staggered)
+  { type: 'RING_1', category: 'RING', label: 'Anel', row: 6, col: 1 },
+  { type: 'RING_2', category: 'RING', label: 'Anel', row: 6, col: 3 },
 ];
 
 /**
@@ -173,42 +187,42 @@ export function getPairedSlot(
 }
 
 /**
- * Get grade color classes for styling (dark theme optimized)
+ * Get grade color classes for styling (works in both light and dark themes)
  */
 export function getGradeColorClasses(grade: string): string {
   switch (grade) {
     case 'D':
-      return 'bg-blue-500/30 text-blue-200 border-blue-400/60 shadow-blue-500/20';
+      return 'bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/40';
     case 'C':
-      return 'bg-green-500/30 text-green-200 border-green-400/60 shadow-green-500/20';
+      return 'bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/40';
     case 'B':
-      return 'bg-red-500/30 text-red-200 border-red-400/60 shadow-red-500/20';
+      return 'bg-red-500/20 text-red-700 dark:text-red-300 border-red-500/40';
     case 'A':
-      return 'bg-purple-500/30 text-purple-200 border-purple-400/60 shadow-purple-500/20';
+      return 'bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-500/40';
     case 'S':
-      return 'bg-orange-500/30 text-orange-200 border-orange-400/60 shadow-orange-500/20';
+      return 'bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-500/40';
     default:
-      return 'bg-gray-500/30 text-gray-200 border-gray-400/60 shadow-gray-500/20';
+      return 'bg-gray-500/20 text-gray-700 dark:text-gray-300 border-gray-500/40';
   }
 }
 
 /**
- * Get grade glow color for visual effects (enhanced for dark theme)
+ * Get grade glow color for visual effects (works in both themes)
  */
 export function getGradeGlowColor(grade: string): string {
   switch (grade) {
     case 'D':
-      return 'shadow-lg shadow-blue-500/40 hover:shadow-blue-400/60';
+      return 'shadow-md shadow-blue-500/30 hover:shadow-lg hover:shadow-blue-500/40';
     case 'C':
-      return 'shadow-lg shadow-green-500/40 hover:shadow-green-400/60';
+      return 'shadow-md shadow-green-500/30 hover:shadow-lg hover:shadow-green-500/40';
     case 'B':
-      return 'shadow-lg shadow-red-500/40 hover:shadow-red-400/60';
+      return 'shadow-md shadow-red-500/30 hover:shadow-lg hover:shadow-red-500/40';
     case 'A':
-      return 'shadow-lg shadow-purple-500/40 hover:shadow-purple-400/60';
+      return 'shadow-md shadow-purple-500/30 hover:shadow-lg hover:shadow-purple-500/40';
     case 'S':
-      return 'shadow-lg shadow-orange-500/40 hover:shadow-orange-400/60';
+      return 'shadow-md shadow-orange-500/30 hover:shadow-lg hover:shadow-orange-500/40';
     default:
-      return 'shadow-lg shadow-gray-500/40 hover:shadow-gray-400/60';
+      return 'shadow-md shadow-gray-500/30 hover:shadow-lg hover:shadow-gray-500/40';
   }
 }
 

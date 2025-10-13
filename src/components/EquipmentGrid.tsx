@@ -79,76 +79,186 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
     }
   };
 
-  // Group slots by position
-  const leftSlots = EQUIPMENT_SLOTS.filter((slot) => slot.position === 'left');
-  const centerSlots = EQUIPMENT_SLOTS.filter((slot) => slot.position === 'center');
-  const rightSlots = EQUIPMENT_SLOTS.filter((slot) => slot.position === 'right');
+  // Group slots by row
+  const slotsByRow = EQUIPMENT_SLOTS.reduce((acc, slot) => {
+    if (!acc[slot.row]) {
+      acc[slot.row] = [];
+    }
+    acc[slot.row].push(slot);
+    return acc;
+  }, {} as Record<number, typeof EQUIPMENT_SLOTS>);
+
+  // Sort slots within each row by column
+  Object.keys(slotsByRow).forEach((row) => {
+    slotsByRow[Number(row)].sort((a, b) => a.col - b.col);
+  });
 
   return (
-    <div className="w-full">
-      {/* Equipment Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8 bg-gradient-to-br from-slate-900/50 via-slate-800/30 to-slate-900/50 rounded-xl border-2 border-slate-700/50 shadow-2xl backdrop-blur-sm">
-        {/* Left Column - Accessories */}
-        <div className="flex flex-col items-center gap-6">
-          <h3 className="text-sm font-bold text-primary/80 uppercase tracking-widest border-b-2 border-primary/30 pb-2 px-4">
+    <div className="w-full flex justify-center">
+      {/* Equipment Grid - Character Silhouette Layout */}
+      <div className="inline-flex flex-col gap-2 p-6 bg-muted/30 rounded-xl border-2 border-border shadow-lg">
+        {/* Armor Section Title */}
+        <div className="text-center mb-1">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+            Equipamentos
+          </h3>
+        </div>
+
+        {/* Render each row */}
+        {[1, 2, 3].map((rowNum) => {
+          const rowSlots = slotsByRow[rowNum] || [];
+
+          return (
+            <div key={rowNum} className="flex justify-center items-center gap-3">
+              {/* Render 3 columns, with empty spaces where needed */}
+              {[1, 2, 3].map((colNum) => {
+                const slot = rowSlots.find((s) => s.col === colNum);
+
+                if (!slot) {
+                  // Empty slot for spacing - matches medium size (h-24 w-24)
+                  return (
+                    <div
+                      key={`empty-${rowNum}-${colNum}`}
+                      className="w-24 h-24"
+                    />
+                  );
+                }
+
+                // Determine size based on slot type
+                let size: 'small' | 'medium' | 'large' = 'medium';
+                if (slot.type === 'ARMOR') size = 'large';
+                if (slot.type === 'WEAPON') size = 'large';
+
+                return (
+                  <EquipmentSlot
+                    key={slot.type}
+                    slotType={slot.type}
+                    equippedItem={equippedGear[slot.type]}
+                    onClick={() => setSelectedSlot(slot.type)}
+                    size={size}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
+
+        {/* Weapons Section Divider */}
+        <div className="border-t border-border my-2" />
+        <div className="text-center mb-1">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+            Armas
+          </h3>
+        </div>
+
+        {/* Row 4: Weapons */}
+        {(() => {
+          const rowNum = 4;
+          const rowSlots = slotsByRow[rowNum] || [];
+
+          return (
+            <div key={rowNum} className="flex justify-center items-center gap-3">
+              {[1, 2, 3].map((colNum) => {
+                const slot = rowSlots.find((s) => s.col === colNum);
+
+                if (!slot) {
+                  return (
+                    <div
+                      key={`empty-${rowNum}-${colNum}`}
+                      className="w-24 h-24"
+                    />
+                  );
+                }
+
+                const size = slot.type === 'WEAPON' ? 'large' : 'medium';
+
+                return (
+                  <EquipmentSlot
+                    key={slot.type}
+                    slotType={slot.type}
+                    equippedItem={equippedGear[slot.type]}
+                    onClick={() => setSelectedSlot(slot.type)}
+                    size={size}
+                  />
+                );
+              })}
+            </div>
+          );
+        })()}
+
+        {/* Accessories Section Divider */}
+        <div className="border-t border-border my-2" />
+        <div className="text-center mb-1">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
             Acessórios
           </h3>
-          <div className="flex flex-col gap-6">
-            {leftSlots.map((slot) => (
-              <EquipmentSlot
-                key={slot.type}
-                slotType={slot.type}
-                equippedItem={equippedGear[slot.type]}
-                onClick={() => setSelectedSlot(slot.type)}
-                size="medium"
-              />
-            ))}
-          </div>
         </div>
 
-        {/* Center Column - Main Equipment */}
-        <div className="flex flex-col items-center gap-6">
-          <h3 className="text-sm font-bold text-primary/80 uppercase tracking-widest border-b-2 border-primary/30 pb-2 px-4">
-            Equipamento Principal
-          </h3>
-          <div className="flex flex-col gap-6">
-            {centerSlots.map((slot) => {
-              // Make armor slot larger
-              const size = slot.type === 'ARMOR' ? 'large' : 'medium';
-              return (
-                <EquipmentSlot
-                  key={slot.type}
-                  slotType={slot.type}
-                  equippedItem={equippedGear[slot.type]}
-                  onClick={() => setSelectedSlot(slot.type)}
-                  size={size}
-                />
-              );
-            })}
-          </div>
-        </div>
+        {/* Row 5: Accessories top row - Earrings + Necklace (3 items) */}
+        {(() => {
+          const rowNum = 5;
+          const rowSlots = slotsByRow[rowNum] || [];
 
-        {/* Right Column - Combat Equipment & Accessories */}
-        <div className="flex flex-col items-center gap-6">
-          <h3 className="text-sm font-bold text-primary/80 uppercase tracking-widest border-b-2 border-primary/30 pb-2 px-4">
-            Combate
-          </h3>
-          <div className="flex flex-col gap-6">
-            {rightSlots.map((slot) => {
-              // Make weapon slot larger
-              const size = slot.type === 'WEAPON' ? 'large' : 'medium';
-              return (
-                <EquipmentSlot
-                  key={slot.type}
-                  slotType={slot.type}
-                  equippedItem={equippedGear[slot.type]}
-                  onClick={() => setSelectedSlot(slot.type)}
-                  size={size}
-                />
-              );
-            })}
-          </div>
-        </div>
+          return (
+            <div key={rowNum} className="flex justify-center items-center gap-3">
+              {[1, 2, 3].map((colNum) => {
+                const slot = rowSlots.find((s) => s.col === colNum);
+
+                if (!slot) {
+                  return (
+                    <div
+                      key={`empty-${rowNum}-${colNum}`}
+                      className="w-24 h-24"
+                    />
+                  );
+                }
+
+                return (
+                  <EquipmentSlot
+                    key={slot.type}
+                    slotType={slot.type}
+                    equippedItem={equippedGear[slot.type]}
+                    onClick={() => setSelectedSlot(slot.type)}
+                    size="medium"
+                  />
+                );
+              })}
+            </div>
+          );
+        })()}
+
+        {/* Row 6: Accessories bottom row - Rings (2 items, staggered) */}
+        {(() => {
+          const rowNum = 6;
+          const rowSlots = slotsByRow[rowNum] || [];
+
+          return (
+            <div key={rowNum} className="flex justify-center items-center gap-3">
+              {[1, 2, 3].map((colNum) => {
+                const slot = rowSlots.find((s) => s.col === colNum);
+
+                if (!slot) {
+                  return (
+                    <div
+                      key={`empty-${rowNum}-${colNum}`}
+                      className="w-16 h-16"
+                    />
+                  );
+                }
+
+                return (
+                  <EquipmentSlot
+                    key={slot.type}
+                    slotType={slot.type}
+                    equippedItem={equippedGear[slot.type]}
+                    onClick={() => setSelectedSlot(slot.type)}
+                    size="medium"
+                  />
+                );
+              })}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Equipment Selection Modal */}
