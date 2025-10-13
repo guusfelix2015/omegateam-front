@@ -117,6 +117,7 @@ export const CreateUserSchema = z.object({
 export const UpdateProfileSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').optional(),
   nickname: z.string().min(1, 'Nickname é obrigatório').optional(),
+  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres').optional(),
   avatar: z.string().url('URL inválida').nullable().optional(),
   lvl: z.number().min(1).max(85).optional(),
   classeId: z.string().nullable().optional(),

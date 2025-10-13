@@ -72,6 +72,7 @@ export const EditProfile: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     control,
+    setError,
   } = useForm<UpdateProfileForm>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
@@ -85,13 +86,39 @@ export const EditProfile: React.FC = () => {
 
   const watchedClasseId = useWatch({ control, name: 'classeId' });
 
-  const onSubmit = async (data: UpdateProfileForm) => {
+  const onSubmitGeneral = async (data: UpdateProfileForm) => {
     try {
-      const updateData = { ...data };
-      if (!updateData.password || updateData.password === '') {
-        delete updateData.password;
-      }
+      // For general tab, exclude password field
+      const { password, ...updateData } = data;
       await updateProfileMutation.mutateAsync(updateData);
+      navigate('/profile');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  const onSubmitSecurity = async (data: UpdateProfileForm) => {
+    try {
+      // For security tab, password is required
+      if (!data.password || data.password === '') {
+        setError('password', {
+          type: 'manual',
+          message: 'Por favor, digite uma nova senha',
+        });
+        return;
+      }
+
+      // Validate minimum length
+      if (data.password.length < 6) {
+        setError('password', {
+          type: 'manual',
+          message: 'Senha deve ter pelo menos 6 caracteres',
+        });
+        return;
+      }
+
+      // Only send the password field
+      await updateProfileMutation.mutateAsync({ password: data.password });
       navigate('/profile');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -181,22 +208,20 @@ export const EditProfile: React.FC = () => {
         <div className="flex space-x-1 bg-muted p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('general')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'general'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'general'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+              }`}
           >
             <UserCircle className="h-4 w-4" />
             Informações Gerais
           </button>
           <button
             onClick={() => setActiveTab('security')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'security'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'security'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+              }`}
           >
             <Lock className="h-4 w-4" />
             Segurança
@@ -213,7 +238,7 @@ export const EditProfile: React.FC = () => {
               <CardDescription>Edite suas informações pessoais</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmitGeneral)} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Nome</Label>
@@ -348,14 +373,14 @@ export const EditProfile: React.FC = () => {
               <CardDescription>Altere sua senha de acesso</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmitSecurity)} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="password">Nova Senha</Label>
                   <Input
                     id="password"
                     type="password"
                     {...register('password')}
-                    placeholder="Digite uma nova senha (deixe em branco para manter a atual)"
+                    placeholder="Digite uma nova senha (mínimo 6 caracteres)"
                   />
                   {errors.password && (
                     <p className="text-sm text-red-500">
