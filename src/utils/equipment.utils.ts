@@ -83,53 +83,88 @@ export const EQUIPMENT_SLOTS: EquipmentSlot[] = [
 ];
 
 /**
- * Map items from backend format (array of item IDs) to equipment slots
+ * Map items from backend format to equipment slots
+ * @param itemIds - Array of item IDs (can contain duplicates for jewelry)
+ * @param items - Array of unique item objects
  */
-export function mapItemsToSlots(items: Item[]): EquippedGear {
+export function mapItemsToSlots(itemIds: string[], items: Item[]): EquippedGear {
   const equipped: EquippedGear = {};
 
-  // Group items by category
-  const itemsByCategory = items.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+  // Create a map of item ID to item object for quick lookup
+  const itemMap = new Map<string, Item>();
+  items.forEach(item => {
+    itemMap.set(item.id, item);
+  });
+
+  // Group item IDs by category (preserving duplicates)
+  const idsByCategory: Record<string, string[]> = {};
+  itemIds.forEach(id => {
+    const item = itemMap.get(id);
+    if (item) {
+      if (!idsByCategory[item.category]) {
+        idsByCategory[item.category] = [];
+      }
+      idsByCategory[item.category].push(id);
     }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<string, Item[]>);
+  });
 
   // Map single-slot items
-  const helmet = itemsByCategory['HELMET'];
-  if (helmet && helmet.length > 0) equipped.HELMET = helmet[0];
+  const helmetIds = idsByCategory['HELMET'] || [];
+  if (helmetIds.length > 0) {
+    equipped.HELMET = itemMap.get(helmetIds[0]);
+  }
 
-  const necklace = itemsByCategory['NECKLACE'];
-  if (necklace && necklace.length > 0) equipped.NECKLACE = necklace[0];
+  const necklaceIds = idsByCategory['NECKLACE'] || [];
+  if (necklaceIds.length > 0) {
+    equipped.NECKLACE = itemMap.get(necklaceIds[0]);
+  }
 
-  const armor = itemsByCategory['ARMOR'];
-  if (armor && armor.length > 0) equipped.ARMOR = armor[0];
+  const armorIds = idsByCategory['ARMOR'] || [];
+  if (armorIds.length > 0) {
+    equipped.ARMOR = itemMap.get(armorIds[0]);
+  }
 
-  const pants = itemsByCategory['PANTS'];
-  if (pants && pants.length > 0) equipped.PANTS = pants[0];
+  const pantsIds = idsByCategory['PANTS'] || [];
+  if (pantsIds.length > 0) {
+    equipped.PANTS = itemMap.get(pantsIds[0]);
+  }
 
-  const boots = itemsByCategory['BOOTS'];
-  if (boots && boots.length > 0) equipped.BOOTS = boots[0];
+  const bootsIds = idsByCategory['BOOTS'] || [];
+  if (bootsIds.length > 0) {
+    equipped.BOOTS = itemMap.get(bootsIds[0]);
+  }
 
-  const weapon = itemsByCategory['WEAPON'];
-  if (weapon && weapon.length > 0) equipped.WEAPON = weapon[0];
+  const weaponIds = idsByCategory['WEAPON'] || [];
+  if (weaponIds.length > 0) {
+    equipped.WEAPON = itemMap.get(weaponIds[0]);
+  }
 
-  const shield = itemsByCategory['SHIELD'];
-  if (shield && shield.length > 0) equipped.SHIELD = shield[0];
+  const shieldIds = idsByCategory['SHIELD'] || [];
+  if (shieldIds.length > 0) {
+    equipped.SHIELD = itemMap.get(shieldIds[0]);
+  }
 
-  const gloves = itemsByCategory['GLOVES'];
-  if (gloves && gloves.length > 0) equipped.GLOVES = gloves[0];
+  const glovesIds = idsByCategory['GLOVES'] || [];
+  if (glovesIds.length > 0) {
+    equipped.GLOVES = itemMap.get(glovesIds[0]);
+  }
 
-  // Map jewelry items (2 slots each)
-  const earrings = itemsByCategory['EARRING'] || [];
-  if (earrings.length > 0) equipped.EARRING_1 = earrings[0];
-  if (earrings.length > 1) equipped.EARRING_2 = earrings[1];
+  // Map jewelry items (2 slots each) - SUPPORTS DUPLICATES
+  const earringIds = idsByCategory['EARRING'] || [];
+  if (earringIds.length > 0) {
+    equipped.EARRING_1 = itemMap.get(earringIds[0]);
+  }
+  if (earringIds.length > 1) {
+    equipped.EARRING_2 = itemMap.get(earringIds[1]);
+  }
 
-  const rings = itemsByCategory['RING'] || [];
-  if (rings.length > 0) equipped.RING_1 = rings[0];
-  if (rings.length > 1) equipped.RING_2 = rings[1];
+  const ringIds = idsByCategory['RING'] || [];
+  if (ringIds.length > 0) {
+    equipped.RING_1 = itemMap.get(ringIds[0]);
+  }
+  if (ringIds.length > 1) {
+    equipped.RING_2 = itemMap.get(ringIds[1]);
+  }
 
   return equipped;
 }

@@ -25,6 +25,7 @@ interface EquipmentSelectionModalProps {
   slotType: EquipmentSlotType;
   category: ItemCategory;
   currentItem?: Item;
+  pairedSlotItem?: Item; // Item equipped in the paired slot (for jewelry)
   availableItems: Item[];
   onEquip: (item: Item) => void;
   onUnequip: () => void;
@@ -139,6 +140,7 @@ export const EquipmentSelectionModal: React.FC<EquipmentSelectionModalProps> = (
   slotType,
   category,
   currentItem,
+  pairedSlotItem,
   availableItems,
   onEquip,
   onUnequip,
@@ -251,7 +253,14 @@ export const EquipmentSelectionModal: React.FC<EquipmentSelectionModalProps> = (
           ) : (
             <div className="space-y-4">
               {sortedItems.map((item) => {
+                // Check if this item is equipped in the current slot
                 const isCurrentlyEquipped = currentItem?.id === item.id;
+
+                // Check if this item is equipped in the paired slot (for jewelry)
+                const isEquippedInPairedSlot = pairedSlotItem?.id === item.id;
+
+                // Item is disabled only if it's equipped in BOTH slots
+                const isDisabled = isCurrentlyEquipped && isEquippedInPairedSlot;
 
                 return (
                   <div
@@ -266,6 +275,7 @@ export const EquipmentSelectionModal: React.FC<EquipmentSelectionModalProps> = (
                         ? 'bg-primary/10 border-primary'
                         : 'hover:bg-muted/50 border-muted hover:border-primary/50'
                       }
+                      ${isDisabled ? 'opacity-60 cursor-not-allowed' : ''}
                     `}
                   >
                     <div className="flex items-center gap-5 flex-1 min-w-0">
@@ -295,13 +305,18 @@ export const EquipmentSelectionModal: React.FC<EquipmentSelectionModalProps> = (
                     <Button
                       size="lg"
                       onClick={() => handleEquipItem(item)}
-                      disabled={isCurrentlyEquipped}
+                      disabled={isDisabled}
                       className="ml-5 flex items-center gap-2 px-6"
                     >
                       {isCurrentlyEquipped ? (
                         <>
                           <Check className="h-5 w-5" />
                           Equipado
+                        </>
+                      ) : isEquippedInPairedSlot ? (
+                        <>
+                          <Check className="h-5 w-5" />
+                          Equipar (2º)
                         </>
                       ) : (
                         <>

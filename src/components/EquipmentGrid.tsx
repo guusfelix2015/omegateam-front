@@ -8,6 +8,7 @@ import {
   mapItemsToSlots,
   mapSlotsToItemIds,
   getSlotCategory,
+  getPairedSlot,
 } from '../utils/equipment.utils';
 import { useUpdateUserGear } from '../hooks/gear.hooks';
 import { useItems } from '../hooks/items.hooks';
@@ -32,9 +33,9 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
 
   // Map current gear to equipment slots
   const equippedGear: EquippedGear = useMemo(() => {
-    if (!gear?.ownedItems) return {};
-    return mapItemsToSlots(gear.ownedItems);
-  }, [gear?.ownedItems]);
+    if (!gear?.ownedItems || !gear?.ownedItemIds) return {};
+    return mapItemsToSlots(gear.ownedItemIds, gear.ownedItems);
+  }, [gear?.ownedItems, gear?.ownedItemIds]);
 
   // Get available items for the selected slot
   const availableItemsForSlot = useMemo(() => {
@@ -269,6 +270,11 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
           slotType={selectedSlot}
           category={getSlotCategory(selectedSlot)}
           currentItem={equippedGear[selectedSlot]}
+          pairedSlotItem={
+            getPairedSlot(selectedSlot)
+              ? equippedGear[getPairedSlot(selectedSlot)!]
+              : undefined
+          }
           availableItems={availableItemsForSlot}
           onEquip={handleEquipItem}
           onUnequip={handleUnequipItem}
