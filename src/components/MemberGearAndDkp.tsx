@@ -15,6 +15,7 @@ import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { useUserGearById } from '../hooks/gear.hooks';
 import { useUserDkpSummary, useUserDkpHistory } from '../hooks/dkp.hooks';
+import { EquipmentGridReadOnly } from './EquipmentGridReadOnly';
 
 interface MemberGearAndDkpProps {
   userId: string;
@@ -22,49 +23,6 @@ interface MemberGearAndDkpProps {
   bagUrl?: string | null;
   isReadOnly?: boolean;
 }
-
-const getCategoryIcon = (category: string) => {
-  const icons: Record<string, React.ReactNode> = {
-    WEAPON: <span className="text-red-500">⚔️</span>,
-    ARMOR: <span className="text-blue-500">🛡️</span>,
-    HELMET: <span className="text-purple-500">⛑️</span>,
-    PANTS: <span className="text-green-500">👖</span>,
-    BOOTS: <span className="text-yellow-500">👢</span>,
-    GLOVES: <span className="text-pink-500">🧤</span>,
-    SHIELD: <span className="text-gray-500">🛡️</span>,
-    NECKLACE: <span className="text-gold-500">📿</span>,
-    EARRING: <span className="text-silver-500">💎</span>,
-    RING: <span className="text-orange-500">💍</span>,
-  };
-  return icons[category] || <Package className="h-4 w-4" />;
-};
-
-const getCategoryName = (category: string) => {
-  const names: Record<string, string> = {
-    WEAPON: 'Arma',
-    ARMOR: 'Armadura',
-    HELMET: 'Elmo',
-    PANTS: 'Calças',
-    BOOTS: 'Botas',
-    GLOVES: 'Luvas',
-    SHIELD: 'Escudo',
-    NECKLACE: 'Colar',
-    EARRING: 'Brinco',
-    RING: 'Anel',
-  };
-  return names[category] || category;
-};
-
-const getGradeColor = (grade: string) => {
-  const colors: Record<string, string> = {
-    S: 'text-red-500 font-bold',
-    A: 'text-purple-500 font-semibold',
-    B: 'text-blue-500 font-medium',
-    C: 'text-green-500',
-    D: 'text-gray-500',
-  };
-  return colors[grade] || 'text-gray-500';
-};
 
 export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
   userId,
@@ -86,22 +44,6 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
     userId,
     { limit: 5 }
   );
-
-  // Group items by category
-  const groupedItems = React.useMemo(() => {
-    if (!gear?.ownedItems) return {};
-
-    return gear.ownedItems.reduce(
-      (acc, item) => {
-        if (!acc[item.category]) {
-          acc[item.category] = [];
-        }
-        acc[item.category].push(item);
-        return acc;
-      },
-      {} as Record<string, typeof gear.ownedItems>
-    );
-  }, [gear]);
 
   if (gearLoading || dkpLoading) {
     return (
@@ -145,7 +87,7 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Resumo</TabsTrigger>
-          <TabsTrigger value="gear">Gear</TabsTrigger>
+          <TabsTrigger value="equipment">Equipamentos</TabsTrigger>
           <TabsTrigger value="dkp">DKP</TabsTrigger>
           <TabsTrigger value="inventory">Inventário</TabsTrigger>
         </TabsList>
@@ -261,76 +203,26 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
           </Card>
         </TabsContent>
 
-        <TabsContent value="gear" className="space-y-4">
-          {/* Gear Score Header */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-yellow-500" />
-              <span className="font-bold">{gear?.gearScore || 0}</span>
-              <span className="text-sm text-muted-foreground">GS</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Package className="h-4 w-4 text-blue-500" />
-              <span className="font-medium">
-                {gear?.ownedItems.length || 0}
-              </span>
-              <span className="text-sm text-muted-foreground">itens</span>
+        <TabsContent value="equipment" className="space-y-4">
+          {/* Equipment Grid Visualization */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                <span className="text-2xl font-bold">{gear?.gearScore || 0}</span>
+                <span className="text-sm text-muted-foreground">GS</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Package className="h-5 w-5 text-blue-500" />
+                <span className="text-lg font-medium">
+                  {gear?.ownedItems.length || 0}
+                </span>
+                <span className="text-sm text-muted-foreground">itens equipados</span>
+              </div>
             </div>
           </div>
 
-          {/* Items by Category */}
-          {gear?.ownedItems && gear.ownedItems.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(groupedItems).map(([category, items]) => (
-                <Card key={category} className="overflow-hidden">
-                  <CardHeader className="pb-2 px-3 py-2 bg-muted/30">
-                    <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                      {getCategoryIcon(category)}
-                      {getCategoryName(category)}
-                      <Badge variant="secondary" className="text-xs h-4">
-                        {items.length}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <div className="space-y-1 p-2">
-                      {items.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex items-center gap-2 p-2 bg-muted/20 rounded-md hover:bg-muted/40 transition-colors"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">
-                              {item.name}
-                            </p>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <span className={getGradeColor(item.grade)}>
-                                {item.grade}
-                              </span>
-                              <span>•</span>
-                              <span>{item.valorGsInt} GS</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="text-center py-8">
-                <Package className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <h3 className="text-lg font-semibold mb-2">
-                  Nenhum item equipado
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Este membro ainda não possui itens equipados
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          <EquipmentGridReadOnly gear={gear} />
         </TabsContent>
 
         <TabsContent value="dkp" className="space-y-4">

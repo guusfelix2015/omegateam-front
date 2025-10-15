@@ -18,6 +18,7 @@ interface EquipmentSlotProps {
   equippedItem?: Item;
   onClick: () => void;
   size?: 'small' | 'medium' | 'large';
+  readOnly?: boolean;
 }
 
 /**
@@ -228,6 +229,7 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
   equippedItem,
   onClick,
   size = 'medium',
+  readOnly = false,
 }) => {
   const label = getSlotLabel(slotType);
   const isEmpty = !equippedItem;
@@ -247,7 +249,8 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
 
   const slotButton = (
     <button
-      onClick={onClick}
+      onClick={readOnly ? undefined : onClick}
+      disabled={readOnly}
       className={`
           ${sizeClasses[size]}
           relative
@@ -264,8 +267,7 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
           ? 'border-border bg-muted/50 hover:border-primary/60 hover:bg-muted hover:shadow-md'
           : `border-primary/60 bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg ${getGradeGlowColor(equippedItem.grade)} hover:border-primary`
         }
-          hover:scale-105
-          active:scale-95
+          ${readOnly ? 'cursor-default' : 'hover:scale-105 active:scale-95 cursor-pointer'}
           focus:outline-none
           focus:ring-2
           focus:ring-primary/50
