@@ -130,7 +130,7 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
                   <div>
                     <p className="text-sm text-muted-foreground">Itens</p>
                     <p className="text-2xl font-bold text-blue-600">
-                      {gear?.ownedItems.length || 0}
+                      {gear?.userItems?.length || 0}
                     </p>
                   </div>
                 </div>
@@ -215,7 +215,7 @@ export const MemberGearAndDkp: React.FC<MemberGearAndDkpProps> = ({
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-blue-500" />
                 <span className="text-lg font-medium">
-                  {gear?.ownedItems.length || 0}
+                  {gear?.userItems?.length || 0}
                 </span>
                 <span className="text-sm text-muted-foreground">itens equipados</span>
               </div>

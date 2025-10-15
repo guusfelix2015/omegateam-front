@@ -227,19 +227,38 @@ export type ItemsList = z.infer<typeof ItemsListSchema>;
 export type ItemStats = z.infer<typeof ItemStatsSchema>;
 export type Lookups = z.infer<typeof LookupsSchema>;
 
+// UserItem schemas
+export const UserItemSchema = z.object({
+  id: z.string(),
+  itemId: z.string(),
+  enhancementLevel: z.number().min(0).max(12),
+  item: ItemSchema,
+});
+
 // Gear Score schemas
 export const UpdateUserGearSchema = z.object({
-  ownedItemIds: z.array(z.string()),
+  items: z.array(
+    z.object({
+      itemId: z.string(),
+      enhancementLevel: z.number().min(0).max(12).default(0),
+    })
+  ),
 });
 
 export const UserGearResponseSchema = z.object({
-  ownedItemIds: z.array(z.string()),
   gearScore: z.number(),
-  ownedItems: z.array(ItemSchema),
+  userItems: z.array(UserItemSchema),
 });
 
+export const UpdateItemEnhancementSchema = z.object({
+  userItemId: z.string(),
+  enhancementLevel: z.number().min(0).max(12),
+});
+
+export type UserItem = z.infer<typeof UserItemSchema>;
 export type UpdateUserGear = z.infer<typeof UpdateUserGearSchema>;
 export type UserGearResponse = z.infer<typeof UserGearResponseSchema>;
+export type UpdateItemEnhancement = z.infer<typeof UpdateItemEnhancementSchema>;
 
 // DKP schemas
 export const DkpTransactionTypeSchema = z.enum([

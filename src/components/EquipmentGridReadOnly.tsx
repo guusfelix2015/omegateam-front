@@ -4,7 +4,7 @@ import type { UserGearResponse } from '../types/api';
 import type { EquippedGear } from '../utils/equipment.utils';
 import {
   EQUIPMENT_SLOTS,
-  mapItemsToSlots,
+  mapUserItemsToSlots,
 } from '../utils/equipment.utils';
 
 interface EquipmentGridReadOnlyProps {
@@ -20,9 +20,9 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
 }) => {
   // Map current gear to equipment slots
   const equippedGear: EquippedGear = useMemo(() => {
-    if (!gear?.ownedItems || !gear?.ownedItemIds) return {};
-    return mapItemsToSlots(gear.ownedItemIds, gear.ownedItems);
-  }, [gear?.ownedItems, gear?.ownedItemIds]);
+    if (!gear?.userItems) return {};
+    return mapUserItemsToSlots(gear.userItems);
+  }, [gear?.userItems]);
 
   // Group slots by row for rendering
   const slotsByRow = useMemo(() => {
@@ -71,7 +71,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     key={slot.type}
                     slotType={slot.type}
                     equippedItem={equippedGear[slot.type]}
-                    onClick={() => {}} // No-op for read-only
+                    onClick={() => { }} // No-op for read-only
                     size={size}
                     readOnly={true}
                   />
@@ -107,7 +107,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     key={slot.type}
                     slotType={slot.type}
                     equippedItem={equippedGear[slot.type]}
-                    onClick={() => {}} // No-op for read-only
+                    onClick={() => { }} // No-op for read-only
                     size={size}
                     readOnly={true}
                   />
@@ -141,7 +141,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     key={slot.type}
                     slotType={slot.type}
                     equippedItem={equippedGear[slot.type]}
-                    onClick={() => {}} // No-op for read-only
+                    onClick={() => { }} // No-op for read-only
                     size="small"
                     readOnly={true}
                   />
@@ -176,7 +176,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     key={slot.type}
                     slotType={slot.type}
                     equippedItem={equippedGear[slot.type]}
-                    onClick={() => {}} // No-op for read-only
+                    onClick={() => { }} // No-op for read-only
                     size="small"
                     readOnly={true}
                   />

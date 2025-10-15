@@ -1,16 +1,17 @@
 import { useState, useMemo } from 'react';
 import { EquipmentSlot } from './EquipmentSlot';
 import { EquipmentSelectionModal } from './EquipmentSelectionModal';
+import { EnhancementSelectorModal } from './EnhancementSelectorModal';
 import type { Item, UserGearResponse } from '../types/api';
 import type { EquipmentSlotType, EquippedGear } from '../utils/equipment.utils';
 import {
   EQUIPMENT_SLOTS,
-  mapItemsToSlots,
+  mapUserItemsToSlots,
   mapSlotsToItemIds,
   getSlotCategory,
   getPairedSlot,
 } from '../utils/equipment.utils';
-import { useUpdateUserGear } from '../hooks/gear.hooks';
+import { useUpdateUserGear, useUpdateItemEnhancement } from '../hooks/gear.hooks';
 import { useItems } from '../hooks/items.hooks';
 
 interface EquipmentGridProps {
@@ -22,7 +23,16 @@ interface EquipmentGridProps {
  */
 export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
   const [selectedSlot, setSelectedSlot] = useState<EquipmentSlotType | null>(null);
+  const [enhancementModal, setEnhancementModal] = useState<{
+    isOpen: boolean;
+    userItemId: string;
+    itemName: string;
+    baseGS: number;
+    currentLevel: number;
+  } | null>(null);
+
   const updateGearMutation = useUpdateUserGear();
+  const updateEnhancementMutation = useUpdateItemEnhancement();
 
   // Fetch all available items for selection
   const { data: itemsData } = useItems({
@@ -33,9 +43,77 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
 
   // Map current gear to equipment slots
   const equippedGear: EquippedGear = useMemo(() => {
-    if (!gear?.ownedItems || !gear?.ownedItemIds) return {};
-    return mapItemsToSlots(gear.ownedItemIds, gear.ownedItems);
-  }, [gear?.ownedItems, gear?.ownedItemIds]);
+    if (!gear?.userItems) return {};
+    return mapUserItemsToSlots(gear.userItems);
+  }, [gear?.userItems]);
+
+  // Map enhancement levels for each slot
+  const enhancementLevels = useMemo(() => {
+    const levels: Record<string, number> = {};
+    if (!gear?.userItems) return levels;
+
+    gear.userItems.forEach((userItem) => {
+      const category = userItem.item.category;
+
+      // For single-slot items
+      if (['HELMET', 'NECKLACE', 'ARMOR', 'PANTS', 'BOOTS', 'WEAPON', 'SHIELD', 'GLOVES'].includes(category)) {
+        levels[category] = userItem.enhancementLevel;
+      }
+
+      // For jewelry (multiple slots)
+      if (category === 'EARRING') {
+        if (!levels['EARRING_1']) {
+          levels['EARRING_1'] = userItem.enhancementLevel;
+        } else {
+          levels['EARRING_2'] = userItem.enhancementLevel;
+        }
+      }
+
+      if (category === 'RING') {
+        if (!levels['RING_1']) {
+          levels['RING_1'] = userItem.enhancementLevel;
+        } else {
+          levels['RING_2'] = userItem.enhancementLevel;
+        }
+      }
+    });
+
+    return levels;
+  }, [gear?.userItems]);
+
+  // Map userItem IDs for each slot (needed for enhancement updates)
+  const userItemIds = useMemo(() => {
+    const ids: Record<string, string> = {};
+    if (!gear?.userItems) return ids;
+
+    gear.userItems.forEach((userItem) => {
+      const category = userItem.item.category;
+
+      // For single-slot items
+      if (['HELMET', 'NECKLACE', 'ARMOR', 'PANTS', 'BOOTS', 'WEAPON', 'SHIELD', 'GLOVES'].includes(category)) {
+        ids[category] = userItem.id;
+      }
+
+      // For jewelry (multiple slots)
+      if (category === 'EARRING') {
+        if (!ids['EARRING_1']) {
+          ids['EARRING_1'] = userItem.id;
+        } else {
+          ids['EARRING_2'] = userItem.id;
+        }
+      }
+
+      if (category === 'RING') {
+        if (!ids['RING_1']) {
+          ids['RING_1'] = userItem.id;
+        } else {
+          ids['RING_2'] = userItem.id;
+        }
+      }
+    });
+
+    return ids;
+  }, [gear?.userItems]);
 
   // Get available items for the selected slot
   const availableItemsForSlot = useMemo(() => {
@@ -51,11 +129,15 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
     const newEquippedGear = { ...equippedGear };
     newEquippedGear[selectedSlot] = item;
 
-    // Convert back to item IDs array
-    const ownedItemIds = mapSlotsToItemIds(newEquippedGear);
+    // Convert back to items array with enhancement levels
+    const itemIds = mapSlotsToItemIds(newEquippedGear);
+    const items = itemIds.map(itemId => ({
+      itemId,
+      enhancementLevel: 0, // Default to 0 for newly equipped items
+    }));
 
     try {
-      await updateGearMutation.mutateAsync({ ownedItemIds });
+      await updateGearMutation.mutateAsync({ items });
       setSelectedSlot(null);
     } catch (error) {
       console.error('Error equipping item:', error);
@@ -69,14 +151,50 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
     const newEquippedGear = { ...equippedGear };
     delete newEquippedGear[selectedSlot];
 
-    // Convert back to item IDs array
-    const ownedItemIds = mapSlotsToItemIds(newEquippedGear);
+    // Convert back to items array with enhancement levels
+    const itemIds = mapSlotsToItemIds(newEquippedGear);
+    const items = itemIds.map(itemId => ({
+      itemId,
+      enhancementLevel: 0, // Default to 0
+    }));
 
     try {
-      await updateGearMutation.mutateAsync({ ownedItemIds });
+      await updateGearMutation.mutateAsync({ items });
       setSelectedSlot(null);
     } catch (error) {
       console.error('Error unequipping item:', error);
+    }
+  };
+
+  // Handle opening enhancement modal
+  const handleEnhancementClick = (slotType: EquipmentSlotType) => {
+    const item = equippedGear[slotType];
+    const userItemId = userItemIds[slotType];
+    const currentLevel = enhancementLevels[slotType] || 0;
+
+    if (!item || !userItemId) return;
+
+    setEnhancementModal({
+      isOpen: true,
+      userItemId,
+      itemName: item.name,
+      baseGS: item.valorGsInt,
+      currentLevel,
+    });
+  };
+
+  // Handle enhancement confirmation
+  const handleEnhancementConfirm = async (newLevel: number) => {
+    if (!enhancementModal) return;
+
+    try {
+      await updateEnhancementMutation.mutateAsync({
+        userItemId: enhancementModal.userItemId,
+        enhancementLevel: newLevel,
+      });
+      setEnhancementModal(null);
+    } catch (error) {
+      console.error('Error updating enhancement:', error);
     }
   };
 
@@ -137,6 +255,8 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => setSelectedSlot(slot.type)}
                     size={size}
+                    enhancementLevel={enhancementLevels[slot.type] || 0}
+                    onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
               })}
@@ -180,6 +300,8 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => setSelectedSlot(slot.type)}
                     size={size}
+                    enhancementLevel={enhancementLevels[slot.type] || 0}
+                    onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
               })}
@@ -221,6 +343,8 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => setSelectedSlot(slot.type)}
                     size="medium"
+                    enhancementLevel={enhancementLevels[slot.type] || 0}
+                    onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
               })}
@@ -254,6 +378,8 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => setSelectedSlot(slot.type)}
                     size="medium"
+                    enhancementLevel={enhancementLevels[slot.type] || 0}
+                    onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
               })}
@@ -278,6 +404,18 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
           availableItems={availableItemsForSlot}
           onEquip={handleEquipItem}
           onUnequip={handleUnequipItem}
+        />
+      )}
+
+      {/* Enhancement Selector Modal */}
+      {enhancementModal && (
+        <EnhancementSelectorModal
+          isOpen={enhancementModal.isOpen}
+          onClose={() => setEnhancementModal(null)}
+          itemName={enhancementModal.itemName}
+          baseGS={enhancementModal.baseGS}
+          currentLevel={enhancementModal.currentLevel}
+          onConfirm={handleEnhancementConfirm}
         />
       )}
     </div>

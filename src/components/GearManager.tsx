@@ -56,7 +56,7 @@ export const GearManager: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-blue-500" />
                 <span className="text-lg font-medium">
-                  {gear?.ownedItems.length || 0}
+                  {gear?.userItems?.length || 0}
                 </span>
                 <span className="text-sm text-muted-foreground">itens equipados</span>
               </div>

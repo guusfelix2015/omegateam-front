@@ -115,10 +115,11 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
 
   // Initialize quantities from currentGear
   useEffect(() => {
-    if (currentGear?.ownedItemIds) {
+    if (currentGear?.userItems) {
       const quantities = new Map<string, number>();
-      currentGear.ownedItemIds.forEach((id) => {
-        quantities.set(id, (quantities.get(id) || 0) + 1);
+      currentGear.userItems.forEach((userItem) => {
+        const itemId = userItem.itemId;
+        quantities.set(itemId, (quantities.get(itemId) || 0) + 1);
       });
       setItemQuantities(quantities);
     }
@@ -169,16 +170,19 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
   };
 
   const handleSave = async () => {
-    // Convert Map<itemId, quantity> to string[] with duplicates
-    const ownedItemIds: string[] = [];
+    // Convert Map<itemId, quantity> to items array with enhancement levels
+    const items: { itemId: string; enhancementLevel: number }[] = [];
     itemQuantities.forEach((quantity, itemId) => {
       for (let i = 0; i < quantity; i++) {
-        ownedItemIds.push(itemId);
+        items.push({
+          itemId,
+          enhancementLevel: 0, // Default to 0, user can change later
+        });
       }
     });
 
     try {
-      await updateGearMutation.mutateAsync({ ownedItemIds });
+      await updateGearMutation.mutateAsync({ items });
       onClose();
     } catch (error) {
       console.error('Error updating gear:', error);
@@ -187,10 +191,11 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
 
   const handleClose = () => {
     // Reset to current gear
-    if (currentGear?.ownedItemIds) {
+    if (currentGear?.userItems) {
       const quantities = new Map<string, number>();
-      currentGear.ownedItemIds.forEach((id) => {
-        quantities.set(id, (quantities.get(id) || 0) + 1);
+      currentGear.userItems.forEach((userItem) => {
+        const itemId = userItem.itemId;
+        quantities.set(itemId, (quantities.get(itemId) || 0) + 1);
       });
       setItemQuantities(quantities);
     } else {
@@ -320,11 +325,10 @@ export const GearSelectionModal: React.FC<GearSelectionModalProps> = ({
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-center gap-3 p-2 border rounded-md transition-colors ${
-                      currentQuantity > 0
-                        ? 'bg-primary/10 border-primary'
-                        : 'hover:bg-muted/30'
-                    }`}
+                    className={`flex items-center gap-3 p-2 border rounded-md transition-colors ${currentQuantity > 0
+                      ? 'bg-primary/10 border-primary'
+                      : 'hover:bg-muted/30'
+                      }`}
                   >
                     {/* Item control - Checkbox or Quantity Selector */}
                     {isJewelry ? (

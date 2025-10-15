@@ -1,10 +1,12 @@
 import { Badge } from './ui/badge';
+import { Plus } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip';
+import { EnhancementBadge } from './EnhancementBadge';
 import type { Item } from '../types/api';
 import type { EquipmentSlotType } from '../utils/equipment.utils';
 import {
@@ -19,6 +21,8 @@ interface EquipmentSlotProps {
   onClick: () => void;
   size?: 'small' | 'medium' | 'large';
   readOnly?: boolean;
+  enhancementLevel?: number;
+  onEnhancementClick?: () => void;
 }
 
 /**
@@ -230,6 +234,8 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
   onClick,
   size = 'medium',
   readOnly = false,
+  enhancementLevel = 0,
+  onEnhancementClick,
 }) => {
   const label = getSlotLabel(slotType);
   const isEmpty = !equippedItem;
@@ -317,6 +323,27 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
               pointer-events-none
             `}
         />
+      )}
+
+      {/* Enhancement Badge - Top Right */}
+      {!isEmpty && enhancementLevel > 0 && (
+        <div className="absolute -top-1 -right-1 z-10">
+          <EnhancementBadge level={enhancementLevel} size="sm" />
+        </div>
+      )}
+
+      {/* Enhancement Button - Bottom Right */}
+      {!isEmpty && !readOnly && onEnhancementClick && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEnhancementClick();
+          }}
+          className="absolute -bottom-1 -right-1 z-10 p-1.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all hover:scale-110 active:scale-95 shadow-md"
+          title="Definir encantamento"
+        >
+          <Plus className="h-3 w-3" />
+        </button>
       )}
     </button>
   );

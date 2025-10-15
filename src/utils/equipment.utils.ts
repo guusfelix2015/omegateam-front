@@ -1,4 +1,4 @@
-import type { Item, ItemCategory } from '../types/api';
+import type { Item, ItemCategory, UserItem } from '../types/api';
 
 /**
  * Equipment slot types matching the visual grid layout
@@ -164,6 +164,88 @@ export function mapItemsToSlots(itemIds: string[], items: Item[]): EquippedGear 
   }
   if (ringIds.length > 1) {
     equipped.RING_2 = itemMap.get(ringIds[1]);
+  }
+
+  return equipped;
+}
+
+/**
+ * Map userItems from backend format to equipment slots (NEW VERSION)
+ * @param userItems - Array of UserItem objects with enhancement levels
+ */
+export function mapUserItemsToSlots(userItems: UserItem[]): EquippedGear {
+  const equipped: EquippedGear = {};
+
+  if (!userItems || userItems.length === 0) {
+    return equipped;
+  }
+
+  // Group userItems by category (preserving duplicates)
+  const itemsByCategory: Record<string, UserItem[]> = {};
+  userItems.forEach(userItem => {
+    const category = userItem.item.category;
+    if (!itemsByCategory[category]) {
+      itemsByCategory[category] = [];
+    }
+    itemsByCategory[category].push(userItem);
+  });
+
+  // Map single-slot items
+  const helmets = itemsByCategory['HELMET'] || [];
+  if (helmets.length > 0) {
+    equipped.HELMET = helmets[0].item;
+  }
+
+  const necklaces = itemsByCategory['NECKLACE'] || [];
+  if (necklaces.length > 0) {
+    equipped.NECKLACE = necklaces[0].item;
+  }
+
+  const armors = itemsByCategory['ARMOR'] || [];
+  if (armors.length > 0) {
+    equipped.ARMOR = armors[0].item;
+  }
+
+  const pants = itemsByCategory['PANTS'] || [];
+  if (pants.length > 0) {
+    equipped.PANTS = pants[0].item;
+  }
+
+  const boots = itemsByCategory['BOOTS'] || [];
+  if (boots.length > 0) {
+    equipped.BOOTS = boots[0].item;
+  }
+
+  const weapons = itemsByCategory['WEAPON'] || [];
+  if (weapons.length > 0) {
+    equipped.WEAPON = weapons[0].item;
+  }
+
+  const shields = itemsByCategory['SHIELD'] || [];
+  if (shields.length > 0) {
+    equipped.SHIELD = shields[0].item;
+  }
+
+  const gloves = itemsByCategory['GLOVES'] || [];
+  if (gloves.length > 0) {
+    equipped.GLOVES = gloves[0].item;
+  }
+
+  // Map jewelry items (2 slots each) - SUPPORTS DUPLICATES
+  const earrings = itemsByCategory['EARRING'] || [];
+  if (earrings.length > 0) {
+    equipped.EARRING_1 = earrings[0].item;
+  }
+  if (earrings.length > 1) {
+    equipped.EARRING_2 = earrings[1].item;
+  }
+
+  const rings = itemsByCategory['RING'] || [];
+  if (rings.length > 0) {
+    equipped.RING_1 = rings[0].item;
+  }
+  if (rings.length > 1) {
+    equipped.RING_2 = rings[1].item;
   }
 
   return equipped;
