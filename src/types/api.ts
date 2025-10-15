@@ -232,6 +232,7 @@ export const UserItemSchema = z.object({
   id: z.string(),
   itemId: z.string(),
   enhancementLevel: z.number().min(0).max(12),
+  isRare: z.boolean().default(false),
   item: ItemSchema,
 });
 
@@ -241,6 +242,7 @@ export const UpdateUserGearSchema = z.object({
     z.object({
       itemId: z.string(),
       enhancementLevel: z.number().min(0).max(12).default(0),
+      isRare: z.boolean().default(false).optional(),
     })
   ),
 });
@@ -253,6 +255,7 @@ export const UserGearResponseSchema = z.object({
 export const UpdateItemEnhancementSchema = z.object({
   userItemId: z.string(),
   enhancementLevel: z.number().min(0).max(12),
+  isRare: z.boolean().optional(),
 });
 
 export type UserItem = z.infer<typeof UserItemSchema>;

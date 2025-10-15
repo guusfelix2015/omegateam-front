@@ -29,6 +29,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
     itemName: string;
     baseGS: number;
     currentLevel: number;
+    currentIsRare: boolean;
   } | null>(null);
 
   const updateGearMutation = useUpdateUserGear();
@@ -79,6 +80,40 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
     });
 
     return levels;
+  }, [gear?.userItems]);
+
+  // Map rare status for each slot
+  const rareStatuses = useMemo(() => {
+    const statuses: Record<string, boolean> = {};
+    if (!gear?.userItems) return statuses;
+
+    gear.userItems.forEach((userItem) => {
+      const category = userItem.item.category;
+
+      // For single-slot items
+      if (['HELMET', 'NECKLACE', 'ARMOR', 'PANTS', 'BOOTS', 'WEAPON', 'SHIELD', 'GLOVES'].includes(category)) {
+        statuses[category] = userItem.isRare;
+      }
+
+      // For jewelry (multiple slots)
+      if (category === 'EARRING') {
+        if (!statuses['EARRING_1']) {
+          statuses['EARRING_1'] = userItem.isRare;
+        } else {
+          statuses['EARRING_2'] = userItem.isRare;
+        }
+      }
+
+      if (category === 'RING') {
+        if (!statuses['RING_1']) {
+          statuses['RING_1'] = userItem.isRare;
+        } else {
+          statuses['RING_2'] = userItem.isRare;
+        }
+      }
+    });
+
+    return statuses;
   }, [gear?.userItems]);
 
   // Map userItem IDs for each slot (needed for enhancement updates)
@@ -171,6 +206,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
     const item = equippedGear[slotType];
     const userItemId = userItemIds[slotType];
     const currentLevel = enhancementLevels[slotType] || 0;
+    const currentIsRare = rareStatuses[slotType] || false;
 
     if (!item || !userItemId) return;
 
@@ -180,17 +216,19 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
       itemName: item.name,
       baseGS: item.valorGsInt,
       currentLevel,
+      currentIsRare,
     });
   };
 
   // Handle enhancement confirmation
-  const handleEnhancementConfirm = async (newLevel: number) => {
+  const handleEnhancementConfirm = async (newLevel: number, isRare: boolean) => {
     if (!enhancementModal) return;
 
     try {
       await updateEnhancementMutation.mutateAsync({
         userItemId: enhancementModal.userItemId,
         enhancementLevel: newLevel,
+        isRare,
       });
       setEnhancementModal(null);
     } catch (error) {
@@ -256,6 +294,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     onClick={() => setSelectedSlot(slot.type)}
                     size={size}
                     enhancementLevel={enhancementLevels[slot.type] || 0}
+                    isRare={rareStatuses[slot.type] || false}
                     onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
@@ -371,6 +410,8 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                   );
                 }
 
+                const isRareForSlot = rareStatuses[slot.type] || false;
+
                 return (
                   <EquipmentSlot
                     key={slot.type}
@@ -379,6 +420,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     onClick={() => setSelectedSlot(slot.type)}
                     size="medium"
                     enhancementLevel={enhancementLevels[slot.type] || 0}
+                    isRare={isRareForSlot}
                     onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
@@ -415,6 +457,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
           itemName={enhancementModal.itemName}
           baseGS={enhancementModal.baseGS}
           currentLevel={enhancementModal.currentLevel}
+          currentIsRare={enhancementModal.currentIsRare}
           onConfirm={handleEnhancementConfirm}
         />
       )}

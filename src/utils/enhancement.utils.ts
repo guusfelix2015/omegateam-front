@@ -17,17 +17,31 @@ export function calculateEnhancementBonus(level: number): number {
 }
 
 /**
- * Calculate total item GS including enhancement
+ * Calculate rare item bonus GS
+ *
+ * @param isRare - Whether the item is rare
+ * @returns Bonus GS from rare status (+10 if rare, 0 otherwise)
+ */
+export function getRareItemBonus(isRare: boolean): number {
+  return isRare ? 10 : 0;
+}
+
+/**
+ * Calculate total item GS including enhancement and rare bonus
  *
  * @param baseGS - Base GS of item
  * @param enhancementLevel - Enhancement level (0-12)
+ * @param isRare - Whether the item is rare (default: false)
  * @returns Total GS
  */
 export function calculateTotalItemGS(
   baseGS: number,
-  enhancementLevel: number
+  enhancementLevel: number,
+  isRare: boolean = false
 ): number {
-  return baseGS + calculateEnhancementBonus(enhancementLevel);
+  const enhancementBonus = calculateEnhancementBonus(enhancementLevel);
+  const rareBonus = getRareItemBonus(isRare);
+  return baseGS + enhancementBonus + rareBonus;
 }
 
 /**
@@ -65,4 +79,3 @@ export function getEnhancementGradient(level: number): string {
 export function formatEnhancementLevel(level: number): string {
   return level > 0 ? `+${level}` : '';
 }
-

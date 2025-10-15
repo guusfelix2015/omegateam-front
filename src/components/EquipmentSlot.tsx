@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from './ui/tooltip';
 import { EnhancementBadge } from './EnhancementBadge';
+import { RareItemCard } from './RareItemCard';
 import type { Item } from '../types/api';
 import type { EquipmentSlotType } from '../utils/equipment.utils';
 import {
@@ -22,6 +23,7 @@ interface EquipmentSlotProps {
   size?: 'small' | 'medium' | 'large';
   readOnly?: boolean;
   enhancementLevel?: number;
+  isRare?: boolean;
   onEnhancementClick?: () => void;
 }
 
@@ -235,8 +237,10 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
   size = 'medium',
   readOnly = false,
   enhancementLevel = 0,
+  isRare = false,
   onEnhancementClick,
 }) => {
+
   const label = getSlotLabel(slotType);
   const isEmpty = !equippedItem;
 
@@ -357,19 +361,25 @@ export const EquipmentSlot: React.FC<EquipmentSlotProps> = ({
 
       {/* Equipment Slot with Tooltip for equipped items */}
       {!isEmpty ? (
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {slotButton}
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              <p className="font-semibold">{equippedItem.name}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Grade {equippedItem.grade} • {equippedItem.valorGsInt} GS
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <RareItemCard isRare={isRare}>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                {slotButton}
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs">
+                <p className="font-semibold">
+                  {equippedItem.name}
+                  {isRare && <span className="ml-2 text-amber-400">✨</span>}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Grade {equippedItem.grade} • {equippedItem.valorGsInt} GS
+                  {isRare && <span className="text-amber-400"> • Item Raro</span>}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </RareItemCard>
       ) : (
         slotButton
       )}

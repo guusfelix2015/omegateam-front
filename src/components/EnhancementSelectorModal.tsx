@@ -8,30 +8,46 @@ import {
   DialogFooter,
 } from './ui/dialog';
 import { Button } from './ui/button';
+import { Switch } from './ui/switch';
+import { Label } from './ui/label';
 import { EnhancementBadge } from './EnhancementBadge';
-import { calculateEnhancementBonus } from '../utils/enhancement.utils';
+import {
+  calculateEnhancementBonus,
+  getRareItemBonus,
+} from '../utils/enhancement.utils';
 
 interface EnhancementSelectorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (level: number) => void;
+  onConfirm: (level: number, isRare: boolean) => void;
   currentLevel: number;
+  currentIsRare?: boolean;
   itemName: string;
   baseGS: number;
 }
 
 export const EnhancementSelectorModal: React.FC<
   EnhancementSelectorModalProps
-> = ({ isOpen, onClose, onConfirm, currentLevel, itemName, baseGS }) => {
+> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  currentLevel,
+  currentIsRare = false,
+  itemName,
+  baseGS,
+}) => {
   const [selectedLevel, setSelectedLevel] = useState(currentLevel);
+  const [isRare, setIsRare] = useState(currentIsRare);
 
   const handleConfirm = () => {
-    onConfirm(selectedLevel);
+    onConfirm(selectedLevel, isRare);
     onClose();
   };
 
-  const bonus = calculateEnhancementBonus(selectedLevel);
-  const totalGS = baseGS + bonus;
+  const enhancementBonus = calculateEnhancementBonus(selectedLevel);
+  const rareBonus = getRareItemBonus(isRare);
+  const totalGS = baseGS + enhancementBonus + rareBonus;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -88,6 +104,26 @@ export const EnhancementSelectorModal: React.FC<
             ))}
           </div>
 
+          {/* Rare Item Toggle */}
+          <div className="flex items-center justify-between bg-amber-50 dark:bg-amber-950/20 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">✨</div>
+              <div>
+                <Label htmlFor="rare-toggle" className="text-sm font-semibold">
+                  Item Raro
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  +10 GS adicional
+                </p>
+              </div>
+            </div>
+            <Switch
+              id="rare-toggle"
+              checked={isRare}
+              onCheckedChange={setIsRare}
+            />
+          </div>
+
           {/* GS Preview */}
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm">
@@ -98,8 +134,18 @@ export const EnhancementSelectorModal: React.FC<
               <span className="text-muted-foreground">
                 Bônus de Encantamento:
               </span>
-              <span className="font-medium text-blue-600">+{bonus}</span>
+              <span className="font-medium text-blue-600">
+                +{enhancementBonus}
+              </span>
             </div>
+            {isRare && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Bônus Item Raro:</span>
+                <span className="font-medium text-amber-600">
+                  +{rareBonus}
+                </span>
+              </div>
+            )}
             <div className="h-px bg-border" />
             <div className="flex justify-between">
               <span className="font-semibold">GS Total:</span>
@@ -111,6 +157,7 @@ export const EnhancementSelectorModal: React.FC<
           <div className="text-xs text-muted-foreground space-y-1">
             <p>• +1 a +3: +1 GS por nível</p>
             <p>• +4 a +12: +3 GS por nível</p>
+            <p>• Item Raro: +10 GS</p>
           </div>
         </div>
 
