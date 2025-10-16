@@ -299,6 +299,7 @@ export const RaidParticipantSchema = z.object({
   userId: z.string(),
   gearScoreAtTime: z.number(),
   dkpAwarded: z.number(),
+  classBonusApplied: z.boolean().default(false),
   createdAt: z.string(),
   user: z
     .object({
@@ -354,6 +355,7 @@ export const DkpTransactionSchema = z.object({
   reason: z.string(),
   createdBy: z.string(),
   raidInstanceId: z.string().nullable(),
+  classBonusApplied: z.boolean().default(false),
   createdAt: z.string(),
   user: z
     .object({

@@ -179,8 +179,8 @@ export default function DkpProfile() {
                   <p className="text-sm font-semibold">
                     {summary?.lastActivity
                       ? new Date(summary.lastActivity).toLocaleDateString(
-                          'pt-BR'
-                        )
+                        'pt-BR'
+                      )
                       : 'Nunca'}
                   </p>
                 </div>
@@ -260,6 +260,26 @@ export default function DkpProfile() {
                     {user?.classe?.name || 'N/A'}
                   </span>
                 </div>
+                {user?.classe?.name &&
+                  [
+                    'Bishop',
+                    'Elven Elder',
+                    'Shillen Elder',
+                    'Overlord',
+                    'Warcryer',
+                    'Prophet',
+                  ].includes(user.classe.name) && (
+                    <div className="pt-2 border-t">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                          +15% DKP Bônus
+                        </Badge>
+                        <span className="text-muted-foreground text-xs">
+                          Classe de Suporte
+                        </span>
+                      </div>
+                    </div>
+                  )}
               </div>
             </CardContent>
           </Card>
@@ -328,10 +348,18 @@ export default function DkpProfile() {
                       />
                       <div>
                         <p className="font-semibold">{transaction.reason}</p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
                           <Badge variant="outline" className="text-xs">
                             {getTransactionTypeLabel(transaction.type)}
                           </Badge>
+                          {transaction.classBonusApplied && (
+                            <Badge
+                              variant="secondary"
+                              className="text-xs bg-purple-100 text-purple-700"
+                            >
+                              +15% Bônus
+                            </Badge>
+                          )}
                           <span>•</span>
                           <span>
                             {new Date(transaction.createdAt).toLocaleDateString(
@@ -349,11 +377,10 @@ export default function DkpProfile() {
                     </div>
                     <div className="text-right">
                       <p
-                        className={`text-lg font-bold ${
-                          transaction.amount > 0
-                            ? 'text-green-600'
-                            : 'text-red-600'
-                        }`}
+                        className={`text-lg font-bold ${transaction.amount > 0
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                          }`}
                       >
                         {transaction.amount > 0 ? '+' : ''}
                         {transaction.amount}
