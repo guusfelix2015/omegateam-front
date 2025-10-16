@@ -160,15 +160,15 @@ export function DroppedItemsStep({
                         <Badge
                           className={
                             GRADE_COLORS[
-                              watchedItems[index]
-                                .grade as keyof typeof GRADE_COLORS
+                            watchedItems[index]
+                              .grade as keyof typeof GRADE_COLORS
                             ]
                           }
                         >
                           {
                             GRADE_LABELS[
-                              watchedItems[index]
-                                .grade as keyof typeof GRADE_LABELS
+                            watchedItems[index]
+                              .grade as keyof typeof GRADE_LABELS
                             ]
                           }
                         </Badge>
@@ -228,7 +228,7 @@ export function DroppedItemsStep({
                             <SelectItem key={category} value={category}>
                               {
                                 CATEGORY_LABELS[
-                                  category as keyof typeof CATEGORY_LABELS
+                                category as keyof typeof CATEGORY_LABELS
                                 ]
                               }
                             </SelectItem>
