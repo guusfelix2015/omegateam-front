@@ -299,13 +299,15 @@ export const ImageUploadModal = ({
                 </div>
 
                 <div className="space-y-4">
-                  <div className="border rounded-lg p-4">
-                    <img
-                      src={currentImageUrl}
-                      alt="Imagem atual"
-                      className="max-w-full h-auto rounded-lg mx-auto"
-                      style={{ maxHeight: '200px' }}
-                    />
+                  <div className="border rounded-lg p-4 bg-muted/50">
+                    {/* Fixed size container for current image preview */}
+                    <div className="w-full h-[300px] flex items-center justify-center overflow-hidden rounded-lg bg-muted">
+                      <img
+                        src={currentImageUrl}
+                        alt="Imagem atual"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
                   </div>
                   <Button
                     type="button"
@@ -424,12 +426,14 @@ export const ImageUploadModal = ({
         {step === 'preview' && croppedImageUrl && (
           <div className="space-y-4">
             <div className="border rounded-lg p-4 bg-muted/50">
-              <img
-                src={croppedImageUrl}
-                alt="Preview"
-                className="max-w-full h-auto rounded-lg mx-auto"
-                style={{ maxHeight: '400px' }}
-              />
+              {/* Fixed size container for preview */}
+              <div className="w-full h-[400px] flex items-center justify-center overflow-hidden rounded-lg bg-muted">
+                <img
+                  src={croppedImageUrl}
+                  alt="Preview"
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </div>
             <p className="text-sm text-muted-foreground text-center">
               Confirme se a imagem está como desejado antes de enviar

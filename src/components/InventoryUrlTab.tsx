@@ -67,27 +67,30 @@ export const InventoryUrlTab = () => {
           <Card className="overflow-hidden">
             <CardContent className="p-0">
               <div className="relative group">
-                <img
-                  src={user.bagUrl}
-                  alt="Inventário do usuário"
-                  className="w-full h-auto"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    const errorDiv = target.nextElementSibling as HTMLElement;
-                    if (errorDiv) {
-                      errorDiv.classList.remove('hidden');
-                    }
-                  }}
-                />
-                <div className="hidden text-center py-12 bg-muted">
-                  <Image className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium text-muted-foreground mb-2">
-                    Erro ao carregar a imagem
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Verifique se a URL está correta
-                  </p>
+                {/* Fixed size container for consistent layout */}
+                <div className="w-full max-w-2xl mx-auto h-[500px] bg-muted flex items-center justify-center overflow-hidden">
+                  <img
+                    src={user.bagUrl}
+                    alt="Inventário do usuário"
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const errorDiv = target.nextElementSibling as HTMLElement;
+                      if (errorDiv) {
+                        errorDiv.classList.remove('hidden');
+                      }
+                    }}
+                  />
+                  <div className="hidden absolute inset-0 bg-muted flex-col items-center justify-center text-center py-12">
+                    <Image className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-lg font-medium text-muted-foreground mb-2">
+                      Erro ao carregar a imagem
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Verifique se a URL está correta
+                    </p>
+                  </div>
                 </div>
 
                 {/* Hover overlay with actions */}
