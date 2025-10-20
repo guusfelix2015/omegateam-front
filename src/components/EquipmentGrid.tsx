@@ -340,6 +340,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     onClick={() => setSelectedSlot(slot.type)}
                     size={size}
                     enhancementLevel={enhancementLevels[slot.type] || 0}
+                    isRare={rareStatuses[slot.type] || false}
                     onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );
@@ -383,6 +384,7 @@ export const EquipmentGrid: React.FC<EquipmentGridProps> = ({ gear }) => {
                     onClick={() => setSelectedSlot(slot.type)}
                     size="medium"
                     enhancementLevel={enhancementLevels[slot.type] || 0}
+                    isRare={rareStatuses[slot.type] || false}
                     onEnhancementClick={() => handleEnhancementClick(slot.type)}
                   />
                 );

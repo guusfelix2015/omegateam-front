@@ -24,6 +24,40 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
     return mapUserItemsToSlots(gear.userItems);
   }, [gear?.userItems]);
 
+  // Map rare status for each slot
+  const rareStatuses = useMemo(() => {
+    const statuses: Record<string, boolean> = {};
+    if (!gear?.userItems) return statuses;
+
+    gear.userItems.forEach((userItem) => {
+      const category = userItem.item.category;
+
+      // For single-slot items
+      if (['HELMET', 'NECKLACE', 'ARMOR', 'PANTS', 'BOOTS', 'WEAPON', 'SHIELD', 'GLOVES'].includes(category)) {
+        statuses[category] = userItem.isRare;
+      }
+
+      // For jewelry (multiple slots)
+      if (category === 'EARRING') {
+        if (!statuses['EARRING_1']) {
+          statuses['EARRING_1'] = userItem.isRare;
+        } else {
+          statuses['EARRING_2'] = userItem.isRare;
+        }
+      }
+
+      if (category === 'RING') {
+        if (!statuses['RING_1']) {
+          statuses['RING_1'] = userItem.isRare;
+        } else {
+          statuses['RING_2'] = userItem.isRare;
+        }
+      }
+    });
+
+    return statuses;
+  }, [gear?.userItems]);
+
   // Group slots by row for rendering
   const slotsByRow = useMemo(() => {
     return EQUIPMENT_SLOTS.reduce(
@@ -73,6 +107,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => { }} // No-op for read-only
                     size={size}
+                    isRare={rareStatuses[slot.type] || false}
                     readOnly={true}
                   />
                 );
@@ -109,6 +144,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => { }} // No-op for read-only
                     size={size}
+                    isRare={rareStatuses[slot.type] || false}
                     readOnly={true}
                   />
                 );
@@ -143,6 +179,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => { }} // No-op for read-only
                     size="small"
+                    isRare={rareStatuses[slot.type] || false}
                     readOnly={true}
                   />
                 );
@@ -178,6 +215,7 @@ export const EquipmentGridReadOnly: React.FC<EquipmentGridReadOnlyProps> = ({
                     equippedItem={equippedGear[slot.type]}
                     onClick={() => { }} // No-op for read-only
                     size="small"
+                    isRare={rareStatuses[slot.type] || false}
                     readOnly={true}
                   />
                 );
