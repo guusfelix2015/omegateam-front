@@ -36,15 +36,25 @@ import {
   SelectValue,
 } from '../components/ui/select';
 import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../components/ui/tabs';
+import {
   useRaidInstance,
   useAddParticipant,
   useRemoveParticipant,
+  useSyncParticipantGearScore,
 } from '../hooks/raids.hooks';
 import { useUsers } from '../hooks/users.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
 import { DroppedItemsList } from '../components/raid-dropped-items/DroppedItemsList';
+import { AttendanceConfirmationTab } from '../components/raid-instances/AttendanceConfirmationTab';
+import { RaidAuditPanel } from '../components/raid-instances/RaidAuditPanel';
 import { useState } from 'react';
+import { RefreshCw } from 'lucide-react';
 
 export default function RaidInstanceDetail() {
   const { id } = useParams();
@@ -56,6 +66,7 @@ export default function RaidInstanceDetail() {
   const { data: usersData } = useUsers({ isActive: true, limit: 100 });
   const addParticipantMutation = useAddParticipant();
   const removeParticipantMutation = useRemoveParticipant();
+  const syncGearScoreMutation = useSyncParticipantGearScore();
 
   if (isLoading) {
     return (
@@ -125,6 +136,19 @@ export default function RaidInstanceDetail() {
       });
     } catch (error) {
       console.error('Error removing participant:', error);
+    }
+  };
+
+  const handleSyncGearScore = async (participantId: string) => {
+    if (!id) return;
+
+    try {
+      await syncGearScoreMutation.mutateAsync({
+        raidInstanceId: id,
+        participantId,
+      });
+    } catch (error) {
+      console.error('Error syncing gear score:', error);
     }
   };
 
@@ -438,9 +462,25 @@ export default function RaidInstanceDetail() {
                           <p className="text-sm text-muted-foreground">
                             Gear Score
                           </p>
-                          <p className="font-semibold">
-                            {participant.gearScoreAtTime}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold">
+                              {participant.gearScoreAtTime}
+                            </p>
+                            {isAdmin && !instance.isAudited && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  handleSyncGearScore(participant.id)
+                                }
+                                disabled={syncGearScoreMutation.isPending}
+                                title="Sincronizar com GS atual do player"
+                                className="h-6 w-6 p-0"
+                              >
+                                <RefreshCw className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         <div className="text-right">
                           <p className="text-sm text-muted-foreground">
@@ -467,6 +507,32 @@ export default function RaidInstanceDetail() {
                     </div>
                   ))}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Attendance & Audit Tabs */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Confirmação de Presença</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="attendance" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="attendance">Presença</TabsTrigger>
+                  <TabsTrigger value="audit">Auditoria</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="attendance" className="mt-4">
+                  <AttendanceConfirmationTab
+                    raidInstanceId={instance.id}
+                    isAudited={instance.isAudited || false}
+                  />
+                </TabsContent>
+
+                <TabsContent value="audit" className="mt-4">
+                  <RaidAuditPanel raidInstanceId={instance.id} />
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>

@@ -37,6 +37,7 @@ import {
 } from '../hooks/raids.hooks';
 import { useAuth } from '../hooks/useAuth';
 import { Layout } from '../components/Layout';
+import { AuditStatusBadge } from '../components/raid-instances/AuditStatusBadge';
 
 export default function RaidDetail() {
   const { id } = useParams();
@@ -297,10 +298,16 @@ export default function RaidDetail() {
                   >
                     <CardHeader className="pb-3">
                       <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="text-lg">
-                            Instância #{instance.id.slice(-8)}
-                          </CardTitle>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <CardTitle className="text-lg">
+                              Instância #{instance.id.slice(-8)}
+                            </CardTitle>
+                            <AuditStatusBadge
+                              isAudited={instance.isAudited}
+                              auditedAt={instance.auditedAt}
+                            />
+                          </div>
                           <CardDescription>
                             <div className="flex items-center gap-4 mt-1">
                               <span className="flex items-center gap-1">
@@ -427,12 +434,12 @@ export default function RaidDetail() {
                     <p className="text-2xl font-bold">
                       {instances.length > 0
                         ? Math.round(
-                            instances.reduce(
-                              (sum, instance) =>
-                                sum + instance.participants.length,
-                              0
-                            ) / instances.length
-                          )
+                          instances.reduce(
+                            (sum, instance) =>
+                              sum + instance.participants.length,
+                            0
+                          ) / instances.length
+                        )
                         : 0}
                     </p>
                   </div>

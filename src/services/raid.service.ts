@@ -235,4 +235,14 @@ export const raidService = {
       `/raid-instances/${raidInstanceId}/participants/${userId}`
     );
   },
+
+  async syncParticipantGearScore(
+    raidInstanceId: string,
+    participantId: string
+  ): Promise<any> {
+    const response = await api.patch(
+      `/raid-instances/${raidInstanceId}/participants/${participantId}/gear-score`
+    );
+    return response.data;
+  },
 };

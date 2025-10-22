@@ -318,6 +318,9 @@ export const RaidInstanceSchema = z.object({
   createdBy: z.string(),
   notes: z.string().nullable(),
   createdAt: z.string(),
+  isAudited: z.boolean().default(false),
+  auditedAt: z.string().nullable().optional(),
+  auditedBy: z.string().nullable().optional(),
   raid: RaidSchema,
   participants: z.array(RaidParticipantSchema),
 });
@@ -545,6 +548,65 @@ export type CreateRaidDroppedItem = z.infer<typeof CreateRaidDroppedItemSchema>;
 export type UpdateRaidDroppedItem = z.infer<typeof UpdateRaidDroppedItemSchema>;
 export type RaidDroppedItemsList = z.infer<typeof RaidDroppedItemsListSchema>;
 export type RaidDroppedItemStats = z.infer<typeof RaidDroppedItemStatsSchema>;
+
+// Raid Attendance schemas
+export const AttendanceConfirmationSchema = z.object({
+  confirmationId: z.string(),
+  raidInstanceId: z.string(),
+  participantId: z.string(),
+  imageUrl: z.string(),
+  uploadedAt: z.string(),
+});
+
+export const AttendanceStatusSchema = z.object({
+  participantId: z.string(),
+  userId: z.string(),
+  userName: z.string(),
+  userNickname: z.string(),
+  userAvatar: z.string().nullable(),
+  status: z.enum(['confirmed', 'pending']),
+  imageUrl: z.string().nullable(),
+  uploadedAt: z.string().nullable(),
+});
+
+export const AttendanceListSchema = z.object({
+  data: z.array(AttendanceStatusSchema),
+});
+
+export const AuditStatusSchema = z.object({
+  raidInstanceId: z.string(),
+  isAudited: z.boolean(),
+  auditedAt: z.string().nullable(),
+  auditedBy: z.string().nullable(),
+  auditedByName: z.string().nullable(),
+  totalParticipants: z.number(),
+  confirmedParticipants: z.number(),
+  pendingParticipants: z.number(),
+  confirmationPercentage: z.number(),
+});
+
+export const AuditResultSchema = z.object({
+  raidInstanceId: z.string(),
+  isAudited: z.boolean(),
+  auditedAt: z.string(),
+  auditedBy: z.string(),
+  dkpDistributed: z.object({
+    totalParticipants: z.number(),
+    confirmedParticipants: z.number(),
+    totalDkpAwarded: z.number(),
+    participants: z.array(z.object({
+      userId: z.string(),
+      dkpAwarded: z.number(),
+      hasConfirmedAttendance: z.boolean(),
+    })),
+  }),
+});
+
+export type AttendanceConfirmation = z.infer<typeof AttendanceConfirmationSchema>;
+export type AttendanceStatus = z.infer<typeof AttendanceStatusSchema>;
+export type AttendanceList = z.infer<typeof AttendanceListSchema>;
+export type AuditStatus = z.infer<typeof AuditStatusSchema>;
+export type AuditResult = z.infer<typeof AuditResultSchema>;
 
 export type ApiResponse<T> = {
   success: boolean;

@@ -331,3 +331,40 @@ export const useRemoveParticipant = () => {
     },
   });
 };
+
+export const useSyncParticipantGearScore = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      raidInstanceId,
+      participantId,
+    }: {
+      raidInstanceId: string;
+      participantId: string;
+    }) =>
+      raidService.syncParticipantGearScore(
+        raidInstanceId,
+        participantId
+      ),
+    onSuccess: (_, { raidInstanceId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['raid-instances', raidInstanceId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['raid-instances'] });
+      toast({
+        title: 'Sucesso',
+        description: 'Gear Score sincronizado com sucesso!',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Erro',
+        description:
+          error.response?.data?.error?.message ||
+          'Erro ao sincronizar Gear Score',
+        variant: 'destructive',
+      });
+    },
+  });
+};
