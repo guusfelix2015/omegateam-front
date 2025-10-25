@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService } from '../services/auth.service';
-import { type LoginRequest } from '../types/api';
+import { type LoginRequest, type RegisterRequest } from '../types/api';
 import { useToast } from './use-toast';
 
 export const useLogin = () => {
@@ -45,6 +45,38 @@ export const useLogin = () => {
         description: errorMessage,
         variant: 'destructive',
         duration: 5000, // Garantir que o toast fique visível por 5 segundos
+      });
+    },
+  });
+};
+
+export const useRegister = () => {
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: (data: RegisterRequest) => authService.register(data),
+    onSuccess: (data) => {
+      console.log('Registration successful:', data);
+
+      toast({
+        title: 'Registro realizado com sucesso!',
+        description: 'Você pode fazer login agora.',
+      });
+    },
+    onError: (error: any) => {
+      console.error('Registration error:', error);
+
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        error.response?.data?.message ||
+        error.message ||
+        'Erro ao registrar';
+
+      toast({
+        title: 'Erro no registro',
+        description: errorMessage,
+        variant: 'destructive',
+        duration: 5000,
       });
     },
   });

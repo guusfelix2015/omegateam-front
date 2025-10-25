@@ -57,6 +57,37 @@ export const LoginResponseSchema = z.object({
   message: z.string(),
 });
 
+export const RegisterRequestSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+  name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
+  nickname: z
+    .string()
+    .min(1, 'Nickname é obrigatório')
+    .max(50, 'Nickname muito longo')
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      'Nickname pode conter apenas letras, números e underscore'
+    ),
+  phone: z
+    .string()
+    .regex(
+      /^\+\d{1,3}\d{8,14}$/,
+      'Telefone deve estar no formato internacional (ex: +55XXXXXXXXXXX)'
+    ),
+  playerType: z.enum(['PVP', 'PVE']),
+  classeId: z.string().min(1, 'Classe é obrigatória'),
+});
+
+export const RegisterResponseSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  name: z.string(),
+  nickname: z.string(),
+  role: z.string(),
+  message: z.string(),
+});
+
 // User Company Party relation schema
 export const UserCompanyPartySchema = z.object({
   id: z.string(),
@@ -607,6 +638,9 @@ export type AttendanceStatus = z.infer<typeof AttendanceStatusSchema>;
 export type AttendanceList = z.infer<typeof AttendanceListSchema>;
 export type AuditStatus = z.infer<typeof AuditStatusSchema>;
 export type AuditResult = z.infer<typeof AuditResultSchema>;
+
+export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
+export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
 
 export type ApiResponse<T> = {
   success: boolean;

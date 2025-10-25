@@ -2,9 +2,12 @@
 import { api } from '../lib/axios';
 import {
   LoginResponseSchema,
+  RegisterResponseSchema,
   UserSchema,
   type LoginRequest,
   type LoginResponse,
+  type RegisterRequest,
+  type RegisterResponse,
   type User,
 } from '../types/api';
 
@@ -12,6 +15,11 @@ export const authService = {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await api.post('/auth/login', credentials);
     return LoginResponseSchema.parse(response.data);
+  },
+
+  async register(data: RegisterRequest): Promise<RegisterResponse> {
+    const response = await api.post('/auth/register', data);
+    return RegisterResponseSchema.parse(response.data);
   },
 
   async getCurrentUser(): Promise<User> {

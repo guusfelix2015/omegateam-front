@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import {
@@ -125,6 +125,15 @@ export default function Login() {
                 'Acessar'
               )}
             </Button>
+
+            <div className="text-center text-sm">
+              <span className="text-muted-foreground">
+                Não tem uma conta?{' '}
+              </span>
+              <Link to="/register" className="text-primary hover:underline">
+                Registre-se aqui
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>
