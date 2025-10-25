@@ -44,6 +44,7 @@ export default function Register() {
       name: '',
       nickname: '',
       phone: '+55',
+      lvl: 1,
       playerType: 'PVP',
       classeId: '',
     },
@@ -197,6 +198,23 @@ export default function Register() {
                     </p>
                   )}
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lvl">Nível do Personagem *</Label>
+                <Input
+                  id="lvl"
+                  type="number"
+                  min="1"
+                  max="85"
+                  placeholder="Digite o nível (1-85)"
+                  {...register('lvl', { valueAsNumber: true })}
+                />
+                {errors.lvl && (
+                  <p className="text-sm text-destructive">
+                    {errors.lvl.message}
+                  </p>
+                )}
               </div>
             </div>
 
