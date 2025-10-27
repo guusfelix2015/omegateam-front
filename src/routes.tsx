@@ -32,6 +32,7 @@ import AuctionActive from './pages/AuctionActive';
 import MyWonItems from './pages/MyWonItems';
 import AuctionedItemsManagement from './pages/AuctionedItemsManagement';
 import AuctionAnalytics from './pages/AuctionAnalytics';
+import AdminRulesEditor from './pages/admin/AdminRulesEditor';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -336,6 +337,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requiredRole="ADMIN">
         <ItemForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/rules',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <AdminRulesEditor />
       </ProtectedRoute>
     ),
   },

@@ -7,11 +7,13 @@ import {
 
 import { useAuth } from '../hooks/useAuth';
 import { useCompanyParties } from '../hooks/company-parties.hooks';
+import { useGetSettingByKey } from '../hooks/settings.hooks';
 import { Layout } from '../components/Layout';
 
 export default function Home() {
   const { user, isAdmin } = useAuth();
   const { data: companyParties } = useCompanyParties();
+  const { data: clanRules } = useGetSettingByKey('clan_rules');
 
   return (
     <Layout>
@@ -62,6 +64,20 @@ export default function Home() {
               </div>
             </div>
           </>
+        )}
+
+        {clanRules && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Regras do Clã</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div
+                className="prose prose-sm dark:prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: clanRules.value }}
+              />
+            </CardContent>
+          </Card>
         )}
       </div>
     </Layout>
