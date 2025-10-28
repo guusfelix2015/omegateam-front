@@ -36,6 +36,7 @@ export const UserSchema = z.object({
   lastLoginAt: z.string().nullable().optional(),
   lvl: z.number(),
   nickname: z.string(),
+  phone: z.string().nullable().optional(),
   avatar: z.string().nullable().optional(),
   classeId: z.string().nullable().optional(),
   playerType: z.enum(['PVP', 'PVE']).nullable().optional(),
@@ -155,6 +156,14 @@ export const UpdateProfileSchema = z.object({
   password: z
     .string()
     .min(6, 'Senha deve ter pelo menos 6 caracteres')
+    .optional(),
+  phone: z
+    .string()
+    .regex(
+      /^\+\d{1,3}\d{8,14}$/,
+      'Telefone deve estar no formato internacional (ex: +55XXXXXXXXXXX)'
+    )
+    .nullable()
     .optional(),
   avatar: z.string().url('URL inválida').nullable().optional(),
   lvl: z.number().min(1).max(85).optional(),

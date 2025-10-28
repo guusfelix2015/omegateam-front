@@ -47,6 +47,14 @@ const updateProfileSchema = z.object({
     .string()
     .min(1, 'Nickname é obrigatório')
     .max(50, 'Nickname muito longo'),
+  phone: z
+    .string()
+    .regex(
+      /^\+\d{1,3}\d{8,14}$/,
+      'Telefone deve estar no formato internacional (ex: +55XXXXXXXXXXX)'
+    )
+    .optional()
+    .or(z.literal('')),
   password: z
     .string()
     .min(6, 'Senha deve ter pelo menos 6 caracteres')
@@ -81,6 +89,7 @@ export const EditProfile: React.FC = () => {
     defaultValues: {
       name: profileUser?.name || '',
       nickname: profileUser?.nickname || '',
+      phone: profileUser?.phone || '',
       password: '',
       lvl: profileUser?.lvl || 1,
       classeId: profileUser?.classeId || '',
@@ -213,22 +222,20 @@ export const EditProfile: React.FC = () => {
         <div className="flex space-x-1 bg-muted p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('general')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'general'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'general'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+              }`}
           >
             <UserCircle className="h-4 w-4" />
             Informações Gerais
           </button>
           <button
             onClick={() => setActiveTab('security')}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'security'
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'security'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+              }`}
           >
             <Lock className="h-4 w-4" />
             Segurança
@@ -274,6 +281,20 @@ export const EditProfile: React.FC = () => {
                     {errors.nickname && (
                       <p className="text-sm text-red-500">
                         {errors.nickname.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Telefone</Label>
+                    <Input
+                      id="phone"
+                      {...register('phone')}
+                      placeholder="+55XXXXXXXXXXX"
+                    />
+                    {errors.phone && (
+                      <p className="text-sm text-red-500">
+                        {errors.phone.message}
                       </p>
                     )}
                   </div>
