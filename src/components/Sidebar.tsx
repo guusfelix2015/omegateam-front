@@ -16,7 +16,6 @@ import {
   Coins,
   Gavel,
   Award,
-  Settings,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../hooks/useAuth';
@@ -104,12 +103,6 @@ const navItems: NavItem[] = [
     name: 'Controle Administrativo',
     href: '/admin',
     icon: Shield,
-    adminOnly: true,
-  },
-  {
-    name: 'Gerenciador ADM',
-    href: '/admin/rules',
-    icon: Settings,
     adminOnly: true,
   },
   {

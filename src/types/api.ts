@@ -33,6 +33,7 @@ export const UserSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   isActive: z.boolean(),
+  lastLoginAt: z.string().nullable().optional(),
   lvl: z.number(),
   nickname: z.string(),
   avatar: z.string().nullable().optional(),

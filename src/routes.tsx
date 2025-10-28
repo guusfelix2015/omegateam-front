@@ -6,7 +6,6 @@ import Members from './pages/Members';
 import MemberDetail from './pages/MemberDetail';
 import CreateMember from './pages/CreateMember';
 import Admin from './pages/Admin';
-import Reports from './pages/Reports';
 import CompanyPartiesList from './pages/admin/CompanyPartiesList';
 import CompanyPartyForm from './pages/admin/CompanyPartyForm';
 import CompanyPartyDetail from './pages/CompanyPartyDetail';
@@ -33,6 +32,7 @@ import MyWonItems from './pages/MyWonItems';
 import AuctionedItemsManagement from './pages/AuctionedItemsManagement';
 import AuctionAnalytics from './pages/AuctionAnalytics';
 import AdminRulesEditor from './pages/admin/AdminRulesEditor';
+import InactiveUsersManagement from './pages/admin/InactiveUsersManagement';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -309,14 +309,6 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/reports',
-    element: (
-      <ProtectedRoute requiredRole="ADMIN">
-        <Reports />
-      </ProtectedRoute>
-    ),
-  },
-  {
     path: '/admin/items',
     element: (
       <ProtectedRoute requiredRole="ADMIN">
@@ -345,6 +337,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requiredRole="ADMIN">
         <AdminRulesEditor />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin/inactive-users',
+    element: (
+      <ProtectedRoute requiredRole="ADMIN">
+        <InactiveUsersManagement />
       </ProtectedRoute>
     ),
   },

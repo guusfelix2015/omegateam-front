@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import {
   Swords,
   Trophy,
-  TrendingUp,
   Calendar,
   Target,
   Plus,
@@ -366,17 +365,6 @@ export default function RaidsDashboard() {
                     <Link to="/raids/new">
                       <Plus className="mr-2 h-4 w-4" />
                       Criar Novo Raid
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    asChild
-                    className="w-full justify-start"
-                  >
-                    <Link to="/reports">
-                      <TrendingUp className="mr-2 h-4 w-4" />
-                      Ver Relatórios
                     </Link>
                   </Button>
                 </>

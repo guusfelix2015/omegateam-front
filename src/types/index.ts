@@ -6,6 +6,7 @@ export interface User {
   nickname: string;
   avatar?: string;
   isActive: boolean;
+  lastLoginAt?: string | null;
   lvl: number;
   role: 'ADMIN' | 'PLAYER' | 'CP_LEADER';
   createdAt: string;

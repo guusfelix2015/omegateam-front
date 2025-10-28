@@ -1,11 +1,7 @@
 import { Link } from 'react-router-dom';
 import {
-  Shield,
-  Users,
-  Building2,
-  BarChart3,
   Settings,
-  Database,
+  AlertCircle,
 } from 'lucide-react';
 import {
   Card,
@@ -32,73 +28,17 @@ export default function Admin() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Users className="mr-2 h-5 w-5" />
-                Gerenciar Membros
-              </CardTitle>
-              <CardDescription>
-                Administre usuários e permissões
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Crie, edite e gerencie todos os membros do sistema.
-              </p>
-              <Button className="w-full" asChild>
-                <Link to="/members">Acessar Membros</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Building2 className="mr-2 h-5 w-5" />
-                Cps
-              </CardTitle>
-              <CardDescription>Gerencie Cps</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Crie e administre todas as Cps do servidor.
-              </p>
-              <Button className="w-full" asChild>
-                <Link to="/company-parties">Gerenciar CPs</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BarChart3 className="mr-2 h-5 w-5" />
-                Relatórios
-              </CardTitle>
-              <CardDescription>Estatísticas e análises</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Visualize relatórios detalhados e estatísticas do sistema.
-              </p>
-              <Button className="w-full" asChild>
-                <Link to="/reports">Ver Relatórios</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
                 <Settings className="mr-2 h-5 w-5" />
-                Configurações
+                Regras
               </CardTitle>
-              <CardDescription>Configurações do sistema</CardDescription>
+              <CardDescription>Regras do cla</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Configure parâmetros gerais do sistema.
+                Configure regras gerais do do cla.
               </p>
-              <Button className="w-full" variant="outline" disabled>
-                Em Breve
+              <Button className="w-full" asChild>
+                <Link to="/admin/rules">Regras</Link>
               </Button>
             </CardContent>
           </Card>
@@ -106,88 +46,18 @@ export default function Admin() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Database className="mr-2 h-5 w-5" />
-                Backup & Restore
+                <AlertCircle className="mr-2 h-5 w-5 text-red-600" />
+                Usuários Inativos
               </CardTitle>
-              <CardDescription>Gerenciamento de dados</CardDescription>
+              <CardDescription>Gerenciar inatividade</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Faça backup e restaure dados do sistema.
+                Monitore e gerencie usuários que não fazem login há mais de 7 dias.
               </p>
-              <Button className="w-full" variant="outline" disabled>
-                Em Breve
+              <Button className="w-full" asChild>
+                <Link to="/admin/inactive-users">Gerenciar Inativos</Link>
               </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Shield className="mr-2 h-5 w-5" />
-                Logs & Auditoria
-              </CardTitle>
-              <CardDescription>Monitoramento de atividades</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Monitore atividades e logs do sistema.
-              </p>
-              <Button className="w-full" variant="outline" disabled>
-                Em Breve
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total de Membros
-              </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">Carregando...</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Cps</CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">Carregando...</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Membros Ativos
-              </CardTitle>
-              <Shield className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">Carregando...</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Administradores
-              </CardTitle>
-              <Settings className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">-</div>
-              <p className="text-xs text-muted-foreground">Carregando...</p>
             </CardContent>
           </Card>
         </div>
