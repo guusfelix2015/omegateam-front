@@ -40,6 +40,7 @@ import { ClassBadge } from '../../components/ClassBadge';
 import { useMe, useUpdateProfile } from '../../hooks/users.hooks';
 import { useClasses } from '../../hooks/classes.hooks';
 import { Layout } from '../../components/Layout';
+import { type UpdateProfile } from '../../types/api';
 
 const updateProfileSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
@@ -102,8 +103,17 @@ export const EditProfile: React.FC = () => {
 
   const onSubmitGeneral = async (data: UpdateProfileForm) => {
     try {
-      // For general tab, exclude password field
-      const { password, ...updateData } = data;
+      const { password: _password, phone, classeId, playerType, clan, ...baseData } =
+        data;
+
+      const updateData: UpdateProfile = {
+        ...baseData,
+        phone: phone && phone.trim() !== '' ? phone.trim() : null,
+        classeId: classeId && classeId !== '' ? classeId : null,
+        playerType: playerType ?? null,
+        clan: clan ?? null,
+      };
+
       await updateProfileMutation.mutateAsync(updateData);
       navigate('/profile');
     } catch (error) {
