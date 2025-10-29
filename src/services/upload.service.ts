@@ -34,5 +34,29 @@ export const uploadService = {
       throw error;
     }
   },
-};
 
+  /**
+   * Upload user avatar image
+   */
+  async uploadUserAvatar(file: File): Promise<string> {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await api.post<UploadResponse>(
+        '/upload/user-avatar',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      return response.data.data.imageUrl;
+    } catch (error) {
+      console.error('Failed to upload avatar:', error);
+      throw error;
+    }
+  },
+};

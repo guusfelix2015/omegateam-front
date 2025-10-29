@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -41,6 +41,8 @@ import { useMe, useUpdateProfile } from '../../hooks/users.hooks';
 import { useClasses } from '../../hooks/classes.hooks';
 import { Layout } from '../../components/Layout';
 import { type UpdateProfile } from '../../types/api';
+import { uploadService } from '../../services/upload.service';
+import { useToast } from '../../hooks/use-toast';
 
 const updateProfileSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
@@ -48,6 +50,11 @@ const updateProfileSchema = z.object({
     .string()
     .min(1, 'Nickname é obrigatório')
     .max(50, 'Nickname muito longo'),
+  avatar: z
+    .string()
+    .url('Avatar deve ser uma URL válida')
+    .optional()
+    .or(z.literal('')),
   phone: z
     .string()
     .regex(
@@ -74,8 +81,17 @@ export const EditProfile: React.FC = () => {
   const { data: user, isLoading, error } = useMe();
   const { data: classes } = useClasses();
   const updateProfileMutation = useUpdateProfile();
+  const { toast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'general' | 'security'>('general');
+  const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(
+    null
+  );
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [avatarUploadError, setAvatarUploadError] = useState<string | null>(
+    null
+  );
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const profileUser = user;
 
@@ -85,11 +101,13 @@ export const EditProfile: React.FC = () => {
     formState: { errors, isSubmitting },
     control,
     setError,
+    setValue,
   } = useForm<UpdateProfileForm>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       name: profileUser?.name || '',
       nickname: profileUser?.nickname || '',
+      avatar: profileUser?.avatar || '',
       phone: profileUser?.phone || '',
       password: '',
       lvl: profileUser?.lvl || 1,
@@ -100,14 +118,118 @@ export const EditProfile: React.FC = () => {
   });
 
   const watchedClasseId = useWatch({ control, name: 'classeId' });
+  const watchedAvatar = useWatch({ control, name: 'avatar' });
+
+  const avatarFromForm =
+    watchedAvatar === undefined ? undefined : watchedAvatar.trim();
+  const avatarImageSrc =
+    localAvatarPreview ||
+    (avatarFromForm && avatarFromForm !== '' ? avatarFromForm : undefined) ||
+    (watchedAvatar === undefined ? profileUser?.avatar : undefined) ||
+    undefined;
+
+  useEffect(() => {
+    return () => {
+      if (localAvatarPreview) {
+        URL.revokeObjectURL(localAvatarPreview);
+      }
+    };
+  }, [localAvatarPreview]);
+
+  const handleAvatarChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setAvatarUploadError(null);
+
+    if (localAvatarPreview) {
+      URL.revokeObjectURL(localAvatarPreview);
+    }
+
+    let objectUrl = URL.createObjectURL(file);
+    setLocalAvatarPreview(objectUrl);
+    setIsUploadingAvatar(true);
+
+    try {
+      const imageUrl = await uploadService.uploadUserAvatar(file);
+      setValue('avatar', imageUrl, { shouldDirty: true });
+      setLocalAvatarPreview(null);
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = '';
+      await updateProfileMutation.mutateAsync({ avatar: imageUrl });
+    } catch (uploadError) {
+      console.error('Error uploading avatar:', uploadError);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = '';
+      }
+      setLocalAvatarPreview(null);
+      setAvatarUploadError(
+        'Falha ao enviar avatar. Verifique o formato e tente novamente.'
+      );
+      toast({
+        title: 'Erro ao enviar avatar',
+        description:
+          'Não foi possível enviar a nova imagem. Tente novamente em instantes.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+      event.target.value = '';
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    setAvatarUploadError(null);
+    if (localAvatarPreview) {
+      URL.revokeObjectURL(localAvatarPreview);
+      setLocalAvatarPreview(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    const previousAvatarValue =
+      (avatarFromForm && avatarFromForm !== '' ? avatarFromForm : undefined) ??
+      profileUser?.avatar ??
+      '';
+
+    try {
+      setIsUploadingAvatar(true);
+      setValue('avatar', '', { shouldDirty: true });
+      await updateProfileMutation.mutateAsync({ avatar: null });
+    } catch (error) {
+      console.error('Error removing avatar:', error);
+      setValue('avatar', previousAvatarValue, { shouldDirty: false });
+      setAvatarUploadError('Não foi possível remover o avatar.');
+      toast({
+        title: 'Erro ao remover avatar',
+        description: 'Tente novamente em instantes.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
 
   const onSubmitGeneral = async (data: UpdateProfileForm) => {
     try {
-      const { password: _password, phone, classeId, playerType, clan, ...baseData } =
-        data;
+      const {
+        password: _password,
+        phone,
+        classeId,
+        playerType,
+        clan,
+        avatar,
+        ...baseData
+      } = data;
 
       const updateData: UpdateProfile = {
         ...baseData,
+        avatar: avatar && avatar.trim() !== '' ? avatar.trim() : null,
         phone: phone && phone.trim() !== '' ? phone.trim() : null,
         classeId: classeId && classeId !== '' ? classeId : null,
         playerType: playerType ?? null,
@@ -198,32 +320,83 @@ export const EditProfile: React.FC = () => {
 
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src={profileUser.avatar || undefined} />
-                <AvatarFallback className="text-lg">
-                  {profileUser.name?.charAt(0)?.toUpperCase() || 'U'}
-                </AvatarFallback>
-              </Avatar>
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold">{profileUser.name}</h2>
-                <p className="text-muted-foreground">@{profileUser.nickname}</p>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Shield className="h-4 w-4" />
-                    {profileUser.role === 'ADMIN' ? 'Administrador' : 'Jogador'}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    Level {profileUser.lvl || 1}
-                  </span>
-                  {profileUser.classe?.name && (
-                    <ClassBadge
-                      classeName={profileUser.classe.name}
-                      size="sm"
-                    />
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="relative h-20 w-20">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage src={avatarImageSrc} />
+                    <AvatarFallback className="text-lg">
+                      {profileUser.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isUploadingAvatar && (
+                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
+                      <Loader2 className="h-6 w-6 animate-spin text-white" />
+                    </div>
                   )}
                 </div>
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-semibold">{profileUser.name}</h2>
+                  <p className="text-muted-foreground">
+                    @{profileUser.nickname}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Shield className="h-4 w-4" />
+                      {profileUser.role === 'ADMIN'
+                        ? 'Administrador'
+                        : 'Jogador'}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      Level {profileUser.lvl || 1}
+                    </span>
+                    {profileUser.classe?.name && (
+                      <ClassBadge
+                        classeName={profileUser.classe.name}
+                        size="sm"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 md:items-end">
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleAvatarChange}
+                  disabled={isUploadingAvatar}
+                />
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={isUploadingAvatar}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {isUploadingAvatar ? 'Enviando...' : 'Alterar avatar'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleRemoveAvatar}
+                    disabled={
+                      isUploadingAvatar ||
+                      (!avatarImageSrc && !localAvatarPreview)
+                    }
+                  >
+                    Remover
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Suporta JPG, PNG ou WebP (máx. 20 MB)
+                </p>
+                {avatarUploadError && (
+                  <p className="text-sm text-red-500">{avatarUploadError}</p>
+                )}
               </div>
             </div>
           </CardContent>
