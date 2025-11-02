@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import {
   Settings,
   AlertCircle,
+  BarChart3,
 } from 'lucide-react';
 import {
   Card,
@@ -25,6 +26,24 @@ export default function Admin() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="mr-2 h-5 w-5 text-purple-600" />
+                Dashboard
+              </CardTitle>
+              <CardDescription>Estatísticas e análises</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Visualize estatísticas detalhadas sobre usuários, raids, DKP e auctions.
+              </p>
+              <Button className="w-full" asChild>
+                <Link to="/admin/dashboard">Ver Dashboard</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
